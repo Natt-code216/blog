@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "essays",
+  "info": {
+    "singularName": "essay",
+    "pluralName": "essays",
+    "displayName": "Essay"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "category": {
+      "type": "enumeration",
+      "default": "ESSAY",
+      "enum": [
+        "ESSAY",
+        "THOUGHTS",
+        "LIFESTYLE"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "excerpt": {
+      "type": "text"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "data": {
+      "type": "datetime",
+      "default": "2026-03-02T16:00:00.000Z"
+    },
+    "featuredImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment"
+    }
+  }
+}

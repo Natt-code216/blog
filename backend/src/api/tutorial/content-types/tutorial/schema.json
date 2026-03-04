@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tutorials",
+  "info": {
+    "singularName": "tutorial",
+    "pluralName": "tutorials",
+    "displayName": "Tutorial"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "level": {
+      "type": "enumeration",
+      "default": "ALL",
+      "enum": [
+        "A_level",
+        "B_level",
+        "C_level",
+        "ALL"
+      ]
+    },
+    "status_t": {
+      "type": "enumeration",
+      "enum": [
+        "A更新中",
+        "B已完结"
+      ]
+    },
+    "chapters": {
+      "type": "integer",
+      "default": 1
+    },
+    "Icon": {
+      "type": "enumeration",
+      "enum": [
+        "code",
+        "layers",
+        "zap"
+      ]
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}
