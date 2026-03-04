@@ -1,0 +1,61 @@
+.section {
+  padding: 8rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: calc(8rem + var(--nav-height));
+}
+
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ScrollReveal wrapper */
+.toolsGrid > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  padding: 2.5rem 2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+
+.toolCard:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-5px);
+  background: #141414;
+}
+
+.toolIcon {
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.toolCard:hover .toolIcon {
+  opacity: 1;
+}
+
+.toolCard h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+}
+
+.toolCard p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-weight: 300;
+}

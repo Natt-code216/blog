@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(cmd:*)",
+      "Bash(taskkill:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(/c/nvm4w/nodejs/node:*)",
+      "Bash(pnpm create:*)",
+      "Bash(npx create-strapi-app@latest:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(wc:*)"
+    ]
+  }
+}

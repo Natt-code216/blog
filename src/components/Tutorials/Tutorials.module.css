@@ -1,0 +1,103 @@
+.section {
+  padding: 8rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: calc(8rem + var(--nav-height));
+}
+
+.tutorialsList {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ScrollReveal wrapper */
+.tutorialsList > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.tutorialRow {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+  text-decoration: none;
+  transition: all 0.4s ease;
+}
+
+.tutorialRow:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-bottom-color: var(--border-hover);
+}
+
+.tutIconWrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+}
+
+.tutorialRow:hover .tutIconWrapper {
+  background: var(--text-primary);
+  color: var(--bg-base);
+}
+
+.tutInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.tutInfo p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.tutMeta {
+  text-align: right;
+}
+
+.tutTag {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+}
+
+.tutStatus {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .tutorialRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tutIconWrapper {
+    display: none;
+  }
+
+  .tutMeta {
+    text-align: left;
+  }
+}

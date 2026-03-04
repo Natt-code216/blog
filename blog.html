@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人空间 | 高级优雅版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 引入 Playfair Display (优雅的衬线字体用于标题) 和 Inter (现代干净的无衬线字体用于正文) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 极简深色调色板 */
+            --bg-base: #050505;
+            --bg-surface: #0a0a0a;
+            --bg-card: #111111;
+            
+            --text-primary: #fcfcfc;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            
+            --accent: #ffffff;
+            
+            /* 布局变量 */
+            --max-width: 1200px;
+            --nav-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 优雅的背景光晕 (极度克制) */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 排版类 */
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--nav-height);
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.4s ease;
+        }
+
+        .nav-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        nav a.nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a.nav-link:hover, nav a.nav-link.active {
+            color: var(--text-primary);
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 滚动揭示动画基类 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section {
+            padding: 8rem 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 首屏 (Hero) */
+        #home {
+            text-align: center;
+            padding-top: calc(8rem + var(--nav-height));
+        }
+
+        .hero-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+
+        .hero-title i {
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .hero-desc {
+            max-width: 600px;
+            margin: 0 auto 3.5rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--text-primary);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: -1;
+        }
+
+        .btn:hover {
+            color: var(--bg-base);
+            border-color: var(--text-primary);
+        }
+
+        .btn:hover::before {
+            transform: translateY(0);
+        }
+
+        /* 通用标题区域 */
+        .section-header {
+            margin-bottom: 5rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 随笔板块 (Essays) - 极简卡片 */
+        .essays-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+        }
+
+        .essay-card {
+            display: flex;
+            flex-direction: column;
+            group: hover;
+            text-decoration: none;
+        }
+
+        .essay-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid transparent;
+            transition: border-color 0.4s ease;
+        }
+
+        .essay-card h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .essay-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .read-more-link {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .essay-card:hover .read-more-link {
+            opacity: 1;
+            gap: 1rem;
+        }
+
+        .essay-card:hover h3 {
+            color: #d1d5db; /* 柔和的高亮 */
+        }
+
+        /* 教程板块 (Tutorials) - 列表视图 */
+        .tutorials-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tutorial-row {
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            align-items: center;
+            gap: 2rem;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--border-light);
+            text-decoration: none;
+            transition: all 0.4s ease;
+        }
+
+        .tutorial-row:hover {
+            background-color: rgba(255, 255, 255, 0.01);
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-bottom-color: var(--border-hover);
+        }
+
+        .tut-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: all 0.4s ease;
+        }
+
+        .tutorial-row:hover .tut-icon-wrapper {
+            background: var(--text-primary);
+            color: var(--bg-base);
+        }
+
+        .tut-info h3 {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .tut-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .tut-meta {
+            text-align: right;
+        }
+
+        .tut-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .tut-status {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        /* 工具集板块 (Tools) - 玻璃态网格 */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            padding: 2.5rem 2rem;
+            border-radius: 4px; /* 轻微的圆角显得更克制 */
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .tool-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-5px);
+            background: #141414;
+        }
+
+        .tool-icon {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover .tool-icon {
+            opacity: 1;
+        }
+
+        .tool-card h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .tool-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* 页脚 */
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid transparent;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            color: var(--text-primary);
+            border-color: var(--border-light);
+            background: var(--bg-card);
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                display: none; /* 移动端应替换为汉堡菜单，此处从简隐藏 */
+            }
+
+            .tutorial-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .tut-icon-wrapper {
+                display: none;
+            }
+
+            .tut-meta {
+                text-align: left;
+            }
+        }
+
+        /* 自定义滚动条 - 极简风 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景光晕 -->
+    <div class="ambient-glow"></div>
+
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo serif">我的<span>空间.</span></a>
+            <ul>
+                <li><a href="#home" class="nav-link active">首页</a></li>
+                <li><a href="#essays" class="nav-link">随笔</a></li>
+                <li><a href="#tutorials" class="nav-link">教程</a></li>
+                <li><a href="#tools" class="nav-link">工具集</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 首页 - 自我介绍 -->
+    <section id="home">
+        <div class="container reveal">
+            <span class="hero-label">Portfolio & Journal</span>
+            <h1 class="hero-title serif">
+                创造者 <i>/</i> 思考者 <i>/</i> 探索者
+            </h1>
+            <p class="hero-desc">
+                我是一名热爱技术与创作的开发者，致力于探索技术与人文的交汇点。<br>
+                在这里，我分享我的技术心得、思想随笔，以及精心打造的实用工具。<br>
+                希望这份沉淀，能为你的旅程带来一丝灵感。
+            </p>
+            <a href="#essays" class="btn">
+                探索内容
+                <!-- 极简箭头图标 -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- 随笔板块 -->
+    <section id="essays">
+        <div class="container">
+            <div class="section-header reveal">
+                <div>
+                    <div class="section-subtitle">Journal</div>
+                    <h2 class="section-title serif">思考与感悟</h2>
+                </div>
+                <a href="#" class="read-more-link" style="opacity: 1;">查看全部 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            
+            <div class="essays-grid">
+                <a href="#" class="essay-card reveal">
+                    <div class="essay-meta">
+                        <span>ESSAY</span>
+                        <span>MAR 01, 2025</span>
+                    </div>
+                    <h3 class="serif">技术与人性的平衡</h3>
+                    <p>在这个快速发展的时代，我们常常被技术的浪潮裹挟前行。然而，最重要的是保持对人性的关怀，让技术真正服务于个体的成长而非异化...</p>
+                    <span class="read-more-link">阅读全文 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                </a>
+
+                <a href="#" class="essay-card reveal" style="transition-delay: 0.1s;">
+                    <div class="essay-meta">
+                        <span>THOUGHTS</span>
+                        <span>FEB 15, 2025</span>
+                    </div>
+                    <h3 class="serif">关于创造力的本源思考</h3>
+                    <p>创造力绝不是凭空而来的神启，而是长期积累与深度思考在特定时刻的必然交汇。它要求我们保持对世界的好奇，以及拥抱未知的勇气...</p>
+                    <span class="read-more-link">阅读全文 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                </a>
+
+                <a href="#" class="essay-card reveal" style="transition-delay: 0.2s;">
+                    <div class="essay-meta">
+                        <span>LIFESTYLE</span>
+                        <span>JAN 28, 2025</span>
+                    </div>
+                    <h3 class="serif">慢下来的艺术与哲学</h3>
+                    <p>在效率至上的算法社会中，我们逐渐丧失了“慢”的能力。有时候，主动放慢脚步，去注视一朵花的盛开，反而能让我们在精神上走得更远...</p>
+                    <span class="read-more-link">阅读全文 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教程板块 -->
+    <section id="tutorials">
+        <div class="container">
+            <div class="section-header reveal">
+                <div>
+                    <div class="section-subtitle">Education</div>
+                    <h2 class="section-title serif">系统化学习</h2>
+                </div>
+            </div>
+            
+            <div class="tutorials-list">
+                <a href="#" class="tutorial-row reveal">
+                    <div class="tut-icon-wrapper">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                    </div>
+                    <div class="tut-info">
+                        <h3>现代前端架构指南</h3>
+                        <p>深入探讨 React / Vue 生态、状态管理艺术与企业级项目工程化实践。</p>
+                    </div>
+                    <div class="tut-meta">
+                        <span class="tut-tag">中高级</span>
+                        <span class="tut-status">更新中 (12 章)</span>
+                    </div>
+                </a>
+
+                <a href="#" class="tutorial-row reveal" style="transition-delay: 0.1s;">
+                    <div class="tut-icon-wrapper">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l10 6.5v7L12 22 2 15.5v-7L12 2zM12 22v-6.5"/></svg>
+                    </div>
+                    <div class="tut-info">
+                        <h3>UI/UX 美学与极简设计</h3>
+                        <p>探寻排版、色彩理论与留白艺术，运用 Figma 打造克制而优雅的界面。</p>
+                    </div>
+                    <div class="tut-meta">
+                        <span class="tut-tag">全阶段</span>
+                        <span class="tut-status">已完结 (8 章)</span>
+                    </div>
+                </a>
+
+                <a href="#" class="tutorial-row reveal" style="transition-delay: 0.2s;">
+                    <div class="tut-icon-wrapper">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <div class="tut-info">
+                        <h3>Web 极致性能优化</h3>
+                        <p>从渲染管线到网络协议，系统解析毫秒级页面加载背后的底层逻辑。</p>
+                    </div>
+                    <div class="tut-meta">
+                        <span class="tut-tag">高阶</span>
+                        <span class="tut-status">更新中 (6 章)</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具集板块 -->
+    <section id="tools">
+        <div class="container">
+            <div class="section-header reveal">
+                <div>
+                    <div class="section-subtitle">Workspace</div>
+                    <h2 class="section-title serif">实用工具集</h2>
+                </div>
+            </div>
+            
+            <div class="tools-grid">
+                <a href="#" class="tool-card reveal">
+                    <div class="tool-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <h3>数据洞察视图</h3>
+                    <p>将复杂的 CSV、JSON 数据瞬间转化为优雅直观的统计图表，支持极简主题导出。</p>
+                </a>
+
+                <a href="#" class="tool-card reveal" style="transition-delay: 0.1s;">
+                    <div class="tool-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                    </div>
+                    <h3>色彩调和引擎</h3>
+                    <p>基于色彩理论与高阶算法，为您生成专业、和谐且符合无障碍标准的调色板。</p>
+                </a>
+
+                <a href="#" class="tool-card reveal" style="transition-delay: 0.2s;">
+                    <div class="tool-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                    </div>
+                    <h3>Markdown 沉浸创作</h3>
+                    <p>提供所见即所得的沉浸式 Markdown 写作体验，支持导出纯净版 PDF 与 HTML。</p>
+                </a>
+
+                <a href="#" class="tool-card reveal" style="transition-delay: 0.3s;">
+                    <div class="tool-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    </div>
+                    <h3>正则可视化调试</h3>
+                    <p>将晦涩的正则表达式转换为清晰的状态机图表，让正则编写与调试不再枯燥。</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="reveal">
+        <div class="container">
+            <div class="footer-logo serif">我的<span>空间.</span></div>
+            <div class="social-links">
+                <a href="#" title="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+                <a href="#" title="Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                <a href="#" title="Mail"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></a>
+            </div>
+            <p class="copyright">&copy; 2025 Crafted with intention. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏滚动效果与高亮逻辑
+        const navbar = document.getElementById('navbar');
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            // 导航栏透明度处理
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(5, 5, 5, 0.9)';
+                navbar.style.borderBottom = '1px solid rgba(255, 255, 255, 0.08)';
+            } else {
+                navbar.style.background = 'rgba(5, 5, 5, 0.7)';
+                navbar.style.borderBottom = '1px solid transparent';
+            }
+
+            // 滚动高亮当前栏目
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 引入优雅的滚动揭示动画 (Scroll Reveal)
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // 可选：触发一次后就取消观察，保持淡入状态
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.15, // 元素出现 15% 时触发
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>
