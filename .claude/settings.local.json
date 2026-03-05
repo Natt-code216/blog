@@ -12,7 +12,9 @@
       "Bash(npx create-strapi-app@latest:*)",
       "Bash(ls:*)",
       "Bash(mkdir:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm dev:*)"
     ]
   }
 }

@@ -1,37 +1,9 @@
+import { useEffect, useState } from 'react';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Tool } from '../../types';
+import { api } from '../../services/api';
+import { transformTools } from '../../utils/transformData';
 import styles from './Tools.module.css';
-
-const toolsData: Tool[] = [
-  {
-    id: '1',
-    icon: 'barChart',
-    title: '数据洞察视图',
-    description: '将复杂的 CSV、JSON 数据瞬间转化为优雅直观的统计图表，支持极简主题导出。',
-    link: '#',
-  },
-  {
-    id: '2',
-    icon: 'droplet',
-    title: '色彩调和引擎',
-    description: '基于色彩理论与高阶算法，为您生成专业、和谐且符合无障碍标准的调色板。',
-    link: '#',
-  },
-  {
-    id: '3',
-    icon: 'fileText',
-    title: 'Markdown 沉浸创作',
-    description: '提供所见即所得的沉浸式 Markdown 写作体验，支持导出纯净版 PDF 与 HTML。',
-    link: '#',
-  },
-  {
-    id: '4',
-    icon: 'search',
-    title: '正则可视化调试',
-    description: '将晦涩的正则表达式转换为清晰的状态机图表，让正则编写与调试不再枯燥。',
-    link: '#',
-  },
-];
 
 const iconMap = {
   barChart: (
@@ -70,6 +42,35 @@ function ToolContent({ tool }: { tool: Tool }) {
 }
 
 export function Tools() {
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTools = async () => {
+      try {
+        const apiData = await api.getTools();
+        setTools(transformTools(apiData));
+        setLoading(false);
+      } catch (err) {
+        console.error('获取工具失败:', err);
+        setLoading(false);
+      }
+    };
+
+    fetchTools();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="tools" className={styles.section}>
+        <div className="container" style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <div className={styles.loadingSpinner}></div>
+          <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>加载中...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="tools" className={styles.section}>
       <div className="container">
@@ -83,7 +84,7 @@ export function Tools() {
         </ScrollReveal>
 
         <div className={styles.toolsGrid}>
-          {toolsData.map((tool, index) => (
+          {tools.map((tool, index) => (
             <ScrollReveal key={tool.id} delay={index * 0.1}>
               <a href={tool.link} className={styles.toolCard}>
                 <ToolContent tool={tool} />

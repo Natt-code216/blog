@@ -1,36 +1,9 @@
+import { useEffect, useState } from 'react';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Tutorial } from '../../types';
+import { api } from '../../services/api';
+import { transformTutorials } from '../../utils/transformData';
 import styles from './Tutorials.module.css';
-
-const tutorialsData: Tutorial[] = [
-  {
-    id: '1',
-    icon: 'code',
-    title: '现代前端架构指南',
-    description: '深入探讨 React / Vue 生态、状态管理艺术与企业级项目工程化实践。',
-    level: '中高级',
-    status: '更新中 (12 章)',
-    link: '#',
-  },
-  {
-    id: '2',
-    icon: 'layers',
-    title: 'UI/UX 美学与极简设计',
-    description: '探寻排版、色彩理论与留白艺术，运用 Figma 打造克制而优雅的界面。',
-    level: '全阶段',
-    status: '已完结 (8 章)',
-    link: '#',
-  },
-  {
-    id: '3',
-    icon: 'zap',
-    title: 'Web 极致性能优化',
-    description: '从渲染管线到网络协议，系统解析毫秒级页面加载背后的底层逻辑。',
-    level: '高阶',
-    status: '更新中 (6 章)',
-    link: '#',
-  },
-];
 
 const iconMap = {
   code: (
@@ -67,6 +40,35 @@ function TutorialContent({ tutorial }: { tutorial: Tutorial }) {
 }
 
 export function Tutorials() {
+  const [tutorials, setTutorials] = useState<Tutorial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTutorials = async () => {
+      try {
+        const apiData = await api.getTutorials();
+        setTutorials(transformTutorials(apiData));
+        setLoading(false);
+      } catch (err) {
+        console.error('获取教程失败:', err);
+        setLoading(false);
+      }
+    };
+
+    fetchTutorials();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="tutorials" className={styles.section}>
+        <div className="container" style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <div className={styles.loadingSpinner}></div>
+          <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>加载中...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="tutorials" className={styles.section}>
       <div className="container">
@@ -80,7 +82,7 @@ export function Tutorials() {
         </ScrollReveal>
 
         <div className={styles.tutorialsList}>
-          {tutorialsData.map((tutorial, index) => (
+          {tutorials.map((tutorial, index) => (
             <ScrollReveal key={tutorial.id} delay={index * 0.1}>
               <a href={tutorial.link} className={styles.tutorialRow}>
                 <TutorialContent tutorial={tutorial} />
