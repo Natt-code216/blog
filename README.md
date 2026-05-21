@@ -229,7 +229,82 @@ pnpm start
 
 ## 📜 迭代记录
 
-### 2026-05-22 · 项目搭建完善
+### 2026-05-22 · V2 大版本：路由 + 详情页 + 搜索 + 主题 + 评论 + SEO + 测试 + CI
+
+> 本次扩展把项目从"前后端能跑通"升级到"接近成品"水平，仍然不改动任何原有 CSS Module。
+
+**路由与详情页**
+
+- 引入 `react-router-dom@7` 与 `react-helmet-async`
+- 新增 `src/pages/`：`HomePage`、`EssayDetail`、`TutorialDetail`
+- `App.tsx` 改用 `<BrowserRouter>` + `<Routes>` 顶层路由
+- `<ScrollToTop>`：路由切换自动回顶部 / 命中 hash 滚动到锚点
+- Navbar 在详情页智能切换为 `<Link to="/#xxx">`，回首页后自动滚动
+- Essays/Tutorials 列表卡片改用 `<Link>`，整页不刷新
+
+**主题切换**
+
+- `ThemeContext` + `useTheme`，localStorage 持久化
+- 右下角浮动 `ThemeToggle`
+- 浅色主题通过 `:root[data-theme="light"]` 选择器追加，**默认深色不变**
+
+**站内搜索**
+
+- 浮动 `SearchBar` 按钮 + 全屏对话框，Ctrl/Cmd + K 快捷键
+- 客户端跨随笔/教程/工具过滤
+
+**评论系统**
+
+- `api.getCommentsByEssay` / `api.postComment`
+- `<Comments>` 组件嵌入 `EssayDetail` 底部
+- 友好处理 Strapi Public 角色未开放写权限的情况
+
+**SEO**
+
+- `<Helmet>` 动态 title / description / og:*
+- `scripts/generate-sitemap.mjs` 拉取 Strapi 内容生成 `dist/sitemap.xml`
+- `public/robots.txt`
+
+**测试基建**
+
+- vitest 1.6 + @testing-library/react + jsdom
+- 测试覆盖 `transformData`、`useApiFetch`、`services/api` —— **23 个测试全部通过**
+- `pnpm test` / `pnpm test:run` / `pnpm test:coverage`
+
+**CI/CD + 部署**
+
+- `.github/workflows/ci.yml`：typecheck + build + test
+- `vercel.json` 与 `netlify.toml`：SPA fallback + 环境变量提示
+- `docs/deployment/` 四篇部署文档（Vercel / Netlify / Railway / Render）
+- `.github/PULL_REQUEST_TEMPLATE.md` + `ISSUE_TEMPLATE/`
+
+**新增教程文字稿**
+
+- `docs/tutorials/04-routing-and-detail-pages.md` (~10k 字)
+- `docs/tutorials/05-deploy-to-production.md` (~9.5k 字)
+
+**新增 package.json 脚本**
+
+| 命令 | 说明 |
+|------|------|
+| `pnpm test` | 启动 vitest watch 模式 |
+| `pnpm test:run` | 单次跑完所有测试 |
+| `pnpm test:coverage` | 生成覆盖率报告 |
+| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm sitemap` | 生成 dist/sitemap.xml |
+| `pnpm ci` | 本地复现 CI（install + typecheck + test + build） |
+
+**验收**
+
+- ✅ `pnpm typecheck` 通过
+- ✅ `pnpm test:run` 23/23 通过
+- ✅ `pnpm build` 成功（CSS 16.94 kB / JS 257.67 kB）
+- ✅ 前后端仍同时在 5173 / 1337 运行
+- ✅ 原有 CSS Module 文件零修改，主页视觉完全保持
+
+---
+
+### 2026-05-22 · V1 · 项目搭建完善
 
 > **目标**：在不改动前端视觉样式的前提下，把项目搭建完善起来。
 

@@ -1,6 +1,7 @@
 import { useScrollSpy } from '../../hooks/useScrollSpy';
 import styles from './Navbar.module.css';
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
   { id: 'home', label: '首页', href: '#home' },
@@ -10,7 +11,11 @@ const navItems = [
 ];
 
 export function Navbar() {
-  const activeId = useScrollSpy({ sectionIds: navItems.map((item) => item.id) });
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  const activeId = useScrollSpy({
+    sectionIds: isHome ? navItems.map((item) => item.id) : [],
+  });
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -26,18 +31,27 @@ export function Navbar() {
   return (
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
       <div className="container">
-        <a href="#home" className={`${styles.logo} serif`}>
+        <Link to="/" className={`${styles.logo} serif`}>
           我的<span>空间.</span>
-        </a>
+        </Link>
         <ul>
           {navItems.map((item) => (
             <li key={item.id}>
-              <a
-                href={item.href}
-                className={`${styles.navLink} ${activeId === item.id ? styles.active : ''}`}
-              >
-                {item.label}
-              </a>
+              {isHome ? (
+                <a
+                  href={item.href}
+                  className={`${styles.navLink} ${activeId === item.id ? styles.active : ''}`}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  to={`/${item.href}`}
+                  className={styles.navLink}
+                >
+                  {item.label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

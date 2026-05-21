@@ -1,0 +1,14 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  # 部署时请在 Netlify 站点设置中配置：
+  # VITE_API_URL = "https://your-strapi-backend.example.com"
+  NODE_VERSION = "20"
+  PNPM_VERSION = "8"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Essay } from '../../types';
 import { api } from '../../services/api';
@@ -71,9 +72,9 @@ export function Essays() {
           <div className={styles.essaysGrid}>
             {essays.map((essay, index) => (
               <ScrollReveal key={essay.id} delay={index * 0.1}>
-                <a href={essay.link} className={styles.essayCard}>
+                <Link to={essay.link} className={styles.essayCard}>
                   <EssayCard essay={essay} />
-                </a>
+                </Link>
               </ScrollReveal>
             ))}
           </div>

@@ -141,6 +141,30 @@ section {
   background: #555;
 }
 
+/* 浅色主题（通过 [data-theme="light"] 切换 —— 不改动深色默认观感） */
+:root[data-theme="light"] {
+  --bg-base: #fafafa;
+  --bg-surface: #f3f3f3;
+  --bg-card: #ffffff;
+  --text-primary: #0a0a0a;
+  --text-secondary: #555555;
+  --text-muted: #999999;
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.2);
+  --accent: #0a0a0a;
+}
+
+:root[data-theme="light"] .ambientGlow {
+  background: radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.03) 0%, transparent 60%);
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
   section {

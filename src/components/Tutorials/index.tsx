@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Tutorial } from '../../types';
 import { api } from '../../services/api';
@@ -79,9 +80,9 @@ export function Tutorials() {
           <div className={styles.tutorialsList}>
             {tutorials.map((tutorial, index) => (
               <ScrollReveal key={tutorial.id} delay={index * 0.1}>
-                <a href={tutorial.link} className={styles.tutorialRow}>
+                <Link to={tutorial.link} className={styles.tutorialRow}>
                   <TutorialContent tutorial={tutorial} />
-                </a>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
