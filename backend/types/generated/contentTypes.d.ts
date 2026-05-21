@@ -448,6 +448,7 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
+    essay: Schema.Attribute.Relation<'manyToOne', 'api::essay.essay'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -488,8 +489,7 @@ export interface ApiEssayEssay extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    data: Schema.Attribute.DateTime &
-      Schema.Attribute.DefaultTo<'2026-03-02T16:00:00.000Z'>;
+    date: Schema.Attribute.DateTime;
     excerpt: Schema.Attribute.Text;
     featuredImage: Schema.Attribute.Media<'images' | 'files'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -521,7 +521,7 @@ export interface ApiToolTool extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
-    Icon: Schema.Attribute.Enumeration<
+    icon: Schema.Attribute.Enumeration<
       ['barChart', 'droplet', 'fileText', 'search']
     >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -555,7 +555,7 @@ export interface ApiTutorialTutorial extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
-    Icon: Schema.Attribute.Enumeration<['code', 'layers', 'zap']>;
+    icon: Schema.Attribute.Enumeration<['code', 'layers', 'zap']>;
     level: Schema.Attribute.Enumeration<
       ['A_level', 'B_level', 'C_level', 'ALL']
     > &
@@ -569,7 +569,7 @@ export interface ApiTutorialTutorial extends Struct.CollectionTypeSchema {
     published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'title'>;
-    status_t: Schema.Attribute.Enumeration<
+    status: Schema.Attribute.Enumeration<
       ['A\u66F4\u65B0\u4E2D', 'B\u5DF2\u5B8C\u7ED3']
     >;
     title: Schema.Attribute.String & Schema.Attribute.Required;

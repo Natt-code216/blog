@@ -28,7 +28,7 @@
         "ALL"
       ]
     },
-    "status_t": {
+    "status": {
       "type": "enumeration",
       "enum": [
         "A更新中",
@@ -39,7 +39,7 @@
       "type": "integer",
       "default": 1
     },
-    "Icon": {
+    "icon": {
       "type": "enumeration",
       "enum": [
         "code",

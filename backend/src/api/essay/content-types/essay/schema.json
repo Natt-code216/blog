@@ -30,9 +30,8 @@
     "content": {
       "type": "richtext"
     },
-    "data": {
-      "type": "datetime",
-      "default": "2026-03-02T16:00:00.000Z"
+    "date": {
+      "type": "datetime"
     },
     "featuredImage": {
       "type": "media",
@@ -53,7 +52,8 @@
     "comments": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::comment.comment"
+      "target": "api::comment.comment",
+      "mappedBy": "essay"
     }
   }
 }

@@ -4,33 +4,33 @@ import type { Essay, Tutorial, Tool } from '../types';
 export function transformEssays(apiEssays: ApiEssay[]): Essay[] {
   return apiEssays.map(essay => ({
     id: essay.id.toString(),
-    category: essay.attributes.category,
-    date: formatDate(essay.attributes.date),
-    title: essay.attributes.title,
-    excerpt: essay.attributes.excerpt,
-    link: `/essays/${essay.attributes.slug}`,
+    category: essay.category,
+    date: formatDate(essay.date),
+    title: essay.title,
+    excerpt: essay.excerpt,
+    link: `/essays/${essay.slug}`,
   }));
 }
 
 export function transformTutorials(apiTutorials: ApiTutorial[]): Tutorial[] {
   return apiTutorials.map(tutorial => ({
     id: tutorial.id.toString(),
-    icon: tutorial.attributes.icon,
-    title: tutorial.attributes.title,
-    description: tutorial.attributes.description,
-    level: tutorial.attributes.level,
-    status: `${tutorial.attributes.status} (${tutorial.attributes.chapters} 章)`,
-    link: `/tutorials/${tutorial.attributes.slug}`,
+    icon: tutorial.icon,
+    title: tutorial.title,
+    description: tutorial.description,
+    level: tutorial.level,
+    status: `${tutorial.status} (${tutorial.chapters} 章)`,
+    link: `/tutorials/${tutorial.slug}`,
   }));
 }
 
 export function transformTools(apiTools: ApiTool[]): Tool[] {
   return apiTools.map(tool => ({
     id: tool.id.toString(),
-    icon: tool.attributes.icon,
-    title: tool.attributes.title,
-    description: tool.attributes.description,
-    link: tool.attributes.url,
+    icon: tool.icon,
+    title: tool.title,
+    description: tool.description,
+    link: tool.url,
   }));
 }
 

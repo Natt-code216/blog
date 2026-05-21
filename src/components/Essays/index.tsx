@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Essay } from '../../types';
 import { api } from '../../services/api';
 import { transformEssays } from '../../utils/transformData';
+import { useApiFetch } from '../../hooks/useApiFetch';
 import styles from './Essays.module.css';
 
 function EssayCard({ essay }: { essay: Essay }) {
@@ -32,23 +32,9 @@ function EssayCard({ essay }: { essay: Essay }) {
 }
 
 export function Essays() {
-  const [essays, setEssays] = useState<Essay[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEssays = async () => {
-      try {
-        const apiData = await api.getEssays();
-        setEssays(transformEssays(apiData));
-        setLoading(false);
-      } catch (err) {
-        console.error('获取随笔失败:', err);
-        setLoading(false);
-      }
-    };
-
-    fetchEssays();
-  }, []);
+  const { data: essays, loading, error } = useApiFetch(() =>
+    api.getEssays().then(transformEssays)
+  );
 
   if (loading) {
     return (
@@ -73,15 +59,25 @@ export function Essays() {
           </div>
         </ScrollReveal>
 
-        <div className={styles.essaysGrid}>
-          {essays.map((essay, index) => (
-            <ScrollReveal key={essay.id} delay={index * 0.1}>
-              <a href={essay.link} className={styles.essayCard}>
-                <EssayCard essay={essay} />
-              </a>
-            </ScrollReveal>
-          ))}
-        </div>
+        {error ? (
+          <div className={styles.statusMessage}>
+            <p>加载随笔失败，请稍后重试</p>
+          </div>
+        ) : essays.length === 0 ? (
+          <div className={styles.statusMessage}>
+            <p>暂无随笔内容</p>
+          </div>
+        ) : (
+          <div className={styles.essaysGrid}>
+            {essays.map((essay, index) => (
+              <ScrollReveal key={essay.id} delay={index * 0.1}>
+                <a href={essay.link} className={styles.essayCard}>
+                  <EssayCard essay={essay} />
+                </a>
+              </ScrollReveal>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

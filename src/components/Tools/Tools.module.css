@@ -60,6 +60,14 @@
   font-weight: 300;
 }
 
+.statusMessage {
+  text-align: center;
+  padding: 4rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 300;
+}
+
 .loadingSpinner {
   border: 3px solid var(--border-light);
   border-top: 3px solid var(--text-primary);

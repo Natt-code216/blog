@@ -31,6 +31,12 @@
     "approved": {
       "type": "boolean",
       "default": false
+    },
+    "essay": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::essay.essay",
+      "inversedBy": "comments"
     }
   }
 }

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Tool } from '../../types';
 import { api } from '../../services/api';
 import { transformTools } from '../../utils/transformData';
+import { useApiFetch } from '../../hooks/useApiFetch';
 import styles from './Tools.module.css';
 
 const iconMap = {
@@ -42,23 +42,9 @@ function ToolContent({ tool }: { tool: Tool }) {
 }
 
 export function Tools() {
-  const [tools, setTools] = useState<Tool[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTools = async () => {
-      try {
-        const apiData = await api.getTools();
-        setTools(transformTools(apiData));
-        setLoading(false);
-      } catch (err) {
-        console.error('获取工具失败:', err);
-        setLoading(false);
-      }
-    };
-
-    fetchTools();
-  }, []);
+  const { data: tools, loading, error } = useApiFetch(() =>
+    api.getTools().then(transformTools)
+  );
 
   if (loading) {
     return (
@@ -83,15 +69,25 @@ export function Tools() {
           </div>
         </ScrollReveal>
 
-        <div className={styles.toolsGrid}>
-          {tools.map((tool, index) => (
-            <ScrollReveal key={tool.id} delay={index * 0.1}>
-              <a href={tool.link} className={styles.toolCard}>
-                <ToolContent tool={tool} />
-              </a>
-            </ScrollReveal>
-          ))}
-        </div>
+        {error ? (
+          <div className={styles.statusMessage}>
+            <p>加载工具失败，请稍后重试</p>
+          </div>
+        ) : tools.length === 0 ? (
+          <div className={styles.statusMessage}>
+            <p>暂无工具推荐</p>
+          </div>
+        ) : (
+          <div className={styles.toolsGrid}>
+            {tools.map((tool, index) => (
+              <ScrollReveal key={tool.id} delay={index * 0.1}>
+                <a href={tool.link} className={styles.toolCard}>
+                  <ToolContent tool={tool} />
+                </a>
+              </ScrollReveal>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { ScrollReveal } from '../ScrollReveal';
 import type { Tutorial } from '../../types';
 import { api } from '../../services/api';
 import { transformTutorials } from '../../utils/transformData';
+import { useApiFetch } from '../../hooks/useApiFetch';
 import styles from './Tutorials.module.css';
 
 const iconMap = {
@@ -40,23 +40,9 @@ function TutorialContent({ tutorial }: { tutorial: Tutorial }) {
 }
 
 export function Tutorials() {
-  const [tutorials, setTutorials] = useState<Tutorial[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTutorials = async () => {
-      try {
-        const apiData = await api.getTutorials();
-        setTutorials(transformTutorials(apiData));
-        setLoading(false);
-      } catch (err) {
-        console.error('获取教程失败:', err);
-        setLoading(false);
-      }
-    };
-
-    fetchTutorials();
-  }, []);
+  const { data: tutorials, loading, error } = useApiFetch(() =>
+    api.getTutorials().then(transformTutorials)
+  );
 
   if (loading) {
     return (
@@ -81,15 +67,25 @@ export function Tutorials() {
           </div>
         </ScrollReveal>
 
-        <div className={styles.tutorialsList}>
-          {tutorials.map((tutorial, index) => (
-            <ScrollReveal key={tutorial.id} delay={index * 0.1}>
-              <a href={tutorial.link} className={styles.tutorialRow}>
-                <TutorialContent tutorial={tutorial} />
-              </a>
-            </ScrollReveal>
-          ))}
-        </div>
+        {error ? (
+          <div className={styles.statusMessage}>
+            <p>加载教程失败，请稍后重试</p>
+          </div>
+        ) : tutorials.length === 0 ? (
+          <div className={styles.statusMessage}>
+            <p>暂无教程内容</p>
+          </div>
+        ) : (
+          <div className={styles.tutorialsList}>
+            {tutorials.map((tutorial, index) => (
+              <ScrollReveal key={tutorial.id} delay={index * 0.1}>
+                <a href={tutorial.link} className={styles.tutorialRow}>
+                  <TutorialContent tutorial={tutorial} />
+                </a>
+              </ScrollReveal>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

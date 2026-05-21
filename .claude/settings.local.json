@@ -14,7 +14,12 @@
       "Bash(mkdir:*)",
       "Bash(wc:*)",
       "Bash(pnpm list:*)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "Bash(sqlite3:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)",
+      "Bash(curl:*)",
+      "Bash(npm run:*)"
     ]
   }
 }
