@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>二维码生成器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050505;color:#fcfcfc;font-family:'Inter',sans-serif;line-height:1.7;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+.back{color:#888;text-decoration:none;font-size:.9rem;display:inline-block;margin-bottom:2rem}
+.back:hover{color:#fcfcfc}
+h1{font-family:'Playfair Display',serif;font-size:2.5rem;margin-bottom:.5rem}
+.subtitle{color:#888;margin-bottom:2.5rem}
+.card{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+label{display:block;color:#888;font-size:.85rem;margin-bottom:.4rem;margin-top:1rem}
+label:first-child{margin-top:0}
+textarea,input,select{width:100%;background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;color:#fcfcfc;padding:.6rem .75rem;font-family:inherit;font-size:.9rem}
+textarea{min-height:120px;resize:vertical}
+input[type=color]{height:40px;padding:.2rem;cursor:pointer}
+.opts-row{display:flex;gap:.75rem}
+.opts-row>div{flex:1}
+.qr-box{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:4px;padding:1rem;min-height:300px}
+.qr-box canvas{display:block;max-width:100%;height:auto}
+.actions{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap}
+.btn{background:#fcfcfc;color:#050505;border:none;padding:.6rem 1.2rem;border-radius:4px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn:hover{opacity:.85}
+.btn-sec{background:transparent;color:#fcfcfc;border:1px solid rgba(255,255,255,.08)}
+.btn-sec:hover{border-color:rgba(255,255,255,.2)}
+.msg{margin-top:.75rem;font-size:.85rem;min-height:1.2rem}
+.success{color:#6ed99a}.error{color:#ef6868}
+</style>
+</head>
+<body>
+<div class="container">
+<a class="back" href="./index.html">← 返回工具集</a>
+<h1>二维码生成器</h1>
+<p class="subtitle">输入文本或链接，实时生成可下载的二维码。</p>
+
+<div class="card">
+<div class="grid">
+<div>
+<label>内容</label>
+<textarea id="text" placeholder="输入文本或 URL...">https://example.com</textarea>
+<div class="opts-row">
+<div><label>尺寸</label><select id="size"><option>128</option><option selected>256</option><option>512</option></select></div>
+<div><label>纠错</label><select id="lvl"><option>L</option><option selected>M</option><option>Q</option><option>H</option></select></div>
+</div>
+<div class="opts-row">
+<div><label>前景色</label><input type="color" id="fg" value="#000000"></div>
+<div><label>背景色</label><input type="color" id="bg" value="#ffffff"></div>
+</div>
+<div class="actions">
+<button class="btn" id="dl">下载 PNG</button>
+<button class="btn btn-sec" id="cp">复制图片</button>
+</div>
+<div class="msg" id="msg"></div>
+</div>
+<div>
+<div class="qr-box"><canvas id="qr"></canvas></div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const cv=document.getElementById('qr'),msg=document.getElementById('msg');
+function gen(){
+  const t=document.getElementById('text').value||' ';
+  const s=+document.getElementById('size').value;
+  QRCode.toCanvas(cv,t,{width:s,errorCorrectionLevel:document.getElementById('lvl').value,
+    color:{dark:document.getElementById('fg').value,light:document.getElementById('bg').value}},e=>{
+    if(e){msg.textContent=e.message;msg.className='msg error'}else{msg.textContent='';msg.className='msg'}
+  });
+}
+['text','size','lvl','fg','bg'].forEach(id=>document.getElementById(id).addEventListener('input',gen));
+document.getElementById('dl').onclick=()=>{
+  const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='qrcode.png';a.click();
+};
+document.getElementById('cp').onclick=()=>{
+  cv.toBlob(async b=>{
+    try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);msg.textContent='已复制到剪贴板';msg.className='msg success'}
+    catch(e){msg.textContent='复制失败: '+e.message;msg.className='msg error'}
+  });
+};
+gen();
+</script>
+</body>
+</html>

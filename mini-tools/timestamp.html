@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>时间戳转换</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050505;color:#fcfcfc;font-family:'Inter',sans-serif;line-height:1.7;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+.back{color:#888;text-decoration:none;font-size:.9rem;display:inline-block;margin-bottom:2rem}
+.back:hover{color:#fcfcfc}
+h1{font-family:'Playfair Display',serif;font-size:2.5rem;margin-bottom:.5rem}
+.subtitle{color:#888;margin-bottom:2.5rem}
+.card{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem}
+.card h2{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;font-weight:600}
+label{display:block;color:#888;font-size:.85rem;margin-bottom:.4rem;margin-top:1rem}
+label:first-child{margin-top:0}
+input,select{width:100%;background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;color:#fcfcfc;padding:.6rem .75rem;font-family:inherit;font-size:.9rem}
+input:focus,select:focus{outline:none;border-color:rgba(255,255,255,.2)}
+.row{display:flex;gap:.75rem;align-items:flex-end}
+.row>div{flex:1}
+.btn{background:#fcfcfc;color:#050505;border:none;padding:.6rem 1.2rem;border-radius:4px;cursor:pointer;font-family:inherit;font-weight:500;white-space:nowrap}
+.btn:hover{opacity:.85}
+.btn-sec{background:transparent;color:#fcfcfc;border:1px solid rgba(255,255,255,.08)}
+.btn-sec:hover{border-color:rgba(255,255,255,.2)}
+.now{font-family:'Playfair Display',serif;font-size:2rem;color:#fcfcfc}
+.now-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.result{margin-top:1rem;padding:1rem;background:#050505;border:1px solid rgba(255,255,255,.08);border-radius:4px;font-size:.9rem}
+.result .item{display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.result .item:last-child{border:none}
+.result .k{color:#555}
+.result .v{color:#fcfcfc;font-family:ui-monospace,monospace}
+.msg{margin-top:.5rem;font-size:.8rem;color:#6ed99a;min-height:1rem}
+.error{color:#ef6868}
+</style>
+</head>
+<body>
+<div class="container">
+<a class="back" href="./index.html">← 返回工具集</a>
+<h1>时间戳转换</h1>
+<p class="subtitle">Unix 时间戳与日期时间的双向转换。</p>
+
+<div class="card">
+<h2>当前时间</h2>
+<div class="now-row">
+<div class="now" id="now">—</div>
+<button class="btn btn-sec" id="copyNow">复制秒</button>
+<button class="btn btn-sec" id="copyMs">复制毫秒</button>
+</div>
+<div class="msg" id="nowMsg"></div>
+</div>
+
+<div class="card">
+<h2>时区</h2>
+<div class="row">
+<div><label>选择时区</label>
+<select id="tz">
+<option value="local">本地 (浏览器)</option>
+<option value="0">UTC (+0)</option>
+<option value="custom">自定义偏移</option>
+</select></div>
+<div><label>自定义偏移 (-12 ~ +14)</label>
+<input type="number" id="off" min="-12" max="14" step="0.5" value="8" disabled></div>
+</div>
+</div>
+
+<div class="card">
+<h2>时间戳 → 日期</h2>
+<label>时间戳（自动识别秒/毫秒）</label>
+<div class="row">
+<div><input type="text" id="ts" placeholder="例如 1700000000"></div>
+<button class="btn" id="ts2d">转换</button>
+</div>
+<div class="result" id="ts2dR" style="display:none"></div>
+</div>
+
+<div class="card">
+<h2>日期 → 时间戳</h2>
+<label>日期时间</label>
+<div class="row">
+<div><input type="datetime-local" id="dt" step="1"></div>
+<button class="btn" id="d2ts">转换</button>
+</div>
+<div class="result" id="d2tsR" style="display:none"></div>
+</div>
+</div>
+
+<script>
+const tzEl=document.getElementById('tz'),offEl=document.getElementById('off');
+tzEl.onchange=()=>{offEl.disabled=tzEl.value!=='custom'};
+function getOffsetMin(){
+  if(tzEl.value==='local')return -new Date().getTimezoneOffset();
+  if(tzEl.value==='0')return 0;
+  return +offEl.value*60;
+}
+const WEEK=['周日','周一','周二','周三','周四','周五','周六'];
+function pad(n,l=2){return String(n).padStart(l,'0')}
+function fmtDate(date,offMin){
+  const ms=date.getTime()+offMin*60000;
+  const d=new Date(ms);
+  const Y=d.getUTCFullYear(),M=pad(d.getUTCMonth()+1),D=pad(d.getUTCDate());
+  const h=pad(d.getUTCHours()),m=pad(d.getUTCMinutes()),s=pad(d.getUTCSeconds());
+  const w=WEEK[d.getUTCDay()];
+  const sign=offMin>=0?'+':'-',ah=Math.abs(offMin)/60;
+  const tzStr='UTC'+sign+(Number.isInteger(ah)?ah:ah.toFixed(1));
+  return{iso:date.toISOString(),local:`${Y}-${M}-${D} ${h}:${m}:${s}`,week:w,tz:tzStr,ts:Math.floor(date.getTime()/1000),tms:date.getTime()};
+}
+function renderResult(el,date){
+  const off=getOffsetMin();
+  const f=fmtDate(date,off);
+  el.style.display='block';
+  el.innerHTML=`
+    <div class="item"><span class="k">秒</span><span class="v">${f.ts}</span></div>
+    <div class="item"><span class="k">毫秒</span><span class="v">${f.tms}</span></div>
+    <div class="item"><span class="k">ISO 8601</span><span class="v">${f.iso}</span></div>
+    <div class="item"><span class="k">日期时间 (${f.tz})</span><span class="v">${f.local}</span></div>
+    <div class="item"><span class="k">星期</span><span class="v">${f.week}</span></div>`;
+}
+document.getElementById('ts2d').onclick=()=>{
+  const v=document.getElementById('ts').value.trim();
+  const el=document.getElementById('ts2dR');
+  if(!v||isNaN(+v)){el.style.display='block';el.innerHTML='<div class="error">请输入有效数字</div>';return}
+  let n=+v;if(v.length<=10)n*=1000;
+  renderResult(el,new Date(n));
+};
+document.getElementById('d2ts').onclick=()=>{
+  const v=document.getElementById('dt').value;
+  const el=document.getElementById('d2tsR');
+  if(!v){el.style.display='block';el.innerHTML='<div class="error">请选择时间</div>';return}
+  // datetime-local 输入按选定时区解读
+  const off=getOffsetMin();
+  const [datePart,timePart]=v.split('T');
+  const [Y,M,D]=datePart.split('-').map(Number);
+  const [h,m,s='0']=timePart.split(':').map(Number);
+  const utcMs=Date.UTC(Y,M-1,D,h,m,+s||0)-off*60000;
+  renderResult(el,new Date(utcMs));
+};
+function tick(){
+  const n=new Date();
+  document.getElementById('now').textContent=Math.floor(n.getTime()/1000);
+  document.getElementById('now').dataset.ms=n.getTime();
+}
+setInterval(tick,1000);tick();
+const nowMsg=document.getElementById('nowMsg');
+function flash(msg,err){nowMsg.textContent=msg;nowMsg.className=err?'msg error':'msg';setTimeout(()=>nowMsg.textContent='',1500)}
+document.getElementById('copyNow').onclick=async()=>{
+  try{await navigator.clipboard.writeText(document.getElementById('now').textContent);flash('已复制秒')}catch(e){flash('复制失败',1)}
+};
+document.getElementById('copyMs').onclick=async()=>{
+  try{await navigator.clipboard.writeText(document.getElementById('now').dataset.ms);flash('已复制毫秒')}catch(e){flash('复制失败',1)}
+};
+// 初始化 datetime-local 为当前
+(function(){
+  const n=new Date();
+  const v=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}T${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
+  document.getElementById('dt').value=v;
+  document.getElementById('ts').value=Math.floor(n.getTime()/1000);
+})();
+</script>
+</body>
+</html>

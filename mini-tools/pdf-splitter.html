@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PDF 拆分 · Mini Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fcfcfc;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 60px 24px;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  .back { color: #888; text-decoration: none; font-size: 14px; transition: color .2s; }
+  .back:hover { color: #fcfcfc; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 42px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle { color: #888; font-size: 15px; margin-bottom: 48px; }
+  .card {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .drop {
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    color: #888;
+  }
+  .drop:hover, .drop.hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.02);
+    color: #fcfcfc;
+  }
+  .drop input { display: none; }
+  .info {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: #0a0a0a;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    font-size: 14px;
+    color: #888;
+  }
+  .info strong { color: #fcfcfc; font-weight: 400; }
+  .field { margin-top: 24px; }
+  .field label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; }
+  input[type=text] {
+    width: 100%;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fcfcfc;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    transition: border-color .2s;
+  }
+  input:focus { outline: none; border-color: rgba(255,255,255,0.2); }
+  .hint { font-size: 12px; color: #555; margin-top: 6px; }
+  .actions { display: flex; gap: 12px; margin-top: 24px; }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    transition: opacity .2s;
+  }
+  .btn-primary { background: #fcfcfc; color: #050505; }
+  .btn-primary:hover:not(:disabled) { opacity: 0.85; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fcfcfc; }
+  .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+  .msg { margin-top: 16px; font-size: 14px; }
+  .msg.error { color: #ef6868; }
+  .msg.success { color: #6ed99a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="./index.html" class="back">← 返回工具集</a>
+  <h1>PDF 拆分</h1>
+  <p class="subtitle">按指定页码范围从 PDF 中提取页面并生成新文件。</p>
+
+  <div class="card">
+    <label class="drop" id="drop">
+      <input type="file" id="input" accept="application/pdf">
+      <div id="dropText">点击或拖放单个 PDF 文件到此处</div>
+    </label>
+
+    <div class="info" id="info" style="display:none;">
+      文件：<strong id="fname"></strong> · 共 <strong id="fpages"></strong> 页
+    </div>
+
+    <div class="field">
+      <label>页码范围</label>
+      <input type="text" id="range" placeholder="例如：1-3, 5, 7-9">
+      <div class="hint">用逗号分隔多个范围，单页直接写页码，连续页用连字符。</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="split" disabled>拆分并下载</button>
+      <button class="btn btn-secondary" id="clear">清空</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+  const drop = document.getElementById('drop');
+  const input = document.getElementById('input');
+  const info = document.getElementById('info');
+  const fname = document.getElementById('fname');
+  const fpages = document.getElementById('fpages');
+  const splitBtn = document.getElementById('split');
+  const clearBtn = document.getElementById('clear');
+  const rangeI = document.getElementById('range');
+  const msg = document.getElementById('msg');
+  let current = null;
+
+  function showMsg(t, c) { msg.textContent = t; msg.className = 'msg ' + (c || ''); }
+
+  ['dragenter', 'dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('hover'); }));
+  ['dragleave', 'drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('hover'); }));
+  drop.addEventListener('drop', ev => {
+    const f = Array.from(ev.dataTransfer.files).find(x => x.type === 'application/pdf' || x.name.toLowerCase().endsWith('.pdf'));
+    if (f) loadFile(f);
+  });
+  input.addEventListener('change', e => {
+    if (e.target.files[0]) loadFile(e.target.files[0]);
+    input.value = '';
+  });
+
+  async function loadFile(f) {
+    showMsg('', '');
+    try {
+      const buf = await f.arrayBuffer();
+      const doc = await PDFLib.PDFDocument.load(buf, { ignoreEncryption: true });
+      current = { name: f.name, buffer: buf, pages: doc.getPageCount() };
+      fname.textContent = f.name;
+      fpages.textContent = current.pages;
+      info.style.display = 'block';
+      splitBtn.disabled = false;
+    } catch (e) {
+      showMsg('无法读取 PDF：' + e.message, 'error');
+      current = null;
+      info.style.display = 'none';
+      splitBtn.disabled = true;
+    }
+  }
+
+  clearBtn.addEventListener('click', () => {
+    current = null;
+    info.style.display = 'none';
+    splitBtn.disabled = true;
+    rangeI.value = '';
+    showMsg('', '');
+  });
+
+  function parseRange(text, total) {
+    const indices = [];
+    const parts = text.split(',').map(s => s.trim()).filter(Boolean);
+    if (!parts.length) throw new Error('请输入页码范围');
+    for (const p of parts) {
+      if (p.includes('-')) {
+        const [a, b] = p.split('-').map(s => parseInt(s.trim(), 10));
+        if (!a || !b || a < 1 || b < 1 || a > total || b > total) throw new Error('无效范围：' + p);
+        const [lo, hi] = a <= b ? [a, b] : [b, a];
+        for (let i = lo; i <= hi; i++) indices.push(i - 1);
+      } else {
+        const n = parseInt(p, 10);
+        if (!n || n < 1 || n > total) throw new Error('无效页码：' + p);
+        indices.push(n - 1);
+      }
+    }
+    return indices;
+  }
+
+  splitBtn.addEventListener('click', async () => {
+    if (!current) return;
+    showMsg('拆分中...', '');
+    splitBtn.disabled = true;
+    try {
+      const indices = parseRange(rangeI.value, current.pages);
+      const src = await PDFLib.PDFDocument.load(current.buffer, { ignoreEncryption: true });
+      const out = await PDFLib.PDFDocument.create();
+      const copied = await out.copyPages(src, indices);
+      copied.forEach(p => out.addPage(p));
+      const bytes = await out.save();
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const base = current.name.replace(/\.pdf$/i, '');
+      a.href = url;
+      a.download = base + '-split.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+      showMsg(`已提取 ${indices.length} 页并下载`, 'success');
+    } catch (e) {
+      showMsg('拆分失败：' + e.message, 'error');
+    } finally {
+      splitBtn.disabled = !current;
+    }
+  });
+</script>
+</body>
+</html>

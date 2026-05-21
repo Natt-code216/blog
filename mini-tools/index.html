@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mini Tools · 办公小工具集</title>
+<meta name="description" content="一组纯前端的办公小工具集合：PDF 合并、格式转换、文本处理、二维码等，全部本地处理不上传服务器。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-base: #050505;
+    --bg-surface: #0a0a0a;
+    --bg-card: #111111;
+    --text-primary: #fcfcfc;
+    --text-secondary: #888;
+    --text-muted: #555;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--bg-base); }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Playfair Display', serif; }
+  .ambientGlow {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+  header {
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 2.5rem;
+    margin-bottom: 4rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  .breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .breadcrumb a:hover { color: var(--text-primary); }
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+  .lead {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 640px;
+  }
+  .group {
+    margin-bottom: 4rem;
+  }
+  .group-title {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .tool {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 1.5rem 1.5rem 1.75rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: border-color 0.35s ease, transform 0.35s ease, background 0.35s ease;
+    position: relative;
+  }
+  .tool:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    background: #141414;
+  }
+  .tool-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  .tool-icon svg { width: 100%; height: 100%; }
+  .tool-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.4rem;
+  }
+  .tool-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .tool-tag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  footer {
+    margin-top: 6rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border-light);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  footer a { color: var(--text-secondary); text-decoration: none; }
+  footer a:hover { color: var(--text-primary); }
+  @media (max-width: 640px) {
+    .container { padding: 4rem 1.25rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="ambientGlow"></div>
+<div class="container">
+
+  <header>
+    <div class="breadcrumb">
+      <a href="../">← 返回博客主站</a>
+    </div>
+    <div class="subtitle">Mini Tools</div>
+    <h1 class="serif">办公小工具集</h1>
+    <p class="lead">
+      一组纯前端的轻量工具——每个都是单个 HTML 文件，离线可用，
+      文件完全在本地浏览器内处理，不会上传到任何服务器。
+    </p>
+  </header>
+
+  <!-- 文件转换 -->
+  <section class="group">
+    <h2 class="group-title">文件转换</h2>
+    <div class="grid">
+
+      <a class="tool" href="./pdf-merger.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <span class="tool-tag">PDF</span>
+        <div class="tool-name">PDF 合并</div>
+        <div class="tool-desc">把多个 PDF 拼成一份，可调整顺序。</div>
+      </a>
+
+      <a class="tool" href="./pdf-splitter.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="8" y1="13" x2="16" y2="13"/>
+          </svg>
+        </div>
+        <span class="tool-tag">PDF</span>
+        <div class="tool-name">PDF 拆分</div>
+        <div class="tool-desc">按页码范围抽取，得到一份新 PDF。</div>
+      </a>
+
+      <a class="tool" href="./image-to-pdf.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="M21 15l-5-5L5 21"/>
+          </svg>
+        </div>
+        <span class="tool-tag">PDF</span>
+        <div class="tool-name">图片转 PDF</div>
+        <div class="tool-desc">把多张图片合成一份 PDF，可设页面尺寸。</div>
+      </a>
+
+      <a class="tool" href="./image-compressor.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="4 14 10 14 10 20"/>
+            <polyline points="20 10 14 10 14 4"/>
+            <line x1="14" y1="10" x2="21" y2="3"/>
+            <line x1="3" y1="21" x2="10" y2="14"/>
+          </svg>
+        </div>
+        <span class="tool-tag">IMAGE</span>
+        <div class="tool-name">图片压缩 / 转换</div>
+        <div class="tool-desc">JPG/PNG/WebP 互转，质量与尺寸可调。</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- 文本与数据 -->
+  <section class="group">
+    <h2 class="group-title">文本与数据</h2>
+    <div class="grid">
+
+      <a class="tool" href="./json-formatter.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+          </svg>
+        </div>
+        <span class="tool-tag">DATA</span>
+        <div class="tool-name">JSON 格式化</div>
+        <div class="tool-desc">格式化、压缩、校验 JSON 字符串。</div>
+      </a>
+
+      <a class="tool" href="./csv-json.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <line x1="12" y1="22" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <span class="tool-tag">DATA</span>
+        <div class="tool-name">CSV ↔ JSON</div>
+        <div class="tool-desc">表格数据与 JSON 互转，可下载文件。</div>
+      </a>
+
+      <a class="tool" href="./markdown-html.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 5h18M3 12h18M3 19h12"/>
+          </svg>
+        </div>
+        <span class="tool-tag">TEXT</span>
+        <div class="tool-name">Markdown → HTML</div>
+        <div class="tool-desc">实时预览并导出 HTML 源码。</div>
+      </a>
+
+      <a class="tool" href="./base64.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </div>
+        <span class="tool-tag">ENCODE</span>
+        <div class="tool-name">Base64 编解码</div>
+        <div class="tool-desc">文本与文件双向转换，支持中文。</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- 实用工具 -->
+  <section class="group">
+    <h2 class="group-title">日常实用</h2>
+    <div class="grid">
+
+      <a class="tool" href="./qrcode.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+            <line x1="14" y1="14" x2="14" y2="21"/>
+            <line x1="18" y1="14" x2="18" y2="18"/>
+            <line x1="21" y1="18" x2="21" y2="21"/>
+          </svg>
+        </div>
+        <span class="tool-tag">UTIL</span>
+        <div class="tool-name">二维码生成</div>
+        <div class="tool-desc">文本或链接生成 QR，可定制色彩。</div>
+      </a>
+
+      <a class="tool" href="./word-counter.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+          </svg>
+        </div>
+        <span class="tool-tag">UTIL</span>
+        <div class="tool-name">文本字数统计</div>
+        <div class="tool-desc">中英文字数、阅读时长一站统计。</div>
+      </a>
+
+      <a class="tool" href="./timestamp.html">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <span class="tool-tag">UTIL</span>
+        <div class="tool-name">时间戳转换</div>
+        <div class="tool-desc">Unix 时间戳与日期双向互转，含时区。</div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>所有工具均在你的浏览器中本地运行，文件不会被上传。</p>
+    <p style="margin-top:0.5rem;">© 2026 Mini Tools · <a href="../">返回博客</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

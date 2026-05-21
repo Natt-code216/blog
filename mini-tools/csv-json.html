@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV ↔ JSON 互转</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fcfcfc;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .back-link {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: #fcfcfc; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle { color: #888; margin-bottom: 2rem; }
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .btn-primary { background: #fcfcfc; color: #050505; border: none; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: transparent;
+    color: #fcfcfc;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  .panel {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .panel:hover { border-color: rgba(255,255,255,0.2); }
+  .panel-label {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: #555;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  textarea {
+    width: 100%;
+    min-height: 380px;
+    background: #111111;
+    color: #fcfcfc;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+  }
+  .status {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .status.error {
+    display: block;
+    background: rgba(239,104,104,0.08);
+    color: #ef6868;
+    border: 1px solid rgba(239,104,104,0.2);
+  }
+  .status.success {
+    display: block;
+    background: rgba(110,217,154,0.08);
+    color: #6ed99a;
+    border: 1px solid rgba(110,217,154,0.2);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="./index.html" class="back-link">← 返回工具集</a>
+  <h1>CSV ↔ JSON 互转</h1>
+  <p class="subtitle">在 CSV 与 JSON 之间双向转换，支持复制与下载。</p>
+
+  <div class="actions">
+    <button class="btn-primary" onclick="csvToJson()">CSV → JSON</button>
+    <button class="btn-primary" onclick="jsonToCsv()">JSON → CSV</button>
+    <button class="btn-secondary" onclick="copyResult()">复制结果</button>
+    <button class="btn-secondary" onclick="downloadResult()">下载</button>
+    <button class="btn-secondary" onclick="clearAll()">清空</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-label">输入</div>
+      <textarea id="input" placeholder="name,age&#10;张三,30&#10;李四,25" spellcheck="false"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label">输出</div>
+      <textarea id="output" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div id="status" class="status"></div>
+</div>
+
+<script>
+  const input = document.getElementById('input');
+  const output = document.getElementById('output');
+  const status = document.getElementById('status');
+  let outputType = 'json';
+
+  function showStatus(msg, type) { status.textContent = msg; status.className = 'status ' + type; }
+
+  function parseCSV(text) {
+    const rows = [];
+    let cur = '', row = [], inQuote = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuote) {
+        if (c === '"') {
+          if (text[i+1] === '"') { cur += '"'; i++; }
+          else inQuote = false;
+        } else { cur += c; }
+      } else {
+        if (c === '"') inQuote = true;
+        else if (c === ',') { row.push(cur); cur = ''; }
+        else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+        else if (c === '\r') { /* skip */ }
+        else cur += c;
+      }
+    }
+    if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+    return rows;
+  }
+
+  function escapeCSV(v) {
+    if (v === null || v === undefined) return '';
+    const s = String(v);
+    if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  function csvToJson() {
+    if (!input.value.trim()) { showStatus('请输入 CSV 内容', 'error'); return; }
+    try {
+      const rows = parseCSV(input.value);
+      if (rows.length < 1) { showStatus('CSV 为空', 'error'); return; }
+      const headers = rows[0];
+      const data = [];
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i].length === 1 && rows[i][0] === '') continue;
+        const obj = {};
+        headers.forEach((h, idx) => { obj[h] = rows[i][idx] !== undefined ? rows[i][idx] : ''; });
+        data.push(obj);
+      }
+      output.value = JSON.stringify(data, null, 2);
+      outputType = 'json';
+      showStatus(`转换成功（${data.length} 条记录）`, 'success');
+    } catch (e) {
+      showStatus('解析失败：' + e.message, 'error');
+    }
+  }
+
+  function jsonToCsv() {
+    if (!input.value.trim()) { showStatus('请输入 JSON 内容', 'error'); return; }
+    try {
+      const data = JSON.parse(input.value);
+      if (!Array.isArray(data)) { showStatus('JSON 需要是数组', 'error'); return; }
+      if (data.length === 0) { output.value = ''; showStatus('空数组', 'success'); return; }
+      const keySet = new Set();
+      data.forEach(item => { if (item && typeof item === 'object') Object.keys(item).forEach(k => keySet.add(k)); });
+      const keys = Array.from(keySet);
+      const lines = [keys.map(escapeCSV).join(',')];
+      data.forEach(item => {
+        lines.push(keys.map(k => escapeCSV(item ? item[k] : '')).join(','));
+      });
+      output.value = lines.join('\n');
+      outputType = 'csv';
+      showStatus(`转换成功（${data.length} 条记录）`, 'success');
+    } catch (e) {
+      showStatus('JSON 解析失败：' + e.message, 'error');
+    }
+  }
+
+  async function copyResult() {
+    if (!output.value) { showStatus('没有可复制的内容', 'error'); return; }
+    try {
+      await navigator.clipboard.writeText(output.value);
+      showStatus('已复制到剪贴板', 'success');
+    } catch (e) {
+      showStatus('复制失败：' + e.message, 'error');
+    }
+  }
+
+  function downloadResult() {
+    if (!output.value) { showStatus('没有可下载的内容', 'error'); return; }
+    const mime = outputType === 'csv' ? 'text/csv' : 'application/json';
+    const ext = outputType === 'csv' ? 'csv' : 'json';
+    const blob = new Blob([output.value], { type: mime + ';charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `output.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showStatus(`已下载 output.${ext}`, 'success');
+  }
+
+  function clearAll() {
+    input.value = '';
+    output.value = '';
+    status.className = 'status';
+  }
+</script>
+</body>
+</html>

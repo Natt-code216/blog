@@ -227,7 +227,48 @@ pnpm start
 
 完整的开发待办见 [todolist.md](todolist.md)。
 
+## 🧰 配套子项目
+
+`mini-tools/` —— 一组**纯前端单文件 HTML 小工具**，与博客主站独立，离线可用：
+
+- PDF：合并 / 拆分 / 图片转 PDF
+- 图片：压缩、格式互转（JPG/PNG/WebP）
+- 数据：JSON 格式化、CSV↔JSON、Markdown→HTML、Base64
+- 实用：二维码生成、字数统计、时间戳转换
+
+入口：[`mini-tools/index.html`](mini-tools/index.html) · 双击文件即可使用，所有处理都在本地浏览器中完成。
+
 ## 📜 迭代记录
+
+### 2026-05-22 · V3 · `mini-tools/` 子项目：11 个办公小工具
+
+> 在主项目仓库内新增 `mini-tools/` 目录，全部为单文件 HTML，纯前端、无后端，
+> 离线可用。与博客主站设计风格一致（暗色极简、Playfair Display + Inter）。
+
+**文件转换**
+- `pdf-merger.html` · 多 PDF 合并（pdf-lib）
+- `pdf-splitter.html` · PDF 按页码范围拆分
+- `image-to-pdf.html` · 图片转 PDF（A4 / Letter / 原图、横竖向、边距）
+- `image-compressor.html` · 图片压缩与 JPG/PNG/WebP 互转（Canvas + JSZip 批量打包）
+
+**文本与数据**
+- `json-formatter.html` · 格式化 / 压缩 / 校验（带行列号）
+- `csv-json.html` · CSV ↔ JSON 双向转换（手写解析器，处理引号转义）
+- `markdown-html.html` · 实时预览 + 导出 HTML（marked + DOMPurify）
+- `base64.html` · 文本 + 文件双向编解码（Unicode 安全）
+
+**日常实用**
+- `qrcode.html` · 二维码生成（尺寸、纠错级、配色）
+- `word-counter.html` · 中英文字数 + 阅读时长
+- `timestamp.html` · Unix 时间戳 ↔ 日期（含时区）
+
+**入口与文档**
+- `mini-tools/index.html` 汇总主页（按文件转换 / 数据 / 实用三组分类）
+- `mini-tools/README.md` 使用说明
+
+总计 12 个 HTML 文件，共 ~2660 行，全部自包含可双击直接打开。
+
+---
 
 ### 2026-05-22 · V2 大版本：路由 + 详情页 + 搜索 + 主题 + 评论 + SEO + 测试 + CI
 

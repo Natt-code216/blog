@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON 格式化与校验</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fcfcfc;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .back-link {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: #fcfcfc; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    color: #888;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+  }
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .btn-primary {
+    background: #fcfcfc;
+    color: #050505;
+    border: none;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: transparent;
+    color: #fcfcfc;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 700px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .panel:hover { border-color: rgba(255,255,255,0.2); }
+  .panel-label {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: #555;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  textarea {
+    width: 100%;
+    min-height: 420px;
+    background: #111111;
+    color: #fcfcfc;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+  }
+  .status {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .status.error {
+    display: block;
+    background: rgba(239,104,104,0.08);
+    color: #ef6868;
+    border: 1px solid rgba(239,104,104,0.2);
+  }
+  .status.success {
+    display: block;
+    background: rgba(110,217,154,0.08);
+    color: #6ed99a;
+    border: 1px solid rgba(110,217,154,0.2);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="./index.html" class="back-link">← 返回工具集</a>
+  <h1>JSON 格式化与校验</h1>
+  <p class="subtitle">格式化、压缩与校验 JSON 数据，发现语法错误。</p>
+
+  <div class="actions">
+    <button class="btn-primary" onclick="format()">格式化</button>
+    <button class="btn-secondary" onclick="minify()">压缩</button>
+    <button class="btn-secondary" onclick="validate()">校验</button>
+    <button class="btn-secondary" onclick="copyResult()">复制结果</button>
+    <button class="btn-secondary" onclick="clearAll()">清空</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-label">输入</div>
+      <textarea id="input" placeholder='{"name": "示例", "value": 42}' spellcheck="false"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label">输出</div>
+      <textarea id="output" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div id="status" class="status"></div>
+</div>
+
+<script>
+  const input = document.getElementById('input');
+  const output = document.getElementById('output');
+  const status = document.getElementById('status');
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'status ' + type;
+  }
+  function hideStatus() { status.className = 'status'; }
+
+  function parseWithLine(text) {
+    try {
+      return { ok: true, value: JSON.parse(text) };
+    } catch (e) {
+      const m = e.message.match(/position (\d+)/);
+      let line = 1, col = 1;
+      if (m) {
+        const pos = parseInt(m[1]);
+        const sub = text.slice(0, pos);
+        line = sub.split('\n').length;
+        col = pos - sub.lastIndexOf('\n');
+      }
+      return { ok: false, error: e.message, line, col };
+    }
+  }
+
+  function format() {
+    if (!input.value.trim()) { showStatus('请输入 JSON 内容', 'error'); return; }
+    const r = parseWithLine(input.value);
+    if (!r.ok) { output.value = ''; showStatus(`错误（行 ${r.line}，列 ${r.col}）：${r.error}`, 'error'); return; }
+    output.value = JSON.stringify(r.value, null, 2);
+    showStatus('格式化成功', 'success');
+  }
+
+  function minify() {
+    if (!input.value.trim()) { showStatus('请输入 JSON 内容', 'error'); return; }
+    const r = parseWithLine(input.value);
+    if (!r.ok) { output.value = ''; showStatus(`错误（行 ${r.line}，列 ${r.col}）：${r.error}`, 'error'); return; }
+    output.value = JSON.stringify(r.value);
+    showStatus('压缩成功', 'success');
+  }
+
+  function validate() {
+    if (!input.value.trim()) { showStatus('请输入 JSON 内容', 'error'); return; }
+    const r = parseWithLine(input.value);
+    if (!r.ok) { showStatus(`错误（行 ${r.line}，列 ${r.col}）：${r.error}`, 'error'); return; }
+    showStatus('JSON 有效 ✓', 'success');
+  }
+
+  async function copyResult() {
+    if (!output.value) { showStatus('没有可复制的内容', 'error'); return; }
+    try {
+      await navigator.clipboard.writeText(output.value);
+      showStatus('已复制到剪贴板', 'success');
+    } catch (e) {
+      showStatus('复制失败：' + e.message, 'error');
+    }
+  }
+
+  function clearAll() {
+    input.value = '';
+    output.value = '';
+    hideStatus();
+  }
+</script>
+</body>
+</html>

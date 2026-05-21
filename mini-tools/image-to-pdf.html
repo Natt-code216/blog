@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>图片转 PDF · Mini Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fcfcfc;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 60px 24px;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  .back { color: #888; text-decoration: none; font-size: 14px; transition: color .2s; }
+  .back:hover { color: #fcfcfc; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 42px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle { color: #888; font-size: 15px; margin-bottom: 48px; }
+  .card {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .drop {
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    color: #888;
+  }
+  .drop:hover, .drop.hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.02);
+    color: #fcfcfc;
+  }
+  .drop input { display: none; }
+  .opts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .opt label { font-size: 13px; color: #888; display: block; margin-bottom: 6px; }
+  select, input[type=number] {
+    width: 100%;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fcfcfc;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    transition: border-color .2s;
+  }
+  select:focus, input:focus { outline: none; border-color: rgba(255,255,255,0.2); }
+  .grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .thumb {
+    background: #0a0a0a;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+  }
+  .thumb img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .thumb .nm { font-size: 11px; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; }
+  .thumb .btns { display: flex; gap: 4px; justify-content: center; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fcfcfc;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .icon-btn:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+  .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .actions { display: flex; gap: 12px; margin-top: 24px; }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    transition: opacity .2s;
+  }
+  .btn-primary { background: #fcfcfc; color: #050505; }
+  .btn-primary:hover:not(:disabled) { opacity: 0.85; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fcfcfc; }
+  .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+  .msg { margin-top: 16px; font-size: 14px; }
+  .msg.error { color: #ef6868; }
+  .msg.success { color: #6ed99a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="./index.html" class="back">← 返回工具集</a>
+  <h1>图片转 PDF</h1>
+  <p class="subtitle">将多张图片合并为一个 PDF 文件，支持页面设置。</p>
+
+  <div class="card">
+    <label class="drop" id="drop">
+      <input type="file" id="input" accept="image/jpeg,image/png,image/webp" multiple>
+      <div>点击或拖放图片到此处（JPG / PNG / WebP）</div>
+    </label>
+
+    <div class="opts">
+      <div class="opt">
+        <label>页面尺寸</label>
+        <select id="size">
+          <option value="A4">A4</option>
+          <option value="Letter">Letter</option>
+          <option value="original">原图大小</option>
+        </select>
+      </div>
+      <div class="opt">
+        <label>方向</label>
+        <select id="orient">
+          <option value="portrait">竖向</option>
+          <option value="landscape">横向</option>
+        </select>
+      </div>
+      <div class="opt">
+        <label>边距 (pt)</label>
+        <input type="number" id="margin" value="24" min="0" max="200">
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="gen" disabled>生成 PDF</button>
+      <button class="btn btn-secondary" id="clear">清空</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+  const drop = document.getElementById('drop');
+  const input = document.getElementById('input');
+  const grid = document.getElementById('grid');
+  const genBtn = document.getElementById('gen');
+  const clearBtn = document.getElementById('clear');
+  const msg = document.getElementById('msg');
+  let items = [];
+
+  function showMsg(t, c) { msg.textContent = t; msg.className = 'msg ' + (c || ''); }
+
+  ['dragenter', 'dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('hover'); }));
+  ['dragleave', 'drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('hover'); }));
+  drop.addEventListener('drop', ev => {
+    const fs = Array.from(ev.dataTransfer.files).filter(f => /^image\/(jpeg|png|webp)$/.test(f.type));
+    addFiles(fs);
+  });
+  input.addEventListener('change', e => { addFiles(Array.from(e.target.files)); input.value = ''; });
+
+  async function addFiles(arr) {
+    showMsg('', '');
+    for (const f of arr) {
+      try {
+        const buf = await f.arrayBuffer();
+        const url = URL.createObjectURL(f);
+        items.push({ name: f.name, buffer: buf, type: f.type, url });
+      } catch (e) { showMsg('读取失败：' + f.name, 'error'); }
+    }
+    render();
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function render() {
+    grid.innerHTML = '';
+    items.forEach((it, i) => {
+      const d = document.createElement('div');
+      d.className = 'thumb';
+      d.innerHTML = `
+        <img src="${it.url}" alt="">
+        <div class="nm">${escapeHtml(it.name)}</div>
+        <div class="btns">
+          <button class="icon-btn" data-act="up" data-i="${i}" ${i === 0 ? 'disabled' : ''}>↑</button>
+          <button class="icon-btn" data-act="down" data-i="${i}" ${i === items.length - 1 ? 'disabled' : ''}>↓</button>
+          <button class="icon-btn" data-act="del" data-i="${i}">×</button>
+        </div>
+      `;
+      grid.appendChild(d);
+    });
+    genBtn.disabled = items.length === 0;
+  }
+
+  grid.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const i = parseInt(b.dataset.i);
+    const a = b.dataset.act;
+    if (a === 'up' && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
+    else if (a === 'down' && i < items.length - 1) [items[i], items[i + 1]] = [items[i + 1], items[i]];
+    else if (a === 'del') { URL.revokeObjectURL(items[i].url); items.splice(i, 1); }
+    render();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    items.forEach(it => URL.revokeObjectURL(it.url));
+    items = [];
+    render();
+    showMsg('', '');
+  });
+
+  const SIZES = { A4: [595.28, 841.89], Letter: [612, 792] };
+
+  genBtn.addEventListener('click', async () => {
+    if (!items.length) return;
+    genBtn.disabled = true;
+    showMsg('生成中...', '');
+    try {
+      const size = document.getElementById('size').value;
+      const orient = document.getElementById('orient').value;
+      const margin = parseFloat(document.getElementById('margin').value) || 0;
+      const pdf = await PDFLib.PDFDocument.create();
+      for (const it of items) {
+        const img = it.type === 'image/png'
+          ? await pdf.embedPng(it.buffer)
+          : await pdf.embedJpg(await toJpgBuffer(it));
+        let pw, ph;
+        if (size === 'original') {
+          pw = img.width + margin * 2;
+          ph = img.height + margin * 2;
+        } else {
+          let [w, h] = SIZES[size];
+          if (orient === 'landscape') [w, h] = [h, w];
+          pw = w; ph = h;
+        }
+        const page = pdf.addPage([pw, ph]);
+        const aw = pw - margin * 2;
+        const ah = ph - margin * 2;
+        const scale = Math.min(aw / img.width, ah / img.height);
+        const dw = img.width * scale;
+        const dh = img.height * scale;
+        page.drawImage(img, {
+          x: (pw - dw) / 2,
+          y: (ph - dh) / 2,
+          width: dw,
+          height: dh,
+        });
+      }
+      const bytes = await pdf.save();
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'images.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+      showMsg('生成完成，已下载 images.pdf', 'success');
+    } catch (err) {
+      showMsg('生成失败：' + err.message, 'error');
+    } finally {
+      genBtn.disabled = false;
+    }
+  });
+
+  // WebP / PNG-with-alpha 转 JPG buffer 以确保 embedJpg 可用（PNG 走 embedPng）
+  async function toJpgBuffer(it) {
+    if (it.type === 'image/jpeg') return it.buffer;
+    // WebP -> JPG via canvas
+    const img = new Image();
+    img.src = it.url;
+    await img.decode();
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
+    return await blob.arrayBuffer();
+  }
+</script>
+</body>
+</html>
