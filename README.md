@@ -216,12 +216,67 @@ pnpm start
 
 ## 🛣️ 下一步
 
-- [ ] 完善前端文档
-- [ ] 添加单元测试
-- [ ] 配置 CI/CD
-- [ ] 添加博客文章管理功能
-- [ ] 实现搜索功能
+- [ ] 添加单元测试 (vitest + react-testing-library)
+- [ ] 配置 CI/CD (GitHub Actions)
+- [ ] 文章详情页 + 路由
+- [ ] 实现全站搜索功能
+- [ ] 评论提交表单
 - [ ] 添加暗色/亮色主题切换
+- [ ] Sitemap + SEO 优化
+- [ ] Vercel / Netlify 一键部署配置
+
+完整的开发待办见 [todolist.md](todolist.md)。
+
+## 📜 迭代记录
+
+### 2026-05-22 · 项目搭建完善
+
+> **目标**：在不改动前端视觉样式的前提下，把项目搭建完善起来。
+
+**Push & 备份**
+
+- 将工作区前后端 API 接入相关改动一次性提交并推送到 `origin/main`，
+  commit: `chore: 同步前后端 API 接入与内容类型 schema 更新`
+
+**启动与连通性**
+
+- 新增 `scripts/check-ports.mjs`：启动前自动检查 5173 / 1337 端口可用性
+- 根 `package.json` 增加脚本：`check:ports`、`predev`（自动前置检查）、`backend:dev`、`backend:seed`
+- 验证后端在 1337 启动成功，API `/api/tutorials` 返回 200
+- 验证前端在 5173 启动成功
+
+**内容补全（教程文字稿等）**
+
+- 新增 `docs/tutorials/` 三篇完整教程文字稿：
+  - `01-react-vite-setup.md` · React + Vite + TypeScript 项目初始化
+  - `02-strapi-headless-cms.md` · Strapi 5 Headless CMS 接入
+  - `03-frontend-backend-integration.md` · 前后端联调实战
+- 新增 `docs/essays/` 三篇随笔示例（克制 / 手艺与代码 / 工具与心智）
+- 新增 `docs/tools/README.md` 工具卡片说明
+- 新增 `backend/scripts/seed.js` 一键灌入示例数据的种子脚本
+- 更新 `docs/README.md` 加入教程 / 随笔 / 工具索引
+
+**工程化（不改前端 UI）**
+
+- 增强 `.env.example`，区分前端 / 后端环境变量说明，加入种子 Token 选项
+- `src/services/api.ts` 新增 `ping()` 健康检查方法（不影响 UI）
+- `src/hooks/useApiFetch.ts` 已采用 `useRef` 持有最新 fetchFn，避免重复请求
+- 全程未改动任何 CSS Module 文件，前端样式保持原样
+
+**文档**
+
+- 新增 `todolist.md` 记录全部开发计划与未来路线
+- 本 `README.md` 加入迭代记录章节
+
+---
+
+### 历史
+
+| 提交 | 说明 |
+|------|------|
+| 9a7c2f0 | 前端接入后端 API 接口 |
+| d7f5ca6 | 将 backend 从 submodule 改为常规目录 |
+| 54b0699 | first commit |
 
 ## 📄 许可证
 

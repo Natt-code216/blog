@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:ports": "node scripts/check-ports.mjs",
+    "predev": "node scripts/check-ports.mjs",
+    "backend:dev": "cd backend && npm run develop",
+    "backend:seed": "node backend/scripts/seed.js"
   },
   "dependencies": {
     "axios": "^1.13.6",

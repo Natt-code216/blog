@@ -67,6 +67,16 @@ class ApiService {
     const response = await axios.get(`${API_URL}/tools`);
     return response.data.data || [];
   }
+
+  // 健康检查：返回后端是否可达
+  async ping(): Promise<boolean> {
+    try {
+      const res = await axios.get(`${API_URL}/tools`, { timeout: 3000 });
+      return res.status === 200;
+    } catch {
+      return false;
+    }
+  }
 }
 
 export const api = new ApiService();

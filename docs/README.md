@@ -27,6 +27,24 @@
 - 📖 [README.md](backend/README.md) - 后端项目说明
 - 🏗️ [项目说明.md](backend/项目说明.md) - 项目结构说明
 
+### 📝 教程文字稿 (Tutorials)
+
+教程板块对应的文字稿，与 Strapi 中的 Tutorial 内容一一对应：
+
+- **[01 · React + Vite + TypeScript 项目搭建](tutorials/01-react-vite-setup.md)**
+- **[02 · 用 Strapi 5 搭建 Headless CMS 后端](tutorials/02-strapi-headless-cms.md)**
+- **[03 · 前后端联调与数据加载状态](tutorials/03-frontend-backend-integration.md)**
+
+### ✍️ 随笔 (Essays)
+
+- [01 · 关于"克制"](essays/01-on-minimalism.md)
+- [02 · 手艺与代码](essays/02-craftsmanship-and-code.md)
+- [03 · 工具与心智](essays/03-on-tools.md)
+
+### 🛠️ 工具集 (Tools)
+
+- [工具卡片说明](tools/README.md)
+
 ### 🎨 前端文档 (React + TypeScript)
 
 前端文档位于 `docs/frontend/` 目录，包含前端开发和使用指南。
