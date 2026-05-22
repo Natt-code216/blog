@@ -196,25 +196,25 @@ scripts/
 > 每章必须有 ≥1 段可运行代码 / 配置 / 命令。
 
 ### 3.1 `modern-frontend-architecture` · 现代前端架构指南 [icon: code]
-- [ ] **3.1.1** 采集资料(参考: Patterns.dev、Kent C. Dodds Epic React、Lee Robinson、Vercel Edge 架构文章、React 官方 docs、Vue 官方 docs) → `content/tutorials/modern-frontend-architecture/references.md`。
-- [ ] **3.1.2** 在 `content/tutorials/modern-frontend-architecture/outline.md` 写完整章节规划(建议 6 章: ①为什么需要前端架构 ②路由与目录组织 ③状态分层与跨层通信 ④数据获取与缓存 ⑤模块边界与代码分割 ⑥架构演进与重构信号)。
-- [ ] **3.1.3** 写 `index.md`(教程总览,≥600 字 + 章节索引)。
-- [ ] **3.1.4** 写 `chapters/01-why-architecture.md`,≥1500 字。
-- [ ] **3.1.5** 写 `chapters/02-routing-and-structure.md`,≥1500 字。
-- [ ] **3.1.6** 写 `chapters/03-state-layering.md`,≥1500 字。
-- [ ] **3.1.7** 写 `chapters/04-data-fetching-and-caching.md`,≥1500 字。
-- [ ] **3.1.8** 写 `chapters/05-boundaries-and-splitting.md`,≥1500 字。
-- [ ] **3.1.9** 写 `chapters/06-evolution-and-refactor-signals.md`,≥1500 字。
+- [x] **3.1.1** 采集资料(参考: Patterns.dev、Kent C. Dodds Epic React、Lee Robinson、Vercel Edge 架构文章、React 官方 docs、Vue 官方 docs) → `content/tutorials/modern-frontend-architecture/references.md`。
+- [x] **3.1.2** 在 `content/tutorials/modern-frontend-architecture/outline.md` 写完整章节规划(建议 6 章: ①为什么需要前端架构 ②路由与目录组织 ③状态分层与跨层通信 ④数据获取与缓存 ⑤模块边界与代码分割 ⑥架构演进与重构信号)。
+- [x] **3.1.3** 写 `index.md`(教程总览,≥600 字 + 章节索引)。
+- [x] **3.1.4** 写 `chapters/01-why-architecture.md`,≥1500 字。
+- [x] **3.1.5** 写 `chapters/02-routing-and-structure.md`,≥1500 字。
+- [x] **3.1.6** 写 `chapters/03-state-layering.md`,≥1500 字。
+- [x] **3.1.7** 写 `chapters/04-data-fetching-and-caching.md`,≥1500 字。
+- [x] **3.1.8** 写 `chapters/05-boundaries-and-splitting.md`,≥1500 字。
+- [x] **3.1.9** 写 `chapters/06-evolution-and-refactor-signals.md`,≥1500 字。
 
 ### 3.2 `ui-ux-minimal-design` · UI/UX 美学与极简设计 [icon: layers]
-- [ ] **3.2.1** 采集资料(参考: Refactoring UI、Dieter Rams、Practical Typography、Material/Apple HIG、Vitaly Friedman) → `references.md`。
-- [ ] **3.2.2** 写 `outline.md`(建议 5 章: ①字重·行高·度量 ②色彩与对比度 ③留白与节奏 ④组件令牌化 ⑤暗色主题专题)。
-- [ ] **3.2.3** 写 `index.md`。
-- [ ] **3.2.4** 写 `chapters/01-typography-fundamentals.md`。
-- [ ] **3.2.5** 写 `chapters/02-color-and-contrast.md`。
-- [ ] **3.2.6** 写 `chapters/03-whitespace-and-rhythm.md`。
-- [ ] **3.2.7** 写 `chapters/04-design-tokens.md`。
-- [ ] **3.2.8** 写 `chapters/05-dark-theme-deep-dive.md`。
+- [x] **3.2.1** 采集资料(参考: Refactoring UI、Dieter Rams、Practical Typography、Material/Apple HIG、Vitaly Friedman) → `references.md`。
+- [x] **3.2.2** 写 `outline.md`(建议 5 章: ①字重·行高·度量 ②色彩与对比度 ③留白与节奏 ④组件令牌化 ⑤暗色主题专题)。
+- [x] **3.2.3** 写 `index.md`。
+- [x] **3.2.4** 写 `chapters/01-typography-fundamentals.md`。
+- [x] **3.2.5** 写 `chapters/02-color-and-contrast.md`。
+- [x] **3.2.6** 写 `chapters/03-whitespace-and-rhythm.md`。
+- [x] **3.2.7** 写 `chapters/04-design-tokens.md`。
+- [x] **3.2.8** 写 `chapters/05-dark-theme-deep-dive.md`。
 
 ### 3.3 `web-performance-tuning` · Web 极致性能优化 [icon: zap]
 - [ ] **3.3.1** 采集(web.dev、Addy Osmani、Houssein Djirdeh、Core Web Vitals、Lighthouse 文档) → `references.md`。
