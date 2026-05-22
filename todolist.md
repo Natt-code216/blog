@@ -217,23 +217,23 @@ scripts/
 - [x] **3.2.8** 写 `chapters/05-dark-theme-deep-dive.md`。
 
 ### 3.3 `web-performance-tuning` · Web 极致性能优化 [icon: zap]
-- [ ] **3.3.1** 采集(web.dev、Addy Osmani、Houssein Djirdeh、Core Web Vitals、Lighthouse 文档) → `references.md`。
-- [ ] **3.3.2** 写 `outline.md`(建议 5 章: ①Web Vitals 心智模型 ②关键渲染路径 ③字体与图片加载 ④HTTP/3 与缓存 ⑤Service Worker 与离线策略)。
-- [ ] **3.3.3** 写 `index.md`。
-- [ ] **3.3.4** 写 `chapters/01-web-vitals-model.md`。
-- [ ] **3.3.5** 写 `chapters/02-critical-rendering-path.md`。
-- [ ] **3.3.6** 写 `chapters/03-fonts-and-images.md`。
-- [ ] **3.3.7** 写 `chapters/04-http3-and-cache.md`。
-- [ ] **3.3.8** 写 `chapters/05-service-worker-strategies.md`。
+- [x] **3.3.1** 采集(web.dev、Addy Osmani、Houssein Djirdeh、Core Web Vitals、Lighthouse 文档) → `references.md`。
+- [x] **3.3.2** 写 `outline.md`(建议 5 章: ①Web Vitals 心智模型 ②关键渲染路径 ③字体与图片加载 ④HTTP/3 与缓存 ⑤Service Worker 与离线策略)。
+- [x] **3.3.3** 写 `index.md`。
+- [x] **3.3.4** 写 `chapters/01-web-vitals-model.md`。
+- [x] **3.3.5** 写 `chapters/02-critical-rendering-path.md`。
+- [x] **3.3.6** 写 `chapters/03-fonts-and-images.md`。
+- [x] **3.3.7** 写 `chapters/04-http3-and-cache.md`。
+- [x] **3.3.8** 写 `chapters/05-service-worker-strategies.md`。
 
 ### 3.4 `react-vite-setup` · 从零搭建 React + Vite + TypeScript 项目 [icon: code]
-- [ ] **3.4.1** 采集(Vite docs、React docs、tsconfig 最佳实践、Anthony Fu、Mark Erikson) → `references.md`。
-- [ ] **3.4.2** 写 `outline.md`(建议 4 章: ①为什么选 Vite ②目录与别名 ③CSS Module 与 PostCSS ④构建与产物分析)。
-- [ ] **3.4.3** 写 `index.md`。
-- [ ] **3.4.4** 写 `chapters/01-why-vite.md`。
-- [ ] **3.4.5** 写 `chapters/02-structure-and-aliases.md`。
-- [ ] **3.4.6** 写 `chapters/03-css-modules-and-postcss.md`。
-- [ ] **3.4.7** 写 `chapters/04-build-and-bundle-analysis.md`。
+- [x] **3.4.1** 采集(Vite docs、React docs、tsconfig 最佳实践、Anthony Fu、Mark Erikson) → `references.md`。
+- [x] **3.4.2** 写 `outline.md`(建议 4 章: ①为什么选 Vite ②目录与别名 ③CSS Module 与 PostCSS ④构建与产物分析)。
+- [x] **3.4.3** 写 `index.md`。
+- [x] **3.4.4** 写 `chapters/01-why-vite.md`。
+- [x] **3.4.5** 写 `chapters/02-structure-and-aliases.md`。
+- [x] **3.4.6** 写 `chapters/03-css-modules-and-postcss.md`。
+- [x] **3.4.7** 写 `chapters/04-build-and-bundle-analysis.md`。
 
 ### 3.5 `strapi-headless-cms` · 用 Strapi 5 搭建 Headless CMS 后端 [icon: layers]
 - [ ] **3.5.1** 采集(Strapi 5 官方 docs、Strapi 5 migration guide、Khalid Sookia 视频系列) → `references.md`。
