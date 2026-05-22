@@ -9,6 +9,7 @@ import { SearchBar } from './components/SearchBar';
 import { HomePage } from './pages/HomePage';
 import { EssayDetail } from './pages/EssayDetail';
 import { TutorialDetail } from './pages/TutorialDetail';
+import { ChapterDetail } from './pages/ChapterDetail';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/essays/:slug" element={<EssayDetail />} />
         <Route path="/tutorials/:slug" element={<TutorialDetail />} />
+        <Route path="/tutorials/:slug/chapters/:order" element={<ChapterDetail />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
 

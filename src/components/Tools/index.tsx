@@ -81,7 +81,7 @@ export function Tools() {
           <div className={styles.toolsGrid}>
             {tools.map((tool, index) => (
               <ScrollReveal key={tool.id} delay={index * 0.1}>
-                <a href={tool.link} className={styles.toolCard}>
+                <a href={tool.link} className={styles.toolCard} target="_blank" rel="noopener noreferrer">
                   <ToolContent tool={tool} />
                 </a>
               </ScrollReveal>

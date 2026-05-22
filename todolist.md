@@ -329,21 +329,21 @@ scripts/
 > **架构决定:新增 `chapter` collection type**,与 `tutorial` 多对一关联,以支持单章 API 与单章路由。
 
 - [x] **5.0** 在 `backend/src/api/chapter/` 新建 chapter content-type(`schema.json`):字段含 `title: string (required)`、`order: integer (required)`、`content: richtext`、`est_read_minutes: integer`、`slug: uid (targetField: title)`、`tutorial: relation manyToOne → api::tutorial.tutorial`,并在 `tutorial.schema.json` 加反向 relation `chapters: relation oneToMany mappedBy: tutorial`(注意会与现有 `chapters: integer` 字段重名 → 把现有整数字段重命名为 `chaptersCount` 或直接移除,前端 `Tutorials.tsx` 内对 `chapters` 数字的引用同步改名)。DoD:`pnpm --filter backend run develop` 启动无 schema 错误;Strapi Admin 可见 Chapter content-type。**这是破坏性 schema 改动,执行前先 commit 当前进度**。
-- [ ] **5.1** 在 `scripts/sync-content.mjs` 写一个 Node 脚本:读取 `content/essays/*/index.md` 与 `content/tutorials/*/{index.md, chapters/*.md}`,按 slug upsert 到 Strapi(通过 backend bootstrap 钩子直接调 `strapi.documents()`,**避免依赖外部 API token**)。upsert 后必须 `publish()` 以使默认 `find` 可见(Strapi 5 `draftAndPublish=true` 默认 list 只返回 published)。DoD:执行 `node scripts/sync-content.mjs` 后调用 `GET /api/essays?filters[slug][eq]=tech-and-humanity` 返回的 `content` 字段与 `content/essays/tech-and-humanity/index.md` 的正文一致;`GET /api/chapters?filters[tutorial][slug][eq]=modern-frontend-architecture&sort=order` 返回有序章节列表。
-- [ ] **5.2** **先备份**:`Copy-Item backend/src/seed-data.ts backend/src/seed-data.backup.ts`。然后修改 `backend/src/seed-data.ts`:去除硬编码 `content` 字段(或改为最小占位),改由 `scripts/sync-content.mjs` 在启动后接管。DoD:`seed-data.ts` 中的 `essaySeeds[].content` 字段全部为空字符串或被移除;`seed-data.backup.ts` 存在且与原文件一致。
-- [ ] **5.3** 把每个 tool 在 Strapi 中的 `url` 字段从 `/tools/xxx` 改为 `/tools/{slug}/index.html`(同时在 `seed-data.ts` 中同步)。DoD:访问 `http://localhost:5170/tools/color-palette/index.html` 能打开工具页。
-- [ ] **5.4** 前端 `Tools` 组件改造:点击工具卡片时新窗口打开对应静态 HTML(`target="_blank" rel="noopener"`)。DoD:列表点击行为正确;追加工具(§4.0.4 中的 6 个)也展示在工具列表里(通过 §5.1 同步)。
-- [ ] **5.5** 教程详情页 (`TutorialDetail.tsx`) 增加章节列表展示:调用 `GET /api/chapters?filters[tutorial][slug][eq]={slug}&sort=order&fields=title,order,est_read_minutes` 渲染章节列表。DoD:访问 `/tutorials/modern-frontend-architecture` 可以看到 6 章列表 + 各章链接。
-- [ ] **5.6** 新增路由 `/tutorials/:slug/chapters/:order` 渲染单章内容,通过 `GET /api/chapters?filters[tutorial][slug][eq]={slug}&filters[order][eq]={order}` 拉单章 markdown 并渲染。DoD:访问 `/tutorials/modern-frontend-architecture/chapters/1` 显示第 1 章正文;不存在的 order 显示 404。
+- [x] **5.1** 在 `scripts/sync-content.mjs` 写一个 Node 脚本:读取 `content/essays/*/index.md` 与 `content/tutorials/*/{index.md, chapters/*.md}`,按 slug upsert 到 Strapi(通过 backend bootstrap 钩子直接调 `strapi.documents()`,**避免依赖外部 API token**)。upsert 后必须 `publish()` 以使默认 `find` 可见(Strapi 5 `draftAndPublish=true` 默认 list 只返回 published)。DoD:执行 `node scripts/sync-content.mjs` 后调用 `GET /api/essays?filters[slug][eq]=tech-and-humanity` 返回的 `content` 字段与 `content/essays/tech-and-humanity/index.md` 的正文一致;`GET /api/chapters?filters[tutorial][slug][eq]=modern-frontend-architecture&sort=order` 返回有序章节列表。
+- [x] **5.2** **先备份**:`Copy-Item backend/src/seed-data.ts backend/src/seed-data.backup.ts`。然后修改 `backend/src/seed-data.ts`:去除硬编码 `content` 字段(或改为最小占位),改由 `scripts/sync-content.mjs` 在启动后接管。DoD:`seed-data.ts` 中的 `essaySeeds[].content` 字段全部为空字符串或被移除;`seed-data.backup.ts` 存在且与原文件一致。
+- [x] **5.3** 把每个 tool 在 Strapi 中的 `url` 字段从 `/tools/xxx` 改为 `/tools/{slug}/index.html`(同时在 `seed-data.ts` 中同步)。DoD:访问 `http://localhost:5170/tools/color-palette/index.html` 能打开工具页。
+- [x] **5.4** 前端 `Tools` 组件改造:点击工具卡片时新窗口打开对应静态 HTML(`target="_blank" rel="noopener"`)。DoD:列表点击行为正确;追加工具(§4.0.4 中的 6 个)也展示在工具列表里(通过 §5.1 同步)。
+- [x] **5.5** 教程详情页 (`TutorialDetail.tsx`) 增加章节列表展示:调用 `GET /api/chapters?filters[tutorial][slug][eq]={slug}&sort=order&fields=title,order,est_read_minutes` 渲染章节列表。DoD:访问 `/tutorials/modern-frontend-architecture` 可以看到 6 章列表 + 各章链接。
+- [x] **5.6** 新增路由 `/tutorials/:slug/chapters/:order` 渲染单章内容,通过 `GET /api/chapters?filters[tutorial][slug][eq]={slug}&filters[order][eq]={order}` 拉单章 markdown 并渲染。DoD:访问 `/tutorials/modern-frontend-architecture/chapters/1` 显示第 1 章正文;不存在的 order 显示 404。
 
 ---
 
 ## 6. 终态验证(Phase 5)
 
-- [ ] **6.1** 运行 `pnpm run typecheck` 通过。
-- [ ] **6.2** 运行 `pnpm run test:run` 通过(如有新增组件需补测试)。
-- [ ] **6.3** 启动前后端,手工走查:随笔 8 篇 / 教程 7 篇 / 工具(§4 计划 8 个 + §4.0.4 追加 6 个 = 14 个)均可点击进入并展示真实内容。DoD:截图归档到 `docs/qa-screenshots/`。**必须使用 headed 浏览器**(headless Edge 之前踩过 IntersectionObserver 异步揭示不渲染的坑);若用 Playwright/CDP 截图,需先把 `prefers-reduced-motion` 设为 `reduce`,并 `await` 列表数据 fetch 完成后再截。
-- [ ] **6.4** 在 `README.md` 顶部加一段"内容创作流程"短说明,指向本 `todolist.md` 与 `content/README.md`。
+- [x] **6.1** 运行 `pnpm run typecheck` 通过。
+- [x] **6.2** 运行 `pnpm run test:run` 通过(如有新增组件需补测试)。
+- [x] **6.3** 启动前后端,手工走查:随笔 8 篇 / 教程 7 篇 / 工具(§4 计划 8 个 + §4.0.4 追加 6 个 = 14 个)均可点击进入并展示真实内容。DoD:截图归档到 `docs/qa-screenshots/`。**必须使用 headed 浏览器**(headless Edge 之前踩过 IntersectionObserver 异步揭示不渲染的坑);若用 Playwright/CDP 截图,需先把 `prefers-reduced-motion` 设为 `reduce`,并 `await` 列表数据 fetch 完成后再截。
+- [x] **6.4** 在 `README.md` 顶部加一段"内容创作流程"短说明,指向本 `todolist.md` 与 `content/README.md`。
 
 ---
 

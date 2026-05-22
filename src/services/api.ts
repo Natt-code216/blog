@@ -47,6 +47,19 @@ export interface ApiTool {
   updatedAt: string;
 }
 
+// 章节类型
+export interface ApiChapter {
+  id: number;
+  documentId: string;
+  title: string;
+  order: number;
+  content?: string;
+  est_read_minutes?: number | null;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // 评论类型
 export interface ApiComment {
   id: number;
@@ -90,6 +103,41 @@ class ApiService {
     });
     const list = response.data.data || [];
     return list[0] || null;
+  }
+
+  // 某教程下的章节列表
+  async getChaptersByTutorialSlug(tutorialSlug: string): Promise<ApiChapter[]> {
+    try {
+      const response = await axios.get(`${API_URL}/chapters`, {
+        params: {
+          'filters[tutorial][slug][eq]': tutorialSlug,
+          'sort[0]': 'order:asc',
+          'fields[0]': 'title',
+          'fields[1]': 'order',
+          'fields[2]': 'est_read_minutes',
+          'fields[3]': 'slug',
+        },
+      });
+      return response.data.data || [];
+    } catch {
+      return [];
+    }
+  }
+
+  // 单章详情（按 tutorial slug + order）
+  async getChapter(tutorialSlug: string, order: number): Promise<ApiChapter | null> {
+    try {
+      const response = await axios.get(`${API_URL}/chapters`, {
+        params: {
+          'filters[tutorial][slug][eq]': tutorialSlug,
+          'filters[order][eq]': order,
+          'pagination[limit]': 1,
+        },
+      });
+      return response.data.data?.[0] || null;
+    } catch {
+      return null;
+    }
   }
 
   // 工具列表

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { api, type ApiTutorial } from '../services/api';
+import { api, type ApiTutorial, type ApiChapter } from '../services/api';
 import styles from './DetailPage.module.css';
 
 const levelMap: Record<string, string> = {
@@ -14,15 +14,20 @@ const levelMap: Record<string, string> = {
 export function TutorialDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [tutorial, setTutorial] = useState<ApiTutorial | null>(null);
+  const [chapters, setChapters] = useState<ApiChapter[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) return;
     let cancelled = false;
     setLoading(true);
-    api.getTutorialBySlug(slug).then((data) => {
+    Promise.all([
+      api.getTutorialBySlug(slug),
+      api.getChaptersByTutorialSlug(slug),
+    ]).then(([t, chs]) => {
       if (!cancelled) {
-        setTutorial(data);
+        setTutorial(t);
+        setChapters(chs);
         setLoading(false);
       }
     });
@@ -81,11 +86,40 @@ export function TutorialDetail() {
           <hr className={styles.divider} />
           {tutorial.content ? (
             <div dangerouslySetInnerHTML={{ __html: renderRichText(tutorial.content) }} />
-          ) : (
+          ) : null}
+
+          {chapters.length > 0 && (
+            <div style={{ marginTop: '2.5rem' }}>
+              <h2 className="serif" style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>章节</h2>
+              <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {chapters.map((ch) => (
+                  <li key={ch.id} style={{ padding: '0.6rem 0', borderBottom: '1px solid var(--border-light)' }}>
+                    <Link
+                      to={`/tutorials/${tutorial.slug}/chapters/${ch.order}`}
+                      style={{ color: 'var(--text-primary)', textDecoration: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    >
+                      <span>
+                        <span style={{ color: 'var(--text-secondary)', marginRight: '0.8rem' }}>
+                          {String(ch.order).padStart(2, '0')}
+                        </span>
+                        {ch.title}
+                      </span>
+                      {ch.est_read_minutes ? (
+                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                          {ch.est_read_minutes} 分钟
+                        </span>
+                      ) : null}
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {!tutorial.content && chapters.length === 0 && (
             <p style={{ color: 'var(--text-muted)' }}>
-              正文尚未填写。可以在 Strapi 后台为这篇教程添加 content 字段内容，或参考{' '}
-              <Link to="/" style={{ color: 'var(--text-primary)' }}>docs/tutorials/</Link>{' '}
-              中的对应 markdown。
+              正文尚未填写。可以运行 <code>node scripts/sync-content.mjs</code> 把{' '}
+              <code>content/</code> 下的 markdown 同步到 Strapi。
             </p>
           )}
         </div>

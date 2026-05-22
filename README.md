@@ -2,6 +2,17 @@
 
 一个现代化的个人博客/作品集网站，采用 React + TypeScript + Vite 前端技术栈和 Strapi 后端 CMS 系统构建。
 
+## 内容创作流程
+
+随笔、教程、章节正文以 markdown 形式存放在 [`content/`](content/) 目录下，作为唯一可信源。通过 `node scripts/sync-content.mjs` 把它们 upsert 到 Strapi 的 essay / tutorial / chapter content type 里，前端再从 Strapi 拉取展示。
+
+- **任务清单**：每一篇随笔、每一个教程章节、每一个工具的具体任务跟踪见 [`todolist.md`](todolist.md)。
+- **目录约定 / frontmatter 格式**：见 [`content/README.md`](content/README.md)。
+- **新增工具**：直接在 `public/tools/{slug}/` 下放 `index.html` + `README.md`，再到 Strapi 录入元数据（或更新 `backend/src/seed-data.ts`）。
+- **lint 校验**：`pnpm run lint:content` 检查所有 markdown 的 frontmatter 完整性、字数下限、占位符等。
+- **同步到后端**：`node scripts/sync-content.mjs` 把 `content/` 同步进 Strapi（需要先启动 Strapi 或保证数据库可访问）。
+
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/react-18.2.0-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/typescript-5.2.2-007acc.svg)](https://www.typescriptlang.org/)
