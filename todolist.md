@@ -236,34 +236,34 @@ scripts/
 - [x] **3.4.7** 写 `chapters/04-build-and-bundle-analysis.md`。
 
 ### 3.5 `strapi-headless-cms` · 用 Strapi 5 搭建 Headless CMS 后端 [icon: layers]
-- [ ] **3.5.1** 采集(Strapi 5 官方 docs、Strapi 5 migration guide、Khalid Sookia 视频系列) → `references.md`。
-- [ ] **3.5.2** 写 `outline.md`(建议 5 章: ①Strapi 5 概览 ②Content Type 设计 ③权限与 API Token ④关系字段与媒体 ⑤生产部署与备份)。
-- [ ] **3.5.3** 写 `index.md`。
-- [ ] **3.5.4** 写 `chapters/01-overview.md`。
-- [ ] **3.5.5** 写 `chapters/02-content-types.md`。
-- [ ] **3.5.6** 写 `chapters/03-permissions-and-tokens.md`。
-- [ ] **3.5.7** 写 `chapters/04-relations-and-media.md`。
-- [ ] **3.5.8** 写 `chapters/05-deploy-and-backup.md`。
+- [x] **3.5.1** 采集(Strapi 5 官方 docs、Strapi 5 migration guide、Khalid Sookia 视频系列) → `references.md`。
+- [x] **3.5.2** 写 `outline.md`(建议 5 章: ①Strapi 5 概览 ②Content Type 设计 ③权限与 API Token ④关系字段与媒体 ⑤生产部署与备份)。
+- [x] **3.5.3** 写 `index.md`。
+- [x] **3.5.4** 写 `chapters/01-overview.md`。
+- [x] **3.5.5** 写 `chapters/02-content-types.md`。
+- [x] **3.5.6** 写 `chapters/03-permissions-and-tokens.md`。
+- [x] **3.5.7** 写 `chapters/04-relations-and-media.md`。
+- [x] **3.5.8** 写 `chapters/05-deploy-and-backup.md`。
 
 ### 3.6 `typescript-type-gymnastics` · TypeScript 类型体操与领域建模 [icon: zap]
-- [ ] **3.6.1** 采集(type-challenges、Matt Pocock、Anders Hejlsberg 演讲、Domain Modeling Made Functional) → `references.md`。
-- [ ] **3.6.2** 写 `outline.md`(建议 6 章: ①基础回顾 ②条件类型 ③模板字面量 ④Mapped Types ⑤判别联合与状态机 ⑥用类型表达业务不变量)。
-- [ ] **3.6.3** 写 `index.md`。
-- [ ] **3.6.4** 写 `chapters/01-recap.md`。
-- [ ] **3.6.5** 写 `chapters/02-conditional-types.md`。
-- [ ] **3.6.6** 写 `chapters/03-template-literals.md`。
-- [ ] **3.6.7** 写 `chapters/04-mapped-types.md`。
-- [ ] **3.6.8** 写 `chapters/05-discriminated-unions.md`。
-- [ ] **3.6.9** 写 `chapters/06-business-invariants.md`。
+- [x] **3.6.1** 采集(type-challenges、Matt Pocock、Anders Hejlsberg 演讲、Domain Modeling Made Functional) → `references.md`。
+- [x] **3.6.2** 写 `outline.md`(建议 6 章: ①基础回顾 ②条件类型 ③模板字面量 ④Mapped Types ⑤判别联合与状态机 ⑥用类型表达业务不变量)。
+- [x] **3.6.3** 写 `index.md`。
+- [x] **3.6.4** 写 `chapters/01-recap.md`。
+- [x] **3.6.5** 写 `chapters/02-conditional-types.md`。
+- [x] **3.6.6** 写 `chapters/03-template-literals.md`。
+- [x] **3.6.7** 写 `chapters/04-mapped-types.md`。
+- [x] **3.6.8** 写 `chapters/05-discriminated-unions.md`。
+- [x] **3.6.9** 写 `chapters/06-business-invariants.md`。
 
 ### 3.7 `frontend-backend-integration` · 前后端联调与数据加载状态 [icon: code]
-- [ ] **3.7.1** 采集(TanStack Query docs、SWR docs、Kent C. Dodds error boundaries、Lee Byron Relay 论文) → `references.md`。
-- [ ] **3.7.2** 写 `outline.md`(建议 4 章: ①环境变量与 Service 层 ②加载/错误/空 三态 ③缓存、并发与取消 ④乐观更新与重试)。
-- [ ] **3.7.3** 写 `index.md`。
-- [ ] **3.7.4** 写 `chapters/01-env-and-service-layer.md`。
-- [ ] **3.7.5** 写 `chapters/02-loading-error-empty.md`。
-- [ ] **3.7.6** 写 `chapters/03-cache-concurrency-cancel.md`。
-- [ ] **3.7.7** 写 `chapters/04-optimistic-and-retry.md`。
+- [x] **3.7.1** 采集(TanStack Query docs、SWR docs、Kent C. Dodds error boundaries、Lee Byron Relay 论文) → `references.md`。
+- [x] **3.7.2** 写 `outline.md`(建议 4 章: ①环境变量与 Service 层 ②加载/错误/空 三态 ③缓存、并发与取消 ④乐观更新与重试)。
+- [x] **3.7.3** 写 `index.md`。
+- [x] **3.7.4** 写 `chapters/01-env-and-service-layer.md`。
+- [x] **3.7.5** 写 `chapters/02-loading-error-empty.md`。
+- [x] **3.7.6** 写 `chapters/03-cache-concurrency-cancel.md`。
+- [x] **3.7.7** 写 `chapters/04-optimistic-and-retry.md`。
 
 ---
 
