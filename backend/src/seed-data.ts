@@ -16,7 +16,7 @@ export interface TutorialSeed {
   description: string;
   level: 'A_level' | 'B_level' | 'C_level' | 'ALL';
   status: 'A更新中' | 'B已完结';
-  chapters: number;
+  chaptersCount: number;
   icon: 'code' | 'layers' | 'zap';
   content: string;
 }
@@ -157,7 +157,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '深入探讨 React / Vue 生态、状态管理艺术与企业级项目工程化实践。',
     level: 'B_level',
     status: 'A更新中',
-    chapters: 12,
+    chaptersCount: 12,
     icon: 'code',
     content: [
       '本系列从"为什么需要架构"开始，逐步进入路由组织、状态分层、跨层通信、错误边界、模块联邦等话题。',
@@ -171,7 +171,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '探寻排版、色彩理论与留白艺术，运用 Figma 打造克制而优雅的界面。',
     level: 'ALL',
     status: 'B已完结',
-    chapters: 8,
+    chaptersCount: 8,
     icon: 'layers',
     content: [
       '设计不是装饰，而是删减后的秩序。',
@@ -185,7 +185,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '从渲染管线到网络协议，系统解析毫秒级页面加载背后的底层逻辑。',
     level: 'C_level',
     status: 'A更新中',
-    chapters: 6,
+    chaptersCount: 6,
     icon: 'zap',
     content: [
       '速度是一种功能。',
@@ -199,7 +199,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '第一章，讲清楚为什么选 Vite、怎么组织目录、CSS Module 怎么用。',
     level: 'A_level',
     status: 'A更新中',
-    chapters: 4,
+    chaptersCount: 4,
     icon: 'code',
     content: [
       '面向刚刚走出脚手架时代的开发者：抛弃 CRA，理解 ESM 原生开发的真正乐趣。',
@@ -211,7 +211,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '介绍 Strapi 5 的 collection、权限、API 调用与上传。',
     level: 'B_level',
     status: 'A更新中',
-    chapters: 5,
+    chaptersCount: 5,
     icon: 'layers',
     content: [
       '从零起一个 Strapi 5 项目，覆盖 content type 设计、API Token、关系字段、媒体上传与权限粒度。',
@@ -223,7 +223,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '从条件类型到模板字面量类型，让类型成为业务建模的工具，而不是负担。',
     level: 'C_level',
     status: 'A更新中',
-    chapters: 7,
+    chaptersCount: 7,
     icon: 'zap',
     content: [
       '当类型能精确表达"不可能发生的状态"，运行时的 if/else 就会自然消失。',
@@ -235,7 +235,7 @@ export const tutorialSeeds: TutorialSeed[] = [
     description: '环境变量、Service 层、Hook 与组件解耦。',
     level: 'B_level',
     status: 'A更新中',
-    chapters: 3,
+    chaptersCount: 3,
     icon: 'code',
     content: [
       '一个看似简单的"数据请求"，背后是错误、空状态、骨架屏、重试、缓存、并发与取消的合奏。',

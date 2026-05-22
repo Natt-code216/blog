@@ -67,7 +67,7 @@ async function seedIfMissing(strapi: StrapiLike) {
             description: t.description,
             level: t.level,
             status: t.status,
-            chapters: t.chapters,
+            chaptersCount: t.chaptersCount,
             icon: t.icon,
             content: t.content,
             slug: t.slug,

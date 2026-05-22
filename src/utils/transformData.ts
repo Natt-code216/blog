@@ -19,7 +19,7 @@ export function transformTutorials(apiTutorials: ApiTutorial[]): Tutorial[] {
     title: tutorial.title,
     description: tutorial.description,
     level: tutorial.level,
-    status: `${tutorial.status} (${tutorial.chapters} 章)`,
+    status: `${tutorial.status} (${tutorial.chaptersCount} 章)`,
     link: `/tutorials/${tutorial.slug}`,
   }));
 }

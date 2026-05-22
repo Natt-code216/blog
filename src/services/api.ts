@@ -26,7 +26,7 @@ export interface ApiTutorial {
   content?: string;
   level: string;
   status: string;
-  chapters: number;
+  chaptersCount: number;
   icon: 'code' | 'layers' | 'zap';
   slug: string;
   published: boolean;

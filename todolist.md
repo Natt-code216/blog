@@ -140,52 +140,52 @@ scripts/
 > 重构口径：参考 3–5 篇网络上较成熟的英文 / 中文长文（如 Paul Graham、阮一峰、少数派、Lenny's Newsletter、StackOverflow 博客、a16z 等），消化后**用自己的话与角度重写**，不允许逐句翻译或抄袭。
 
 ### 2.1 `tech-and-humanity` · 技术与人性的平衡 [ESSAY]
-- [ ] **2.1.1** 用 WebSearch 收集 3–5 篇关于"technology and attention / digital wellbeing / 技术异化"的资料，写到 `content/essays/tech-and-humanity/references.md`（每条含 URL、作者、核心观点 1 句）。
-- [ ] **2.1.2** 在同目录新建 `outline.md`，列出 3 个核心论点 + 1 个个人视角（区别于参考资料的新观点）。
-- [ ] **2.1.3** 撰写正文 `index.md`（含 frontmatter），≥1200 字；至少包含 1 个具体生活/工作场景。
-- [ ] **2.1.4** 自查：删除空话与套话；保留至少 1 句可被引用的"金句"。
+- [x] **2.1.1** 用 WebSearch 收集 3–5 篇关于"technology and attention / digital wellbeing / 技术异化"的资料，写到 `content/essays/tech-and-humanity/references.md`（每条含 URL、作者、核心观点 1 句）。
+- [x] **2.1.2** 在同目录新建 `outline.md`，列出 3 个核心论点 + 1 个个人视角（区别于参考资料的新观点）。
+- [x] **2.1.3** 撰写正文 `index.md`（含 frontmatter），≥1200 字；至少包含 1 个具体生活/工作场景。
+- [x] **2.1.4** 自查：删除空话与套话；保留至少 1 句可被引用的"金句"。
 
 ### 2.2 `on-creativity` · 关于创造力的本源思考 [THOUGHTS]
-- [ ] **2.2.1** 采集参考资料 → `content/essays/on-creativity/references.md`（关键词：creativity origin、Steven Johnson《Where Good Ideas Come From》、Rick Rubin、长期主义）。
-- [ ] **2.2.2** 写 `outline.md`。
-- [ ] **2.2.3** 写 `index.md`，≥1200 字；至少举 1 个亲历/可验证的创造场景。
-- [ ] **2.2.4** 自查与定稿。
+- [x] **2.2.1** 采集参考资料 → `content/essays/on-creativity/references.md`（关键词：creativity origin、Steven Johnson《Where Good Ideas Come From》、Rick Rubin、长期主义）。
+- [x] **2.2.2** 写 `outline.md`。
+- [x] **2.2.3** 写 `index.md`，≥1200 字；至少举 1 个亲历/可验证的创造场景。
+- [x] **2.2.4** 自查与定稿。
 
 ### 2.3 `art-of-slowing-down` · 慢下来的艺术与哲学 [LIFESTYLE]
-- [ ] **2.3.1** 采集（slow living、deep work、《深度工作》Cal Newport、《Four Thousand Weeks》Oliver Burkeman）→ `references.md`。
-- [ ] **2.3.2** 写 `outline.md`。
-- [ ] **2.3.3** 写 `index.md`，≥1200 字。
-- [ ] **2.3.4** 自查与定稿。
+- [x] **2.3.1** 采集（slow living、deep work、《深度工作》Cal Newport、《Four Thousand Weeks》Oliver Burkeman）→ `references.md`。
+- [x] **2.3.2** 写 `outline.md`。
+- [x] **2.3.3** 写 `index.md`，≥1200 字。
+- [x] **2.3.4** 自查与定稿。
 
 ### 2.4 `signal-in-noise` · 在喧嚣中寻找信号 [ESSAY]
-- [ ] **2.4.1** 采集（information overload、attention economy、Cory Doctorow "enshittification"、Tristan Harris）→ `references.md`。
-- [ ] **2.4.2** 写 `outline.md`。
-- [ ] **2.4.3** 写 `index.md`，≥1200 字；至少展示 1 套个人筛选信息的"工作流"。
-- [ ] **2.4.4** 自查与定稿。
+- [x] **2.4.1** 采集（information overload、attention economy、Cory Doctorow "enshittification"、Tristan Harris）→ `references.md`。
+- [x] **2.4.2** 写 `outline.md`。
+- [x] **2.4.3** 写 `index.md`，≥1200 字；至少展示 1 套个人筛选信息的"工作流"。
+- [x] **2.4.4** 自查与定稿。
 
 ### 2.5 `craftsmanship-and-code` · 手艺与代码 [THOUGHTS]
-- [ ] **2.5.1** 采集（《The Pragmatic Programmer》、Pete Hodgson、Dan Abramov、craftsmanship movement）→ `references.md`。
-- [ ] **2.5.2** 写 `outline.md`。
-- [ ] **2.5.3** 写 `index.md`，≥1200 字；至少 1 段真实代码（≤30 行）。
-- [ ] **2.5.4** 自查与定稿。
+- [x] **2.5.1** 采集（《The Pragmatic Programmer》、Pete Hodgson、Dan Abramov、craftsmanship movement）→ `references.md`。
+- [x] **2.5.2** 写 `outline.md`。
+- [x] **2.5.3** 写 `index.md`，≥1200 字；至少 1 段真实代码（≤30 行）。
+- [x] **2.5.4** 自查与定稿。
 
 ### 2.6 `writing-as-thinking` · 写下来才算思考 [THOUGHTS]
-- [ ] **2.6.1** 采集（Paul Graham《Putting Ideas into Words》、Andy Matuschak、Tiago Forte BASB、Zettelkasten）→ `references.md`。
-- [ ] **2.6.2** 写 `outline.md`。
-- [ ] **2.6.3** 写 `index.md`，≥1200 字。
-- [ ] **2.6.4** 自查与定稿。
+- [x] **2.6.1** 采集（Paul Graham《Putting Ideas into Words》、Andy Matuschak、Tiago Forte BASB、Zettelkasten）→ `references.md`。
+- [x] **2.6.2** 写 `outline.md`。
+- [x] **2.6.3** 写 `index.md`，≥1200 字。
+- [x] **2.6.4** 自查与定稿。
 
 ### 2.7 `tools-and-mind` · 工具与心智 [LIFESTYLE]
-- [ ] **2.7.1** 采集（McLuhan "the medium is the message"、Bret Victor、tool-thought 同构、Notion vs Obsidian 讨论）→ `references.md`。
-- [ ] **2.7.2** 写 `outline.md`。
-- [ ] **2.7.3** 写 `index.md`，≥1200 字。
-- [ ] **2.7.4** 自查与定稿。
+- [x] **2.7.1** 采集（McLuhan "the medium is the message"、Bret Victor、tool-thought 同构、Notion vs Obsidian 讨论）→ `references.md`。
+- [x] **2.7.2** 写 `outline.md`。
+- [x] **2.7.3** 写 `index.md`，≥1200 字。
+- [x] **2.7.4** 自查与定稿。
 
 ### 2.8 `on-minimalism` · 关于"克制" [LIFESTYLE]
-- [ ] **2.8.1** 采集(Dieter Rams 十诫、原研哉、Jony Ive 访谈、Edward Tufte data-ink ratio) → `references.md`。
-- [ ] **2.8.2** 写 `outline.md`。
-- [ ] **2.8.3** 写 `index.md`，≥1200 字。
-- [ ] **2.8.4** 自查与定稿。
+- [x] **2.8.1** 采集(Dieter Rams 十诫、原研哉、Jony Ive 访谈、Edward Tufte data-ink ratio) → `references.md`。
+- [x] **2.8.2** 写 `outline.md`。
+- [x] **2.8.3** 写 `index.md`，≥1200 字。
+- [x] **2.8.4** 自查与定稿。
 
 ---
 
@@ -328,7 +328,7 @@ scripts/
 >
 > **架构决定:新增 `chapter` collection type**,与 `tutorial` 多对一关联,以支持单章 API 与单章路由。
 
-- [ ] **5.0** 在 `backend/src/api/chapter/` 新建 chapter content-type(`schema.json`):字段含 `title: string (required)`、`order: integer (required)`、`content: richtext`、`est_read_minutes: integer`、`slug: uid (targetField: title)`、`tutorial: relation manyToOne → api::tutorial.tutorial`,并在 `tutorial.schema.json` 加反向 relation `chapters: relation oneToMany mappedBy: tutorial`(注意会与现有 `chapters: integer` 字段重名 → 把现有整数字段重命名为 `chaptersCount` 或直接移除,前端 `Tutorials.tsx` 内对 `chapters` 数字的引用同步改名)。DoD:`pnpm --filter backend run develop` 启动无 schema 错误;Strapi Admin 可见 Chapter content-type。**这是破坏性 schema 改动,执行前先 commit 当前进度**。
+- [x] **5.0** 在 `backend/src/api/chapter/` 新建 chapter content-type(`schema.json`):字段含 `title: string (required)`、`order: integer (required)`、`content: richtext`、`est_read_minutes: integer`、`slug: uid (targetField: title)`、`tutorial: relation manyToOne → api::tutorial.tutorial`,并在 `tutorial.schema.json` 加反向 relation `chapters: relation oneToMany mappedBy: tutorial`(注意会与现有 `chapters: integer` 字段重名 → 把现有整数字段重命名为 `chaptersCount` 或直接移除,前端 `Tutorials.tsx` 内对 `chapters` 数字的引用同步改名)。DoD:`pnpm --filter backend run develop` 启动无 schema 错误;Strapi Admin 可见 Chapter content-type。**这是破坏性 schema 改动,执行前先 commit 当前进度**。
 - [ ] **5.1** 在 `scripts/sync-content.mjs` 写一个 Node 脚本:读取 `content/essays/*/index.md` 与 `content/tutorials/*/{index.md, chapters/*.md}`,按 slug upsert 到 Strapi(通过 backend bootstrap 钩子直接调 `strapi.documents()`,**避免依赖外部 API token**)。upsert 后必须 `publish()` 以使默认 `find` 可见(Strapi 5 `draftAndPublish=true` 默认 list 只返回 published)。DoD:执行 `node scripts/sync-content.mjs` 后调用 `GET /api/essays?filters[slug][eq]=tech-and-humanity` 返回的 `content` 字段与 `content/essays/tech-and-humanity/index.md` 的正文一致;`GET /api/chapters?filters[tutorial][slug][eq]=modern-frontend-architecture&sort=order` 返回有序章节列表。
 - [ ] **5.2** **先备份**:`Copy-Item backend/src/seed-data.ts backend/src/seed-data.backup.ts`。然后修改 `backend/src/seed-data.ts`:去除硬编码 `content` 字段(或改为最小占位),改由 `scripts/sync-content.mjs` 在启动后接管。DoD:`seed-data.ts` 中的 `essaySeeds[].content` 字段全部为空字符串或被移除;`seed-data.backup.ts` 存在且与原文件一致。
 - [ ] **5.3** 把每个 tool 在 Strapi 中的 `url` 字段从 `/tools/xxx` 改为 `/tools/{slug}/index.html`(同时在 `seed-data.ts` 中同步)。DoD:访问 `http://localhost:5170/tools/color-palette/index.html` 能打开工具页。

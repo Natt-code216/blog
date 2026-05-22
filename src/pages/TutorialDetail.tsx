@@ -70,7 +70,7 @@ export function TutorialDetail() {
 
         <div className={styles.meta}>
           <span>{levelMap[tutorial.level] || tutorial.level}</span>
-          <span>{tutorial.chapters} 章</span>
+          <span>{tutorial.chaptersCount} 章</span>
           <span>{status}</span>
         </div>
 
