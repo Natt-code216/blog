@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>数据洞察视图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
+<style>
+  :root {
+    --bg-base: #050505;
+    --text-primary: #fcfcfc;
+    --text-secondary: #888;
+    --border-light: rgba(255, 255, 255, 0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-base); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.7; min-height: 100vh; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+  a.back { color: var(--text-secondary); text-decoration: none; font-size: .9rem; display: inline-block; margin-bottom: 1.5rem; }
+  a.back:hover { color: var(--text-primary); }
+  h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; margin-bottom: .4rem; }
+  .subtitle { color: var(--text-secondary); margin-bottom: 2rem; }
+  .drop { border: 1px dashed var(--border-light); padding: 2rem; text-align: center; border-radius: 4px; cursor: pointer; transition: border-color .2s; }
+  .drop.hover { border-color: var(--text-primary); }
+  .actions { display: flex; gap: .75rem; margin: 1.2rem 0; flex-wrap: wrap; }
+  button { font-family: inherit; background: transparent; color: var(--text-primary); border: 1px solid var(--border-light); padding: .55rem 1.1rem; border-radius: 3px; cursor: pointer; font-size: .9rem; transition: all .2s; }
+  button:hover { border-color: var(--text-primary); }
+  select { font-family: inherit; background: #0a0a0a; color: var(--text-primary); border: 1px solid var(--border-light); padding: .5rem .8rem; border-radius: 3px; }
+  canvas { background: #0a0a0a; border-radius: 4px; padding: 1rem; margin-top: 1rem; }
+  .meta { color: var(--text-secondary); font-size: .85rem; margin-top: 1rem; }
+  input[type="file"] { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="/">← 返回</a>
+  <h1>数据洞察视图</h1>
+  <p class="subtitle">拖入 CSV / JSON 文件，自动生成柱状图或折线图。所有处理在本地完成。</p>
+
+  <div id="drop" class="drop">
+    <p>拖拽 CSV / JSON 至此，或<label for="file" style="text-decoration:underline;cursor:pointer">点击选择</label></p>
+    <input id="file" type="file" accept=".csv,.json,.txt" />
+  </div>
+
+  <div class="actions">
+    <button id="sample">加载示例数据</button>
+    <label>图表类型
+      <select id="type">
+        <option value="bar">柱状图</option>
+        <option value="line">折线图</option>
+      </select>
+    </label>
+    <label>X 轴
+      <select id="xcol"></select>
+    </label>
+    <label>Y 轴
+      <select id="ycol"></select>
+    </label>
+    <button id="export" disabled>导出 PNG</button>
+  </div>
+
+  <canvas id="chart" height="320"></canvas>
+  <p id="meta" class="meta"></p>
+</div>
+
+<script>
+let rows = [], chart = null;
+
+function parseCSV(text) {
+  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.length);
+  if (!lines.length) return [];
+  const headers = splitCSVLine(lines[0]);
+  return lines.slice(1).map(l => {
+    const cells = splitCSVLine(l);
+    const o = {};
+    headers.forEach((h, i) => o[h] = cells[i] ?? '');
+    return o;
+  });
+}
+function splitCSVLine(line) {
+  const out = []; let cur = '', q = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (q) {
+      if (c === '"' && line[i+1] === '"') { cur += '"'; i++; }
+      else if (c === '"') q = false;
+      else cur += c;
+    } else {
+      if (c === '"') q = true;
+      else if (c === ',') { out.push(cur); cur = ''; }
+      else cur += c;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+function loadData(text, isJson) {
+  rows = isJson ? JSON.parse(text) : parseCSV(text);
+  if (!Array.isArray(rows) || !rows.length) { alert('数据为空'); return; }
+  const cols = Object.keys(rows[0]);
+  const xsel = document.getElementById('xcol');
+  const ysel = document.getElementById('ycol');
+  xsel.innerHTML = ysel.innerHTML = '';
+  cols.forEach(c => {
+    xsel.appendChild(new Option(c, c));
+    ysel.appendChild(new Option(c, c));
+  });
+  // pick first numeric column for y
+  const numericCol = cols.find(c => rows.every(r => !isNaN(parseFloat(r[c]))));
+  if (numericCol) ysel.value = numericCol;
+  document.getElementById('export').disabled = false;
+  render();
+  document.getElementById('meta').textContent = `共 ${rows.length} 行，${cols.length} 列`;
+}
+
+function render() {
+  const xc = document.getElementById('xcol').value;
+  const yc = document.getElementById('ycol').value;
+  const type = document.getElementById('type').value;
+  if (!xc || !yc) return;
+  const labels = rows.map(r => String(r[xc]));
+  const data = rows.map(r => parseFloat(r[yc]) || 0);
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('chart'), {
+    type,
+    data: { labels, datasets: [{ label: yc, data, borderColor: '#fcfcfc', backgroundColor: 'rgba(252,252,252,.5)', tension: .25 }] },
+    options: { responsive: true, plugins: { legend: { labels: { color: '#fcfcfc' } } }, scales: { x: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+  });
+}
+
+['type','xcol','ycol'].forEach(id => document.getElementById(id).addEventListener('change', render));
+
+const drop = document.getElementById('drop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('hover'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('hover'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('hover');
+  const f = e.dataTransfer.files[0]; if (f) readFile(f);
+});
+document.getElementById('file').addEventListener('change', e => { if (e.target.files[0]) readFile(e.target.files[0]); });
+function readFile(f) {
+  const r = new FileReader();
+  r.onload = () => loadData(r.result, f.name.endsWith('.json'));
+  r.readAsText(f);
+}
+document.getElementById('sample').addEventListener('click', () => {
+  loadData('月份,销售额,访问量\n1月,1200,3400\n2月,1450,3800\n3月,1100,3200\n4月,1820,4500\n5月,2100,5100\n6月,2400,5600\n', false);
+});
+document.getElementById('export').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = document.getElementById('chart').toDataURL('image/png');
+  a.download = 'chart.png';
+  a.click();
+});
+</script>
+</body>
+</html>

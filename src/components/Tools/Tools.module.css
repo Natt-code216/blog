@@ -9,8 +9,15 @@
 
 .toolsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+}
+
+@media (max-width: 768px) {
+  .toolsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 
 /* ScrollReveal wrapper */
@@ -22,7 +29,10 @@
 .toolCard {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  padding: 2.5rem 2rem;
+  padding: 3rem 3rem;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
   border-radius: 4px;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);

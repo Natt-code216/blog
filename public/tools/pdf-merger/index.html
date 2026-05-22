@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PDF 合并 · Mini Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fcfcfc;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 60px 24px;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  .back { color: #888; text-decoration: none; font-size: 14px; transition: color .2s; }
+  .back:hover { color: #fcfcfc; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 42px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle { color: #888; font-size: 15px; margin-bottom: 48px; }
+  .card {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .drop {
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    color: #888;
+  }
+  .drop:hover, .drop.hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.02);
+    color: #fcfcfc;
+  }
+  .drop input { display: none; }
+  .file-list { margin-top: 24px; }
+  .file-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #0a0a0a;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    gap: 12px;
+  }
+  .file-name { flex: 1; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-pages { color: #888; font-size: 13px; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fcfcfc;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .2s;
+  }
+  .icon-btn:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+  .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .actions { display: flex; gap: 12px; margin-top: 24px; }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: opacity .2s;
+    border: none;
+  }
+  .btn-primary { background: #fcfcfc; color: #050505; }
+  .btn-primary:hover:not(:disabled) { opacity: 0.85; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fcfcfc;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+  .msg { margin-top: 16px; font-size: 14px; }
+  .msg.error { color: #ef6868; }
+  .msg.success { color: #6ed99a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="./index.html" class="back">← 返回工具集</a>
+  <h1>PDF 合并</h1>
+  <p class="subtitle">将多个 PDF 文件按指定顺序合并为一个文件。</p>
+
+  <div class="card">
+    <label class="drop" id="drop">
+      <input type="file" id="input" accept="application/pdf" multiple>
+      <div>点击或拖放 PDF 文件到此处</div>
+      <div style="font-size:12px;margin-top:8px;opacity:0.6;">支持多文件</div>
+    </label>
+    <div class="file-list" id="list"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="merge" disabled>合并并下载</button>
+      <button class="btn btn-secondary" id="clear">清空</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+  const drop = document.getElementById('drop');
+  const input = document.getElementById('input');
+  const list = document.getElementById('list');
+  const mergeBtn = document.getElementById('merge');
+  const clearBtn = document.getElementById('clear');
+  const msg = document.getElementById('msg');
+  let files = [];
+
+  function showMsg(text, type) {
+    msg.textContent = text;
+    msg.className = 'msg ' + (type || '');
+  }
+
+  ['dragenter', 'dragover'].forEach(e => drop.addEventListener(e, ev => {
+    ev.preventDefault();
+    drop.classList.add('hover');
+  }));
+  ['dragleave', 'drop'].forEach(e => drop.addEventListener(e, ev => {
+    ev.preventDefault();
+    drop.classList.remove('hover');
+  }));
+  drop.addEventListener('drop', ev => {
+    const dropped = Array.from(ev.dataTransfer.files).filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+    addFiles(dropped);
+  });
+  input.addEventListener('change', e => {
+    addFiles(Array.from(e.target.files));
+    input.value = '';
+  });
+
+  async function addFiles(arr) {
+    showMsg('', '');
+    for (const f of arr) {
+      try {
+        const buf = await f.arrayBuffer();
+        const doc = await PDFLib.PDFDocument.load(buf, { ignoreEncryption: true });
+        files.push({ name: f.name, buffer: buf, pages: doc.getPageCount() });
+      } catch (err) {
+        showMsg('无法读取 ' + f.name + '：' + err.message, 'error');
+      }
+    }
+    render();
+  }
+
+  function render() {
+    list.innerHTML = '';
+    files.forEach((f, i) => {
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.innerHTML = `
+        <span class="file-name">${escapeHtml(f.name)}</span>
+        <span class="file-pages">${f.pages} 页</span>
+        <button class="icon-btn" data-act="up" data-i="${i}" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button class="icon-btn" data-act="down" data-i="${i}" ${i === files.length - 1 ? 'disabled' : ''}>↓</button>
+        <button class="icon-btn" data-act="del" data-i="${i}">×</button>
+      `;
+      list.appendChild(item);
+    });
+    mergeBtn.disabled = files.length < 2;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  list.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const i = parseInt(btn.dataset.i);
+    const act = btn.dataset.act;
+    if (act === 'up' && i > 0) [files[i - 1], files[i]] = [files[i], files[i - 1]];
+    else if (act === 'down' && i < files.length - 1) [files[i], files[i + 1]] = [files[i + 1], files[i]];
+    else if (act === 'del') files.splice(i, 1);
+    render();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    files = [];
+    render();
+    showMsg('', '');
+  });
+
+  mergeBtn.addEventListener('click', async () => {
+    if (files.length < 2) return;
+    mergeBtn.disabled = true;
+    showMsg('合并中...', '');
+    try {
+      const merged = await PDFLib.PDFDocument.create();
+      for (const f of files) {
+        const doc = await PDFLib.PDFDocument.load(f.buffer, { ignoreEncryption: true });
+        const pages = await merged.copyPages(doc, doc.getPageIndices());
+        pages.forEach(p => merged.addPage(p));
+      }
+      const bytes = await merged.save();
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'merged.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+      showMsg('合并完成，已下载 merged.pdf', 'success');
+    } catch (err) {
+      showMsg('合并失败：' + err.message, 'error');
+    } finally {
+      mergeBtn.disabled = files.length < 2;
+    }
+  });
+</script>
+</body>
+</html>

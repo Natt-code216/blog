@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const SITE = process.env.SITE_URL || 'http://localhost:5173';
+const SITE = process.env.SITE_URL || 'http://localhost:5170';
 const API = process.env.STRAPI_URL || 'http://localhost:1337/api';
 
 async function fetchAll(endpoint) {

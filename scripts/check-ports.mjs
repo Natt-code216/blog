@@ -2,7 +2,7 @@
 import net from 'node:net';
 
 const PORTS = [
-  { port: 5173, label: '前端 Vite' },
+  { port: 5170, label: '前端 Vite' },
   { port: 1337, label: '后端 Strapi' },
 ];
 

@@ -7,33 +7,38 @@
   padding-top: calc(8rem + var(--nav-height));
 }
 
+/* 教程改回一行一个；卡片相对窄一点，居中在容器内 */
 .tutorialsList {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* ScrollReveal wrapper */
 .tutorialsList > div {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
 }
 
 .tutorialRow {
   display: grid;
   grid-template-columns: 60px 1fr auto;
   align-items: center;
-  gap: 2rem;
-  padding: 2.5rem 0;
-  border-bottom: 1px solid var(--border-light);
+  gap: 1.5rem;
+  padding: 2rem 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
   text-decoration: none;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .tutorialRow:hover {
-  background-color: rgba(255, 255, 255, 0.01);
-  padding-left: 1rem;
-  padding-right: 1rem;
-  border-bottom-color: var(--border-hover);
+  border-color: var(--border-hover);
+  background-color: #141414;
+  transform: translateY(-3px);
 }
 
 .tutIconWrapper {

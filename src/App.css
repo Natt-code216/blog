@@ -72,10 +72,14 @@ nav .container {
   font-family: 'Playfair Display', serif;
 }
 
-/* 主容器 */
+/* 主容器
+   注意 width:100% 必须显式 —— 父级 section 是 flex column，
+   省略 width 时 .container 会塌缩到内容宽度，导致 essays/tutorials
+   等内容较窄的区块整体往中间挤、与 tools 板块左右边缘对不齐。 */
 .container {
   position: relative;
   z-index: 1;
+  width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 2rem;
@@ -90,8 +94,10 @@ section {
   justify-content: flex-start;
 }
 
-/* 通用标题区域 */
+/* 通用标题区域 —— 显式 width:100% 是为了在不同 section 间保证标题左边缘对齐
+   (避免某些容器外的 flex 布局让 section-header 退化为内联宽度) */
 .section-header {
+  width: 100%;
   margin-bottom: 5rem;
   display: flex;
   align-items: flex-end;

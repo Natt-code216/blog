@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>色彩调和引擎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg-base:#050505; --text-primary:#fcfcfc; --text-secondary:#888; --border-light:rgba(255,255,255,0.08); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg-base); color:var(--text-primary); font-family:'Inter',sans-serif; min-height:100vh; line-height:1.7; }
+  .container { max-width:900px; margin:0 auto; padding:2rem; }
+  a.back { color:var(--text-secondary); text-decoration:none; font-size:.9rem; display:inline-block; margin-bottom:1.5rem; }
+  a.back:hover { color:var(--text-primary); }
+  h1 { font-family:'Playfair Display',serif; font-size:2.4rem; margin-bottom:.4rem; }
+  .subtitle { color:var(--text-secondary); margin-bottom:2rem; }
+  .picker-row { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-bottom:2rem; }
+  input[type="color"] { width:60px; height:60px; border:1px solid var(--border-light); background:transparent; cursor:pointer; }
+  input[type="text"] { font-family:'Inter',sans-serif; background:#0a0a0a; color:var(--text-primary); border:1px solid var(--border-light); padding:.6rem .9rem; border-radius:3px; font-size:1rem; width:120px; }
+  button { font-family:inherit; background:transparent; color:var(--text-primary); border:1px solid var(--border-light); padding:.55rem 1.1rem; border-radius:3px; cursor:pointer; font-size:.9rem; transition:all .2s; }
+  button:hover { border-color:var(--text-primary); }
+  .scheme { margin-bottom:2rem; }
+  .scheme h3 { font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:.6rem; }
+  .swatches { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .swatch { width:90px; height:90px; border-radius:4px; cursor:pointer; position:relative; display:flex; align-items:flex-end; padding:.5rem; font-size:.75rem; font-family:monospace; }
+  .contrast { font-size:.8rem; color:var(--text-secondary); margin-top:.4rem; }
+  .ok { color:#7CFC8A; }
+  .warn { color:#F0C674; }
+  .fail { color:#FC7E7E; }
+  pre { background:#0a0a0a; border:1px solid var(--border-light); padding:1rem; border-radius:3px; font-family:monospace; font-size:.85rem; overflow-x:auto; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="/">← 返回</a>
+  <h1>色彩调和引擎</h1>
+  <p class="subtitle">输入基础色，自动生成 5 种和谐方案与对比度评分。</p>
+
+  <div class="picker-row">
+    <input type="color" id="picker" value="#4A90E2" />
+    <input type="text" id="hex" value="#4A90E2" />
+    <button id="rand">随机一色</button>
+    <button id="copy">复制 CSS</button>
+  </div>
+
+  <div id="schemes"></div>
+
+  <h3 style="font-family:'Playfair Display',serif;margin-top:2rem;">CSS 输出</h3>
+  <pre id="css"></pre>
+</div>
+
+<script>
+function hexToRgb(h) {
+  h = h.replace('#','');
+  if (h.length === 3) h = h.split('').map(c => c+c).join('');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function rgbToHex([r,g,b]) { return '#' + [r,g,b].map(v => Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join(''); }
+function rgbToHsl([r,g,b]) {
+  r/=255; g/=255; b/=255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h, s, l = (max+min)/2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max-min;
+    s = l > .5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h = (g-b)/d + (g<b?6:0); break;
+      case g: h = (b-r)/d + 2; break;
+      case b: h = (r-g)/d + 4; break;
+    }
+    h*=60;
+  }
+  return [h, s, l];
+}
+function hslToRgb([h,s,l]) {
+  h = ((h%360)+360)%360;
+  const c = (1-Math.abs(2*l-1))*s;
+  const x = c*(1-Math.abs((h/60)%2-1));
+  const m = l - c/2;
+  let r=0,g=0,b=0;
+  if (h<60){ r=c; g=x; }
+  else if (h<120){ r=x; g=c; }
+  else if (h<180){ g=c; b=x; }
+  else if (h<240){ g=x; b=c; }
+  else if (h<300){ r=x; b=c; }
+  else { r=c; b=x; }
+  return [(r+m)*255,(g+m)*255,(b+m)*255];
+}
+function rotate(hsl, deg) { return [hsl[0]+deg, hsl[1], hsl[2]]; }
+function luminance([r,g,b]) {
+  const lin = v => { v/=255; return v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); };
+  return .2126*lin(r) + .7152*lin(g) + .0722*lin(b);
+}
+function contrast(a, b) {
+  const la = luminance(a), lb = luminance(b);
+  const [hi, lo] = la > lb ? [la, lb] : [lb, la];
+  return (hi+.05)/(lo+.05);
+}
+function ratingLabel(r) {
+  if (r >= 7) return ['AAA', 'ok'];
+  if (r >= 4.5) return ['AA', 'ok'];
+  if (r >= 3) return ['AA Large', 'warn'];
+  return ['Fail', 'fail'];
+}
+
+function buildSchemes(base) {
+  const hsl = rgbToHsl(hexToRgb(base));
+  return [
+    { name: '互补 Complementary', colors: [hsl, rotate(hsl,180)] },
+    { name: '分裂互补 Split-Complementary', colors: [hsl, rotate(hsl,150), rotate(hsl,210)] },
+    { name: '类似 Analogous', colors: [rotate(hsl,-30), hsl, rotate(hsl,30)] },
+    { name: '三元 Triadic', colors: [hsl, rotate(hsl,120), rotate(hsl,240)] },
+    { name: '四元 Tetradic', colors: [hsl, rotate(hsl,90), rotate(hsl,180), rotate(hsl,270)] },
+  ].map(s => ({ ...s, colors: s.colors.map(c => rgbToHex(hslToRgb(c))) }));
+}
+
+function render() {
+  const base = document.getElementById('hex').value;
+  document.getElementById('picker').value = base;
+  const root = document.getElementById('schemes');
+  root.innerHTML = '';
+  const schemes = buildSchemes(base);
+  schemes.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'scheme';
+    div.innerHTML = `<h3>${s.name}</h3><div class="swatches"></div>`;
+    const sw = div.querySelector('.swatches');
+    s.colors.forEach(c => {
+      const cell = document.createElement('div');
+      const rgb = hexToRgb(c);
+      const textColor = luminance(rgb) > .4 ? '#000' : '#fff';
+      cell.className = 'swatch';
+      cell.style.background = c;
+      cell.style.color = textColor;
+      const cr = contrast(rgb, [5,5,5]).toFixed(2);
+      const [lbl, cls] = ratingLabel(parseFloat(cr));
+      cell.innerHTML = `<div>${c}<br/><span class="contrast ${cls}">vs #050505: ${cr} ${lbl}</span></div>`;
+      cell.addEventListener('click', () => navigator.clipboard.writeText(c));
+      sw.appendChild(cell);
+    });
+    root.appendChild(div);
+  });
+  const css = schemes.flatMap((s,i) => s.colors.map((c,j) => `  --scheme-${i+1}-${j+1}: ${c};`)).join('\n');
+  document.getElementById('css').textContent = `:root {\n${css}\n}`;
+}
+
+document.getElementById('picker').addEventListener('input', e => { document.getElementById('hex').value = e.target.value; render(); });
+document.getElementById('hex').addEventListener('input', e => { if (/^#[0-9a-fA-F]{6}$/.test(e.target.value)) render(); });
+document.getElementById('rand').addEventListener('click', () => {
+  const c = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+  document.getElementById('hex').value = c;
+  render();
+});
+document.getElementById('copy').addEventListener('click', () => navigator.clipboard.writeText(document.getElementById('css').textContent));
+render();
+</script>
+</body>
+</html>

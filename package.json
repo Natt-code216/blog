@@ -16,6 +16,7 @@
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "sitemap": "node scripts/generate-sitemap.mjs",
+    "lint:content": "node scripts/lint-content.mjs",
     "ci": "pnpm install --frozen-lockfile && pnpm run typecheck && pnpm run test:run && pnpm build"
   },
   "dependencies": {

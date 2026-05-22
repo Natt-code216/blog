@@ -44,7 +44,7 @@ npm install
 pnpm dev
 ```
 
-开发服务器将运行在 `http://localhost:5173`
+开发服务器将运行在 `http://localhost:5170`
 
 ### 后端开发服务器
 
@@ -59,6 +59,32 @@ npm run develop
 ```
 
 Strapi 后端将运行在 `http://localhost:1337/admin`
+
+### 📌 端口约定（重要）
+
+为了避免与本机其他项目冲突，本项目**固定使用以下端口**，不要随意修改：
+
+| 服务 | 端口 | 说明 |
+|------|------|------|
+| 前端 Vite | **5170** | `vite.config.ts` 中已设 `strictPort: true`，被占即报错，不静默漂移 |
+| 后端 Strapi | **1337** | Strapi 默认端口 |
+
+**为什么不用 Vite 默认的 5173？**
+Strapi 5 的 admin 面板内部也使用 Vite，开发模式下会抢 5173；同时本机其他项目也可能用 5173，因此本项目主动避开 5173 段。
+
+**如果端口被占用启动失败**：
+1. 先查谁占着：`Get-NetTCPConnection -LocalPort 5170 | Select OwningProcess`
+2. 再看那个进程是什么：`Get-CimInstance Win32_Process -Filter "ProcessId=<PID>" | Select CommandLine`
+3. 如果是本项目的遗留 Node 进程，`Stop-Process -Id <PID> -Force`
+4. 如果是其他项目，**先停掉那个项目**，不要改本项目端口
+
+**如果非要换端口**，需同步修改以下 4 处（保持一致）：
+- `vite.config.ts` → `server.port` 和 `preview.port`
+- `scripts/check-ports.mjs` → `PORTS` 数组
+- `backend/config/middlewares.ts` → CORS `origin` 白名单
+- `scripts/generate-sitemap.mjs` → `SITE_URL` 默认值
+
+`pnpm dev` 会先跑 `predev`（`check-ports.mjs`）做预检，端口被占会立即报错，不会进入"启动了但 CORS 不通"的诡异状态。
 
 ## 📂 项目结构
 
@@ -162,7 +188,7 @@ blog/
 # 启动前端开发服务器
 pnpm dev
 
-# 在浏览器中访问 http://localhost:5173
+# 在浏览器中访问 http://localhost:5170
 ```
 
 ### 2. 后端开发
