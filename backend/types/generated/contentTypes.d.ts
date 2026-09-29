@@ -430,6 +430,39 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiChapterChapter extends Struct.CollectionTypeSchema {
+  collectionName: 'chapters';
+  info: {
+    displayName: 'Chapter';
+    pluralName: 'chapters';
+    singularName: 'chapter';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    content: Schema.Attribute.RichText;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    est_read_minutes: Schema.Attribute.Integer;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::chapter.chapter'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Integer & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    tutorial: Schema.Attribute.Relation<'manyToOne', 'api::tutorial.tutorial'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCommentComment extends Struct.CollectionTypeSchema {
   collectionName: 'comments';
   info: {
@@ -502,33 +535,6 @@ export interface ApiEssayEssay extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-  };
-}
-
-export interface ApiChapterChapter extends Struct.CollectionTypeSchema {
-  collectionName: 'chapters';
-  info: {
-    displayName: 'Chapter';
-    pluralName: 'chapters';
-    singularName: 'chapter';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    content: Schema.Attribute.RichText;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
-    est_read_minutes: Schema.Attribute.Integer;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::chapter.chapter'> & Schema.Attribute.Private;
-    order: Schema.Attribute.Integer & Schema.Attribute.Required;
-    publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'title'>;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
-    tutorial: Schema.Attribute.Relation<'manyToOne', 'api::tutorial.tutorial'>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
   };
 }
 
@@ -1127,8 +1133,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::comment.comment': ApiCommentComment;
       'api::chapter.chapter': ApiChapterChapter;
+      'api::comment.comment': ApiCommentComment;
       'api::essay.essay': ApiEssayEssay;
       'api::tool.tool': ApiToolTool;
       'api::tutorial.tutorial': ApiTutorialTutorial;

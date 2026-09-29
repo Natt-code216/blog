@@ -25,6 +25,46 @@ Nginx 将 Strapi 登录 Cookie 的 `/admin` 路径重写为 `/cms/admin`，以�
 
 ## 构建与发布
 
+### 常规更新（版本化发布）
+
+本机安装 Node.js 24，依照锁文件安装前后端依赖后，先提交本地修改，再从仓库根目录运行：
+
+```bash
+python3 deploy/release.py
+```
+
+脚本使用 SSH 连接 `root@102.134.52.187`，可用 `BLOG_SSH_HOST` 覆盖。不会记录服务器密码，也不会自动推送 GitHub。
+
+每次发布依次执行类型检查、全部前端测试、前后端生产构建、上传校验、线上备份、内容同步、版本切换及公网验收。工作区或 Git 提交在构建过程中变化时中止发布。版本格式为 `UTC时间-Git提交短码`；成功后创建本地 Git 标签 `deploy/版本号`，可通过 `git push origin 标签名` 单独推送。
+
+- `/opt/blog/releases/版本号/release.json`：提交、源码树、构建时间、锁文件和 schema 校验信息。
+- 同目录 `source.tar.gz`：此提交的完整已跟踪源码；`SHA256SUMS`：上传内容的校验和（运行时创建环境软链接之前）。
+- `/version.json`：当前网站的发布版本。
+- `/opt/blog/previous`：上次运行的发布目录。
+- `/opt/blog/shared/releases.log`：成功、失败和回滚记录。
+- `/opt/blog/shared/backups/发布事件/`：切换前数据库、上传文件及 Nginx/systemd 配置。不会自动删除旧版或备份。
+
+运行时环境、管理员、上传文件及生产 PostgreSQL 数据库持续复用。仓库中的随笔和教程按 slug 更新正文和元数据并发布，保留 documentId；不删除 CMS 中额外添加的条目。源码包含的文章是这些同名条目的来源，后台对同名正文的编辑应先写回仓库。收藏和工具目录随前端构建发布。不会用本地 SQLite 覆盖生产数据库。
+
+部署前备份时会短暂停止后端。健康检查或内容校验失败时，脚本恢复切换前的数据库和代码；若数据库恢复失败则保留停止状态并报错，备份仍在原目录。
+
+### 查看与回滚
+
+在服务器执行：
+
+```bash
+bash /opt/blog/current/deploy/server-release.sh status
+cat /opt/blog/shared/releases.log
+# 后端 API/schema 相同时：只回退代码，保留最新数据
+bash /opt/blog/current/deploy/server-release.sh rollback 目标版本号
+# API/schema 有变化时：使用日志里此次发布对应的备份，回退代码及数据
+bash /opt/blog/current/deploy/server-release.sh restore 目标版本号 /opt/blog/shared/backups/此次发布事件
+```
+
+完整恢复仅允许回到该备份记录的上一版，会把数据库恢复到当时快照；上线后新增的数据不会保留在回退后的数据库中，但执行回退前也会再次备份当前数据库和上传文件。若首次旧版没有管理脚本，应先使用当前新版的脚本运行回滚命令。不要直接删除 `current`、`previous` 指向的版本目录。
+
+### 手动构建参考
+
 前端构建时设置 `VITE_API_URL=/cms/api`，后台构建时设置 `NODE_ENV=production`、`PUBLIC_URL=https://www.blog.offerready.cn/cms` 和 `TRUST_PROXY=true`：
 
 ```bash
