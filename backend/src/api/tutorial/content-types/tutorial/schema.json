@@ -39,10 +39,20 @@
       "type": "integer",
       "default": 1
     },
+    "chaptersCount": {
+      "type": "integer",
+      "default": 1
+    },
     "order": {
       "type": "integer",
       "default": 100,
       "min": 1
+    },
+    "chapterList": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::chapter.chapter",
+      "mappedBy": "tutorial"
     },
     "icon": {
       "type": "enumeration",

@@ -46,6 +46,8 @@ node backend/scripts/seed-local-content.mjs
 
 需要展示 CMS 内容时，为 Public 角色配置相应内容的 `find` / `findOne` 读取权限，并发布内容。评论的公开读取、审核及邮箱隐私仍需单独完成，详见 [本地调试计划](../docs/LOCAL_DEBUG_PLAN.md)；不要把“打开所有公共写权限”作为修复方法。
 
+启动 Strapi 不会自动写入旧示例文章或清理现有记录。远端旧种子数据已保存在 `docs/archive/backend/`，当前内容请通过明确选择的同步命令导入。`api::chapter.chapter` 模型仍可读取已有独立章节；当前 5 个教程的章节合并在教程正文中。
+
 种子脚本使用 `STRAPI_TOKEN` / `STRAPI_URL` 环境变量，仅在目标数据库明确且可写时手动运行 `pnpm backend:seed`。它不是幂等导入器，重复执行会尝试重复创建；当前不导入 `content/` 全文，也不会自动建立真实工具链接。
 
 ## 部署
@@ -55,4 +57,4 @@ npm run build --prefix backend
 npm run start --prefix backend
 ```
 
-部署前须按实际前端域名调整 `config/middlewares.ts` 中的 CORS，目前仅允许 `http://localhost:5173`。数据库、上传文件持久化和托管说明见 [部署导航](../docs/deployment/README.md)。旧搭建过程保存在 [历史后端文档](../docs/archive/backend/README.md)，当前 schema 以 `src/api/` 为准。
+部署前须按实际前端域名设置 `CORS_ORIGINS`，本地默认允许 `http://localhost:5173` 和 `http://localhost:5170`。数据库、上传文件持久化和托管说明见 [部署导航](../docs/deployment/README.md)。旧搭建过程保存在 [历史后端文档](../docs/archive/backend/README.md)，当前 schema 以 `src/api/` 为准。

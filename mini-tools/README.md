@@ -10,3 +10,5 @@
 在仓库根运行 `pnpm dev`；生产运行 `pnpm build`，发布整个 `dist/`。源码包含模块依赖，不能通过双击 HTML 或只复制本文件夹使用。
 
 完整说明见 [工具开发文档](../docs/tools/README.md)。
+
+此前放在 `public/tools/` 的 14 个独立 HTML 原型保存在 [工具原型归档](../docs/archive/tools/full-tools-2026-09/README.md)。当前站点的工具入口以本目录和 `src/services/toolCatalog.ts` 为准。

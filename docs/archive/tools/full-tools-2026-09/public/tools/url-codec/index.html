@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 编解码</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fcfcfc;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .back-link {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: #fcfcfc; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle { color: #888; margin-bottom: 2rem; }
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .tab {
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    color: #888;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab.active {
+    color: #fcfcfc;
+    border-bottom-color: #fcfcfc;
+  }
+  .tab:hover { color: #fcfcfc; }
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .btn-primary { background: #fcfcfc; color: #050505; border: none; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: transparent;
+    color: #fcfcfc;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); }
+  .panel {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    margin-bottom: 1rem;
+  }
+  .panel:hover { border-color: rgba(255,255,255,0.2); }
+  .panel-label {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: #555;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  textarea, input[type="text"] {
+    width: 100%;
+    background: #111111;
+    color: #fcfcfc;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+  }
+  textarea { min-height: 200px; }
+  .file-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .file-input-wrap {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  .file-input-wrap input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  .mime-input {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    color: #fcfcfc;
+    font-family: inherit;
+    font-size: 0.9rem;
+    min-width: 200px;
+  }
+  .hidden { display: none; }
+  .status {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .status.error {
+    display: block;
+    background: rgba(239,104,104,0.08);
+    color: #ef6868;
+    border: 1px solid rgba(239,104,104,0.2);
+  }
+  .status.success {
+    display: block;
+    background: rgba(110,217,154,0.08);
+    color: #6ed99a;
+    border: 1px solid rgba(110,217,154,0.2);
+  }
+  .file-info {
+    color: #888;
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="./index.html" class="back-link">← 返回工具集</a>
+  <h1>Base64 编解码</h1>
+  <p class="subtitle">支持文本与文件的 Base64 编码解码，兼容中文。</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="text" onclick="switchTab('text')">文本</button>
+    <button class="tab" data-tab="file" onclick="switchTab('file')">文件</button>
+  </div>
+
+  <div id="tab-text">
+    <div class="actions">
+      <button class="btn-primary" onclick="encodeText()">编码</button>
+      <button class="btn-primary" onclick="decodeText()">解码</button>
+      <button class="btn-secondary" onclick="copyText()">复制结果</button>
+      <button class="btn-secondary" onclick="clearText()">清空</button>
+    </div>
+    <div class="panel">
+      <div class="panel-label">输入</div>
+      <textarea id="text-input" spellcheck="false" placeholder="输入文本或 Base64 字符串"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label">输出</div>
+      <textarea id="text-output" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div id="tab-file" class="hidden">
+    <div class="panel" style="padding: 1rem;">
+      <div style="margin-bottom: 0.8rem; color: #888; font-size: 0.85rem;">文件 → Base64</div>
+      <div class="file-row">
+        <div class="file-input-wrap">
+          <button class="btn-secondary">选择文件</button>
+          <input type="file" id="file-input" onchange="fileToBase64()">
+        </div>
+        <span id="file-info" class="file-info"></span>
+      </div>
+      <textarea id="file-output" readonly spellcheck="false" placeholder="选择文件后这里显示 Base64 字符串"></textarea>
+      <div class="actions" style="margin-top: 1rem; margin-bottom: 0;">
+        <button class="btn-secondary" onclick="copyFileB64()">复制</button>
+        <button class="btn-secondary" onclick="downloadB64Text()">下载 .txt</button>
+      </div>
+    </div>
+
+    <div class="panel" style="padding: 1rem;">
+      <div style="margin-bottom: 0.8rem; color: #888; font-size: 0.85rem;">Base64 → 文件</div>
+      <textarea id="b64-input" spellcheck="false" placeholder="粘贴 Base64 字符串"></textarea>
+      <div class="file-row" style="margin-top: 0.8rem;">
+        <input type="text" class="mime-input" id="mime-input" value="application/octet-stream" placeholder="MIME 类型">
+        <input type="text" class="mime-input" id="filename-input" value="decoded.bin" placeholder="文件名">
+        <button class="btn-primary" onclick="b64ToFile()">解码并下载</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="status" class="status"></div>
+</div>
+
+<script>
+  const status = document.getElementById('status');
+  function showStatus(msg, type) { status.textContent = msg; status.className = 'status ' + type; }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.getElementById('tab-text').classList.toggle('hidden', name !== 'text');
+    document.getElementById('tab-file').classList.toggle('hidden', name !== 'file');
+    status.className = 'status';
+  }
+
+  // Unicode-safe encode/decode
+  function utf8Encode(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function utf8Decode(b64) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function encodeText() {
+    const input = document.getElementById('text-input').value;
+    if (!input) { showStatus('请输入文本', 'error'); return; }
+    try {
+      document.getElementById('text-output').value = utf8Encode(input);
+      showStatus('编码成功', 'success');
+    } catch (e) { showStatus('编码失败：' + e.message, 'error'); }
+  }
+
+  function decodeText() {
+    const input = document.getElementById('text-input').value.trim();
+    if (!input) { showStatus('请输入 Base64 字符串', 'error'); return; }
+    try {
+      document.getElementById('text-output').value = utf8Decode(input);
+      showStatus('解码成功', 'success');
+    } catch (e) { showStatus('解码失败：无效的 Base64 字符串', 'error'); }
+  }
+
+  async function copyText() {
+    const v = document.getElementById('text-output').value;
+    if (!v) { showStatus('没有可复制的内容', 'error'); return; }
+    try { await navigator.clipboard.writeText(v); showStatus('已复制', 'success'); }
+    catch (e) { showStatus('复制失败：' + e.message, 'error'); }
+  }
+
+  function clearText() {
+    document.getElementById('text-input').value = '';
+    document.getElementById('text-output').value = '';
+    status.className = 'status';
+  }
+
+  function fileToBase64() {
+    const f = document.getElementById('file-input').files[0];
+    if (!f) return;
+    document.getElementById('file-info').textContent = `${f.name} · ${(f.size/1024).toFixed(2)} KB · ${f.type || '未知类型'}`;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const result = e.target.result;
+      const b64 = result.split(',')[1] || '';
+      document.getElementById('file-output').value = b64;
+      // Sync to decoder side
+      document.getElementById('mime-input').value = f.type || 'application/octet-stream';
+      document.getElementById('filename-input').value = f.name;
+      showStatus('编码完成', 'success');
+    };
+    reader.onerror = () => showStatus('读取文件失败', 'error');
+    reader.readAsDataURL(f);
+  }
+
+  async function copyFileB64() {
+    const v = document.getElementById('file-output').value;
+    if (!v) { showStatus('没有可复制的内容', 'error'); return; }
+    try { await navigator.clipboard.writeText(v); showStatus('已复制', 'success'); }
+    catch (e) { showStatus('复制失败：' + e.message, 'error'); }
+  }
+
+  function downloadB64Text() {
+    const v = document.getElementById('file-output').value;
+    if (!v) { showStatus('没有可下载的内容', 'error'); return; }
+    const blob = new Blob([v], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'base64.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showStatus('已下载 base64.txt', 'success');
+  }
+
+  function b64ToFile() {
+    const b64 = document.getElementById('b64-input').value.trim().replace(/\s/g, '');
+    if (!b64) { showStatus('请输入 Base64 字符串', 'error'); return; }
+    const mime = document.getElementById('mime-input').value.trim() || 'application/octet-stream';
+    const filename = document.getElementById('filename-input').value.trim() || 'decoded.bin';
+    try {
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const blob = new Blob([bytes], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showStatus(`已下载 ${filename}`, 'success');
+    } catch (e) {
+      showStatus('解码失败：无效的 Base64 字符串', 'error');
+    }
+  }
+</script>
+</body>
+</html>

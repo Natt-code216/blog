@@ -1,0 +1,7 @@
+.chapterList { margin-top: 2.5rem; border-top: 1px solid var(--article-border); padding-top: 1.5rem; }
+.chapterList h2 { margin: 0 0 1rem; font-family: var(--font-serif); font-size: 1.5rem; }
+.chapterList ol { margin: 0; padding: 0; list-style: none; }
+.chapterList li + li { border-top: 1px solid var(--article-border); }
+.chapterList a { display: flex; justify-content: space-between; gap: 1rem; padding: .85rem 0; color: var(--text-primary); }
+.chapterList a:hover { color: var(--article-accent); }
+.chapterList small { flex: none; color: var(--text-muted); }

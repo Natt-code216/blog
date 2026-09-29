@@ -28,13 +28,13 @@ export function CollectionPage() {
   return (
     <div className={`container ${styles.page}`}>
       <Helmet>
-        <title>{view === 'reading' ? '值得一读' : '私藏网站'} · 我的收藏 · 我的空间</title>
+        <title>{view === 'reading' ? '值得一读' : '私藏网站'} · 好的分享 · 我的空间</title>
         <meta name="description" content="关于学习、认知、工作与生活的精选阅读，以及几个值得再次打开的网站。" />
       </Helmet>
-      <Link to="/#collection" className={styles.back}>← 返回首页收藏区</Link>
+      <Link to="/#collection" className={styles.back}>← 返回首页分享区</Link>
       <header className={styles.pageHeader}>
         <div>
-          <p className="section-subtitle">A PERSONAL COLLECTION / 我的收藏</p>
+          <p className="section-subtitle">A PERSONAL COLLECTION / 好的分享</p>
           <h1 className="serif">值得反复打开<span className={styles.titleDot}>.</span></h1>
           <p className={styles.intro}>把值得读的文章，和想再次打开的网站，留在这里。</p>
         </div>

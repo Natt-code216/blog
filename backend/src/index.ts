@@ -1,20 +1,6 @@
-// import type { Core } from '@strapi/strapi';
-
+// Content is synchronized explicitly after the target database is selected.
+// Starting Strapi must not create old sample articles or delete existing records.
 export default {
-  /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
-   * This gives you an opportunity to extend code.
-   */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
-
-  /**
-   * An asynchronous bootstrap function that runs before
-   * your application gets started.
-   *
-   * This gives you an opportunity to set up your data model,
-   * run jobs, or perform some special logic.
-   */
-  bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register() {},
+  bootstrap() {},
 };

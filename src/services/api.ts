@@ -26,7 +26,8 @@ export interface ApiTutorial {
   content?: string;
   level: string;
   status: string;
-  chapters: number;
+  chapters?: number;
+  chaptersCount?: number;
   order?: number;
   icon: 'code' | 'layers' | 'zap';
   slug: string;
@@ -43,6 +44,18 @@ export interface ApiTool {
   description: string;
   icon: 'barChart' | 'droplet' | 'fileText' | 'search';
   url: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ApiChapter {
+  id: number;
+  documentId: string;
+  title: string;
+  order: number;
+  content?: string;
+  est_read_minutes?: number | null;
   slug: string;
   createdAt: string;
   updatedAt: string;
@@ -92,6 +105,36 @@ class ApiService {
     });
     const list: ApiTutorial[] = response.data.data || [];
     return list.find(tutorial => tutorial.slug === slug && tutorial.published) || null;
+  }
+
+  async getChaptersByTutorialSlug(tutorialSlug: string): Promise<ApiChapter[]> {
+    try {
+      const response = await axios.get(`${API_URL}/chapters`, {
+        params: {
+          'filters[tutorial][slug][$eq]': tutorialSlug,
+          'sort[0]': 'order:asc',
+          'fields[0]': 'title',
+          'fields[1]': 'order',
+          'fields[2]': 'est_read_minutes',
+          'fields[3]': 'slug',
+        },
+      });
+      return response.data.data || [];
+    } catch {
+      return [];
+    }
+  }
+
+  async getChapter(tutorialSlug: string, order: number): Promise<ApiChapter | null> {
+    const response = await axios.get(`${API_URL}/chapters`, {
+      params: {
+        'filters[tutorial][slug][$eq]': tutorialSlug,
+        'filters[order][$eq]': order,
+        'pagination[limit]': 1,
+      },
+    });
+    const list: ApiChapter[] = response.data.data || [];
+    return list.find(chapter => chapter.order === order) || null;
   }
 
   // 工具列表

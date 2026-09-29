@@ -50,7 +50,7 @@ export function Tutorials() {
               <h2 className="section-title serif" id="tutorials-title">系统化学习</h2>
             </div>
             <p className={styles.sectionNote}>
-              <span>LEARNER / 学习者</span>
+              <span>EXPLORER / 探索者</span>
               把好奇心，变成下一步。
             </p>
           </div>

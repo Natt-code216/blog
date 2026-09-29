@@ -11,7 +11,11 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLDivElement>(
 ): [React.RefObject<T>, boolean] {
   const { threshold = 0.15, rootMargin = '0px 0px -50px 0px', triggerOnce = true } = options;
   const ref = useRef<T>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  // 若用户偏好减少动效，直接视为已可见，跳过滚动揭示动画。
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const [isVisible, setIsVisible] = useState(prefersReducedMotion);
 
   const handleIntersection = useCallback(
     (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {

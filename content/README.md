@@ -23,3 +23,5 @@
 编辑后先运行 `pnpm tutorials:check`，再停止本地 Strapi、执行 `pnpm tutorials:sync` 并重启后端。同步前自动备份本地数据库，按 slug 更新教程并保留 documentId，不影响随笔和工具。分章前旧稿保存在 [教程归档](../docs/archive/tutorials/before-chapters-2026-09/README.md)，不参与同步。
 
 工具介绍稿位于 `tools/`。学习源码时请结合当前 [目录约定](../docs/architecture/README.md)。
+
+远端此前的多主题长篇教程系列保存在 [完整系列归档](../docs/archive/tutorials/full-series-2026-09/README.md)，不会被本地同步脚本读取。它们保留了原始 frontmatter、章节、提纲与参考资料。

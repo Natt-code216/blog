@@ -26,7 +26,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 ::selection { background: #c6ff62; color: #172015; }
 .app { position: relative; min-height: 100vh; }
 .serif { font-family: var(--font-serif); }
-.mono { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; }
+.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; }
 .container {
   width: min(var(--max-width), calc(100% - 96px));
   margin-inline: auto;
@@ -42,28 +42,28 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
   margin-bottom: 28px;
 }
 .section-title {
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 400;
   line-height: 1.3;
   margin: 0;
 }
 .section-subtitle {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--text-secondary);
   margin: 0 0 12px;
 }
 .section-note {
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--text-muted);
   text-align: right;
   margin: 0;
 }
-.section-note span { display: block; font-size: 9px; letter-spacing: .1em; margin-bottom: 6px; }
-.section-related { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; padding-top: 24px; font-size: 12px; color: var(--text-muted); }
+.section-note span { display: block; font-size: 12px; letter-spacing: .1em; margin-bottom: 6px; }
+.section-related { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; padding-top: 24px; font-size: 14px; color: var(--text-muted); }
 .section-related a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--text-secondary); }
 .section-related a:hover { color: var(--accent); }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
@@ -79,18 +79,22 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
   .container { width: calc(100% - 56px); }
   .section-title { font-size: 32px; }
 }
+@media (max-width: 800px) {
+  :root { --nav-height: 108px; }
+}
 @media (max-width: 700px) {
-  :root { --nav-height: 70px; }
   .container { width: calc(100% - 36px); }
   :where(.homePage > section) { padding-top: 48px; }
   .section-header { gap: 14px; padding-bottom: 20px; }
   .section-title { font-size: 29px; }
-  .section-subtitle { font-size: 8px; margin-bottom: 10px; }
-  .section-note { font-size: 10px; max-width: 115px; }
-  .section-note span { font-size: 8px; }
+  .section-subtitle { font-size: 11px; margin-bottom: 10px; }
+  .section-note { font-size: 12px; max-width: 140px; }
+  .section-note span { font-size: 11px; }
 }
-@media (max-width: 560px) {
-  :root { --nav-height: 94px; }
+@media (max-width: 380px) {
+  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .section-header > p { max-width: none; text-align: left; }
+  .section-header > p > span { display: inline; margin-right: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

@@ -8,6 +8,7 @@ import { SearchBar } from '../features/search/SearchBar';
 import { HomePage } from '../pages/HomePage';
 import { EssayDetail } from '../pages/EssayDetail';
 import { TutorialDetail } from '../pages/TutorialDetail';
+import { ChapterDetail } from '../pages/ChapterDetail';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { ToolboxRedirect } from '../features/tools/ToolboxRedirect';
 import { CollectionPage } from '../pages/CollectionPage';
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/essays/:slug" element={<EssayDetail />} />
           <Route path="/tutorials/:slug" element={<TutorialDetail />} />
+          <Route path="/tutorials/:slug/chapters/:order" element={<ChapterDetail />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/mini-tools" element={<ToolboxRedirect />} />
           <Route path="*" element={<NotFoundPage />} />

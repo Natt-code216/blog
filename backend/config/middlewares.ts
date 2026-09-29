@@ -20,7 +20,7 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewar
   {
     name: 'strapi::cors',
     config: {
-      origin: env.array('CORS_ORIGINS', ['http://localhost:5173']),
+      origin: env.array('CORS_ORIGINS', ['http://localhost:5173', 'http://localhost:5170']),
       credentials: true,
     },
   },

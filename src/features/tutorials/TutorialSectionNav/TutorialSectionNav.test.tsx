@@ -6,7 +6,7 @@ import { api } from '../../../services/api';
 import { TutorialDetail } from '../../../pages/TutorialDetail';
 import { getChapterLinks } from './index';
 
-vi.mock('../../../services/api', () => ({ api: { getTutorialBySlug: vi.fn() } }));
+vi.mock('../../../services/api', () => ({ api: { getTutorialBySlug: vi.fn(), getChaptersByTutorialSlug: vi.fn() } }));
 
 const content = `## 学习说明
 
@@ -23,7 +23,10 @@ const content = `## 学习说明
 
 第二章正文。`;
 
-beforeEach(() => { vi.resetAllMocks(); });
+beforeEach(() => {
+  vi.resetAllMocks();
+  vi.mocked(api.getChaptersByTutorialSlug).mockResolvedValue([]);
+});
 afterEach(cleanup);
 
 describe('tutorial chapter quick navigation', () => {

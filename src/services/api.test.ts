@@ -63,6 +63,20 @@ describe('api service', () => {
     });
   });
 
+  describe('getChapter', () => {
+    it('uses the tutorial slug and order and rejects an unrelated result', async () => {
+      mockedAxios.get.mockResolvedValueOnce({ data: { data: [{ order: 2, title: '第二章' }] } });
+      expect(await api.getChapter('react-vite-setup', 1)).toBeNull();
+      expect(mockedAxios.get).toHaveBeenCalledWith(`${API_URL}/chapters`, {
+        params: {
+          'filters[tutorial][slug][$eq]': 'react-vite-setup',
+          'filters[order][$eq]': 1,
+          'pagination[limit]': 1,
+        },
+      });
+    });
+  });
+
   describe.each([
     { endpoint: 'essays', method: 'getEssayBySlug' as const },
     { endpoint: 'tutorials', method: 'getTutorialBySlug' as const },

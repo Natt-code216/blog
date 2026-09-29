@@ -71,3 +71,5 @@ pnpm backend:dev
 - [首页融合设计稿](docs/design/home-fusion.html)：已迁入正式首页，原稿仅作设计参考。
 
 `docs/archive/`、`archive/blog.html` 保留历史资料，开发方法以当前文档为准。许可证：[MIT](LICENSE)。
+
+远端此前的完整教程系列、工具原型和任务清单已按版本保存在 [历史资料目录](docs/archive/README.md)。当前页面使用 `content/tutorials/catalog.json` 中的教程清单和 `/mini-tools/` 工具入口。

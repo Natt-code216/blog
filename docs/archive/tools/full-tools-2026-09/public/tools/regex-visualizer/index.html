@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>正则可视化调试</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg-base:#050505; --text-primary:#fcfcfc; --text-secondary:#888; --border-light:rgba(255,255,255,0.08); --hl:#F0C674; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg-base); color:var(--text-primary); font-family:'Inter',sans-serif; min-height:100vh; line-height:1.7; }
+  .container { max-width:900px; margin:0 auto; padding:2rem; }
+  a.back { color:var(--text-secondary); text-decoration:none; font-size:.9rem; display:inline-block; margin-bottom:1.5rem; }
+  a.back:hover { color:var(--text-primary); }
+  h1 { font-family:'Playfair Display',serif; font-size:2.4rem; margin-bottom:.4rem; }
+  .subtitle { color:var(--text-secondary); margin-bottom:2rem; }
+  .pattern-row { display:flex; gap:.5rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap; }
+  .slash { color:var(--text-secondary); font-family:'JetBrains Mono',monospace; font-size:1.1rem; }
+  input.pattern, input.flags { font-family:'JetBrains Mono',monospace; background:#0a0a0a; color:var(--text-primary); border:1px solid var(--border-light); padding:.55rem .8rem; border-radius:3px; }
+  input.pattern { flex:1; min-width:260px; }
+  input.flags { width:90px; }
+  textarea { font-family:'JetBrains Mono',monospace; width:100%; min-height:160px; background:#0a0a0a; color:var(--text-primary); border:1px solid var(--border-light); padding:.8rem; border-radius:3px; font-size:.95rem; resize:vertical; }
+  .templates { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+  button { font-family:inherit; background:transparent; color:var(--text-primary); border:1px solid var(--border-light); padding:.45rem .9rem; border-radius:3px; cursor:pointer; font-size:.85rem; transition:all .2s; }
+  button:hover { border-color:var(--text-primary); }
+  .out { background:#0a0a0a; border:1px solid var(--border-light); border-radius:3px; padding:1rem; margin-top:1rem; font-family:'JetBrains Mono',monospace; font-size:.95rem; white-space:pre-wrap; word-break:break-all; min-height:60px; }
+  .hl { background:var(--hl); color:#000; padding:0 2px; border-radius:2px; }
+  .groups { margin-top:1.5rem; font-family:'JetBrains Mono',monospace; font-size:.85rem; }
+  .groups h4 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:.5rem; }
+  .meta { color:var(--text-secondary); font-size:.85rem; margin-top:.5rem; }
+  .err { color:#FC7E7E; font-family:'JetBrains Mono',monospace; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="/">← 返回</a>
+  <h1>正则可视化调试</h1>
+  <p class="subtitle">实时高亮匹配，显示捕获组与命名捕获组。</p>
+
+  <div class="templates">
+    <button data-p="\b[\\w.+-]+@[\\w-]+\\.[\\w.-]+\\b" data-f="gi">邮箱</button>
+    <button data-p="https?://[^\\s]+" data-f="gi">URL</button>
+    <button data-p="1[3-9]\\d{9}" data-f="g">中国手机号</button>
+    <button data-p="\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b" data-f="g">IPv4</button>
+    <button data-p="(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})" data-f="g">日期 (命名组)</button>
+  </div>
+
+  <div class="pattern-row">
+    <span class="slash">/</span>
+    <input class="pattern" id="pattern" value="\\b\\w+@\\w+\\.\\w+\\b" />
+    <span class="slash">/</span>
+    <input class="flags" id="flags" value="gi" />
+  </div>
+
+  <textarea id="text">联系我们：hello@example.com 或 support@example.org。
+也可以拨打 13800138000。
+访问 https://example.com/docs 查看文档。
+今日日期 2026-05-23。</textarea>
+
+  <div class="out" id="out"></div>
+  <p class="meta" id="meta"></p>
+
+  <div class="groups" id="groups"></div>
+</div>
+
+<script>
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function run() {
+  const pat = document.getElementById('pattern').value;
+  const fl = document.getElementById('flags').value;
+  const text = document.getElementById('text').value;
+  const out = document.getElementById('out');
+  const meta = document.getElementById('meta');
+  const groupsEl = document.getElementById('groups');
+  let re;
+  try {
+    re = new RegExp(pat, fl.includes('g') ? fl : fl + 'g');
+  } catch (e) {
+    out.innerHTML = `<span class="err">${escapeHtml(e.message)}</span>`;
+    meta.textContent = '';
+    groupsEl.innerHTML = '';
+    return;
+  }
+  const t0 = performance.now();
+  let last = 0, html = '', match, count = 0;
+  const allGroups = [];
+  while ((match = re.exec(text)) !== null) {
+    if (match.index === re.lastIndex) re.lastIndex++;
+    html += escapeHtml(text.slice(last, match.index));
+    html += `<span class="hl">${escapeHtml(match[0])}</span>`;
+    last = match.index + match[0].length;
+    count++;
+    allGroups.push({ index: match.index, full: match[0], groups: match.slice(1), named: match.groups || {} });
+    if (count > 5000) break;
+  }
+  html += escapeHtml(text.slice(last));
+  const ms = (performance.now() - t0).toFixed(2);
+  out.innerHTML = html || '<span class="meta">（无匹配）</span>';
+  meta.textContent = `匹配 ${count} 次 · 耗时 ${ms} ms`;
+  if (allGroups.length) {
+    groupsEl.innerHTML = '<h4>捕获组（前 10 个匹配）</h4>' + allGroups.slice(0,10).map(g => {
+      const groupStr = g.groups.map((v,i) => `  [${i+1}]: ${JSON.stringify(v)}`).join('\n');
+      const namedStr = Object.entries(g.named).map(([k,v]) => `  <${k}>: ${JSON.stringify(v)}`).join('\n');
+      return `@${g.index} ${JSON.stringify(g.full)}\n${groupStr}${namedStr ? '\n' + namedStr : ''}`;
+    }).join('\n\n').replace(/\n/g,'<br/>').replace(/ /g,'&nbsp;');
+  } else {
+    groupsEl.innerHTML = '';
+  }
+}
+
+['pattern','flags','text'].forEach(id => document.getElementById(id).addEventListener('input', run));
+document.querySelectorAll('.templates button').forEach(b => b.addEventListener('click', () => {
+  document.getElementById('pattern').value = b.dataset.p;
+  document.getElementById('flags').value = b.dataset.f;
+  run();
+}));
+run();
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ describe('collection navigation', () => {
     const region = screen.getByRole('region', { name: '关于学习，也关于生活' });
     expect(within(region).getAllByRole('link')).toHaveLength(12);
     expect(screen.getByRole('button', { name: '全部 12' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('link', { name: /返回首页收藏区/ })).toHaveAttribute('href', '/#collection');
+    expect(screen.getByRole('link', { name: /返回首页分享区/ })).toHaveAttribute('href', '/#collection');
     const article = within(region).getByRole('link', { name: /如何自学困难的东西/ });
     expect(article).toHaveAttribute('href', 'https://jvns.ca/blog/2018/09/01/learning-skills-you-can-practice/');
     expect(article).toHaveAttribute('target', '_blank');

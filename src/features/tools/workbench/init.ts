@@ -18,8 +18,8 @@ header.innerHTML = `
       <a href="/">首页</a>
       <a href="/#essays">随笔</a>
       <a href="/#tutorials">教程</a>
-      <a href="${collectionHref()}">收藏</a>
       <a href="${toolboxHref}" aria-current="${isIndex ? 'page' : 'location'}">工具集</a>
+      <a href="${collectionHref()}">好的分享</a>
     </nav>
     <button class="theme-switch" type="button"></button>
   </div>`;
