@@ -63,6 +63,8 @@ bash /opt/blog/current/deploy/server-release.sh restore 目标版本号 /opt/blo
 
 完整恢复仅允许回到该备份记录的上一版，会把数据库恢复到当时快照；上线后新增的数据不会保留在回退后的数据库中，但执行回退前也会再次备份当前数据库和上传文件。若首次旧版没有管理脚本，应先使用当前新版的脚本运行回滚命令。不要直接删除 `current`、`previous` 指向的版本目录。
 
+跨 schema 恢复会重建专用 `blog` 数据库中的 `public` schema，再导入快照，避免新版外键阻挡旧版表的恢复。已在独立临时数据库中验证从包含章节表的新结构恢复到首次部署结构；生产数据库不参与此演练。
+
 ### 手动构建参考
 
 前端构建时设置 `VITE_API_URL=/cms/api`，后台构建时设置 `NODE_ENV=production`、`PUBLIC_URL=https://www.blog.offerready.cn/cms` 和 `TRUST_PROXY=true`：

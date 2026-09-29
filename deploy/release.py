@@ -97,5 +97,8 @@ with tempfile.TemporaryDirectory(prefix='blog-release-') as tmp:
     with open(ROOT / 'deploy/server-release.sh', 'rb') as script:
         run(SSH + [command], stdin=script)
     # Only successful releases receive a tag. No GitHub push is performed here.
-    run(['git', 'tag', '-a', f'deploy/{release}', commit, '-m', f'Published https://www.blog.offerready.cn — {release}'])
+    tag_env = {**os.environ}
+    tag_env.setdefault('GIT_COMMITTER_NAME', output(['git', 'show', '-s', '--format=%cn', commit]))
+    tag_env.setdefault('GIT_COMMITTER_EMAIL', output(['git', 'show', '-s', '--format=%ce', commit]))
+    run(['git', 'tag', '-a', f'deploy/{release}', commit, '-m', f'Published https://www.blog.offerready.cn — {release}'], env=tag_env)
     print(f'Published {release}; Git tag: deploy/{release}', flush=True)

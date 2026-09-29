@@ -75,6 +75,15 @@ printf '%s\n' "$previous" > "$backup/previous-release"
 printf '%s\n' "$target" > "$backup/target-release"
 stopped=0
 database_ready=0
+restore_database() {
+    # A newer release may add foreign keys absent from an older pg_dump.
+    # pg_restore --clean alone cannot drop objects referenced by those new tables.
+    # This database is dedicated to the blog; rebuild its public schema first.
+    runuser -u postgres -- pg_restore --list < "$1" >/dev/null || return 1
+    runuser -u postgres -- psql -v ON_ERROR_STOP=1 -d blog -c \
+        'DROP SCHEMA public CASCADE; CREATE SCHEMA public AUTHORIZATION blog;' || return 1
+    runuser -u postgres -- pg_restore --exit-on-error -d blog < "$1"
+}
 recover() {
     # ERR is inherited by subshells; recovery belongs only to the parent process.
     [[ "$BASHPID" == "$main_pid" ]] || exit 1
@@ -83,7 +92,7 @@ recover() {
     if [[ "$stopped" == 1 ]]; then
         systemctl stop blog || true
         if [[ "$database_ready" == 1 && "$action" != rollback ]]; then
-            if ! runuser -u postgres -- pg_restore --clean --if-exists --exit-on-error -d blog < "$backup/database.dump"; then
+            if ! restore_database "$backup/database.dump"; then
                 echo 'Database recovery failed; service remains stopped. Inspect backup.' >&2
                 exit 1
             fi
@@ -108,7 +117,7 @@ runuser -u postgres -- pg_dump -Fc blog > "$backup/database.dump"
 runuser -u postgres -- pg_restore --list < "$backup/database.dump" > "$backup/database-contents.txt"
 database_ready=1
 if [[ "$action" == restore ]]; then
-    runuser -u postgres -- pg_restore --clean --if-exists --exit-on-error -d blog < "$restore_backup/database.dump"
+    restore_database "$restore_backup/database.dump"
     tar -xzf "$restore_backup/uploads.tar.gz" -C "$base/shared"
 fi
 if [[ "$action" == publish ]]; then
