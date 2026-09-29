@@ -38,21 +38,22 @@ describe('collection navigation', () => {
     await user.click(screen.getByRole('button', { name: '学习与认知' }));
     expect(screen.getByTestId('url')).toHaveTextContent('topic=learning');
     expect(screen.queryByRole('heading', { name: '公开学习' })).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '私藏网站 3' }));
+    await user.click(screen.getByRole('button', { name: '私藏网站 4' }));
     expect(screen.getByTestId('url')).toHaveTextContent('/collection?view=sites');
     expect(screen.queryByRole('group', { name: '阅读主题' })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: '浏览器后退' }));
     expect(screen.getByRole('status')).toHaveTextContent('学习与认知 · 2 篇');
     expect(screen.getByRole('button', { name: '学习与认知' })).toHaveAttribute('aria-pressed', 'true');
     await user.click(screen.getByRole('button', { name: '浏览器前进' }));
-    expect(screen.getByRole('status')).toHaveTextContent('3 个网站');
+    expect(screen.getByRole('status')).toHaveTextContent('4 个网站');
   });
 
   it('opens the website view directly and preserves the supplied destination fragment', async () => {
     const user = userEvent.setup();
     renderCollection('/collection?view=sites');
     const region = screen.getByRole('region', { name: '我的互联网书签' });
-    expect(within(region).getAllByRole('link')).toHaveLength(3);
+    expect(within(region).getAllByRole('link')).toHaveLength(4);
+    expect(within(region).getByRole('link', { name: /准Offer · OfferReady/ })).toHaveAttribute('href', 'https://www.offerready.cn/');
     expect(within(region).getByRole('link', { name: /完美小站/ })).toHaveAttribute('href', 'https://www.9eip.com/#term-80223');
     for (const link of within(region).getAllByRole('link')) {
       expect(link).toHaveAttribute('target', '_blank');

@@ -45,6 +45,7 @@ export const readingLinks: readonly ReadingLink[] = [
 ];
 
 export const collectedSites: readonly CollectedSite[] = [
+  { id: 'offerready', title: '准Offer · OfferReady', monogram: '准', description: '个人自建的大学生 AI 求职面试助手，提供岗位调研、简历匹配分析与面试题预测。', url: 'https://www.offerready.cn/' },
   // Keep the domain until the site's display name and purpose can be verified.
   { id: 'aihot', title: 'aihot.news', monogram: 'A', url: 'https://aihot.news/' },
   { id: 'lks', title: 'LKs 网站推荐合集', monogram: 'LK', description: '从学习、工具到艺术与生活，发现更多有趣的网站。', url: 'https://lkssite.vip/' },
