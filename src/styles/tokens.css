@@ -1,0 +1,62 @@
+/* Shared palette: the approved homepage fusion, in both themes. */
+:root {
+  color-scheme: dark;
+  --bg-base: #080b0c;
+  --bg-surface: #101619;
+  --bg-card: #141a1d;
+  --text-primary: #eeeee8;
+  --text-secondary: #a0a7a7;
+  --text-muted: #8b9790;
+  --border-light: #252e30;
+  --border-hover: #758162;
+  --accent: #c6ff62;
+  --on-accent: #172015;
+  --status-error: #ff9b9b;
+  --status-success: #89dca8;
+  --status-error-bg: #321b20;
+  --status-success-bg: #152b20;
+  --nav-background: #080b0ce8;
+  --nav-scrolled: #080b0cf5;
+  --essay-surface: #151d21;
+  --essay-border: #344650;
+  --essay-accent: #bfd1db;
+  --tutorial-surface: #181620;
+  --tutorial-border: #4e455e;
+  --tutorial-accent: #c7b9fa;
+  --tool-surface: #151e18;
+  --tool-border: #60704e;
+  --tool-accent: #c6ff62;
+  --max-width: 1160px;
+  --nav-height: 80px;
+  --font-serif: 'Songti SC', 'Noto Serif CJK SC', 'STSong', 'SimSun', Georgia, serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg-base: #f7f8f3;
+  --bg-surface: #eff2e9;
+  --bg-card: #ffffff;
+  --text-primary: #202824;
+  --text-secondary: #56615c;
+  --text-muted: #616e65;
+  --border-light: #d7dfd5;
+  --border-hover: #71845e;
+  --accent: #486923;
+  --on-accent: #ffffff;
+  --status-error: #a32735;
+  --status-success: #216c3c;
+  --status-error-bg: #fff0f1;
+  --status-success-bg: #eaf5eb;
+  --nav-background: #f7f8f3eb;
+  --nav-scrolled: #f7f8f3f7;
+  --essay-surface: #eaf0f3;
+  --essay-border: #c1d0d9;
+  --essay-accent: #355e75;
+  --tutorial-surface: #f0ebf7;
+  --tutorial-border: #cfc2e0;
+  --tutorial-accent: #6c498f;
+  --tool-surface: #edf3e5;
+  --tool-border: #9aae80;
+  --tool-accent: #486923;
+}

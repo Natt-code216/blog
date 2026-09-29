@@ -1,15 +1,17 @@
-import { Hero } from '../components/Hero';
-import { Essays } from '../components/Essays';
-import { Tutorials } from '../components/Tutorials';
-import { Tools } from '../components/Tools';
+import { Hero } from '../features/home/Hero';
+import { Essays } from '../features/essays/Essays';
+import { Tutorials } from '../features/tutorials/Tutorials';
+import { Tools } from '../features/tools/Tools';
+import { CollectionGateway } from '../features/collection/CollectionGateway';
 
 export function HomePage() {
   return (
-    <main>
+    <div className="homePage">
       <Hero />
       <Essays />
       <Tutorials />
       <Tools />
-    </main>
+      <CollectionGateway />
+    </div>
   );
 }

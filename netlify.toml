@@ -4,9 +4,9 @@
 
 [build.environment]
   # 部署时请在 Netlify 站点设置中配置：
-  # VITE_API_URL = "https://your-strapi-backend.example.com"
-  NODE_VERSION = "20"
-  PNPM_VERSION = "8"
+  # VITE_API_URL = "https://your-strapi-backend.example.com/api"
+  NODE_VERSION = "24"
+  PNPM_VERSION = "10.34.6"
 
 [[redirects]]
   from = "/*"

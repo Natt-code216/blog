@@ -1,0 +1,20 @@
+.card + .card { margin-top: 24px; }
+.row { display: flex; gap: 16px; align-items: flex-end; }
+.row > div { flex: 1; min-width: 0; }
+.row > button { flex-shrink: 0; }
+.timestamp-input > div:first-child { flex: 2; }
+.now { font-family: var(--font-mono); color: var(--accent); font-size: clamp(26px, 4vw, 36px); overflow-wrap: anywhere; }
+.now-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.result { margin-top: 20px; padding: 16px; background: var(--bg-base); border: 1px solid var(--border-light); border-radius: 10px; font-size: 14px; }
+.result .item { display: flex; justify-content: space-between; gap: 20px; padding: 10px 0; border-bottom: 1px solid var(--border-light); }
+.result .item:last-child { border: 0; }
+.result .k { color: var(--text-secondary); }
+.result .v { color: var(--text-primary); font-family: var(--font-mono); overflow-wrap: anywhere; text-align: right; min-width: 0; }
+.card .hint { margin-top: 12px; }
+@media (max-width: 700px) {
+  .row { flex-direction: column; align-items: stretch; }
+  .result .item { flex-direction: column; gap: 4px; }
+  .result .v { text-align: left; }
+  .now-row .now { width: 100%; }
+}
+.result .error { color: var(--status-error); }

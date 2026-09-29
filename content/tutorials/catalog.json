@@ -1,0 +1,64 @@
+[
+  {
+    "slug": "react-vite-setup",
+    "title": "从零搭建 React + Vite + TypeScript 项目",
+    "description": "从开发环境到组件和样式，再到状态交互，用三章做出一个可运行的阅读清单。",
+    "level": "A_level",
+    "icon": "code",
+    "status": "A更新中",
+    "order": 1,
+    "chapters": [
+      "01-environment.md",
+      "02-components.md",
+      "03-state.md"
+    ]
+  },
+  {
+    "slug": "strapi-headless-cms",
+    "title": "用 Strapi 5 搭建 Headless CMS 后端",
+    "description": "从本地启动、内容模型到发布与公开读取，完成一条真正能被前端访问的教程记录。",
+    "level": "B_level",
+    "icon": "layers",
+    "status": "A更新中",
+    "order": 2,
+    "chapters": [
+      "01-content-api.md"
+    ]
+  },
+  {
+    "slug": "frontend-backend-integration",
+    "title": "前后端联调与数据加载状态",
+    "description": "接入真实教程接口，区分加载、成功、空列表和失败，并验证重试与请求清理。",
+    "level": "B_level",
+    "icon": "zap",
+    "status": "A更新中",
+    "order": 3,
+    "chapters": [
+      "01-real-data.md"
+    ]
+  },
+  {
+    "slug": "routing-and-detail-pages",
+    "title": "用 React Router 实现详情页与路由",
+    "description": "用稳定的 slug 连接列表和正文，处理不存在的文章、安全渲染和路由切换。",
+    "level": "B_level",
+    "icon": "layers",
+    "status": "A更新中",
+    "order": 4,
+    "chapters": [
+      "01-detail-route.md"
+    ]
+  },
+  {
+    "slug": "deploy-to-production",
+    "title": "部署上线：从本地构建到发布验收",
+    "description": "理清静态前端、常驻后端和持久化数据的部署关系，完成上线前检查与故障定位。",
+    "level": "B_level",
+    "icon": "zap",
+    "status": "A更新中",
+    "order": 5,
+    "chapters": [
+      "01-release.md"
+    ]
+  }
+]

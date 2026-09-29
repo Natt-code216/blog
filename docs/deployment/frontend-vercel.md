@@ -3,7 +3,7 @@
 ## 前置条件
 
 - 代码已推送到 GitHub / GitLab / Bitbucket
-- 已有可访问的后端 API（参考 [backend-railway.md](./backend-railway.md) 或 [backend-render.md](./backend-render.md)）
+- 已有可访问的后端 API（参考 [backend-railway.md](backend-railway.md) 或 [backend-render.md](backend-render.md)）
 - 根目录已存在 `vercel.json`
 
 ## 步骤
@@ -28,7 +28,7 @@
 }
 ```
 
-如果 Vercel 默认使用 npm，可以在 **Settings → General → Node.js Version** 选择 20.x，并在 **Build & Development Settings** 中确认 `installCommand` 已被 `vercel.json` 覆盖。
+如果 Vercel 默认使用 npm，可以在 **Settings → General → Node.js Version** 选择 24.x，并在 **Build & Development Settings** 中确认 `installCommand` 已被 `vercel.json` 覆盖。
 
 ### 3. 环境变量
 
@@ -36,7 +36,7 @@
 
 | Key | Value | 环境 |
 | --- | --- | --- |
-| `VITE_API_URL` | `https://your-strapi.example.com` | Production / Preview |
+| `VITE_API_URL` | `https://your-strapi.example.com/api` | Production / Preview |
 
 > Vite 只会注入以 `VITE_` 开头的变量到客户端。改完环境变量后必须 **Redeploy** 才生效。
 

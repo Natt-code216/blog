@@ -1,61 +1,58 @@
-# 🚀 Getting started with Strapi
+# Strapi 内容后端
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+当前锁定 Strapi 5.37.1；本目录是独立 npm 项目，使用 `package-lock.json`。仓库推荐 Node.js 24，符合本目录声明的 Node 20–24 范围。
 
-### `develop`
-
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
-
-```
-npm run develop
-# or
-yarn develop
+```bash
+# 在仓库根目录执行
+npm ci --prefix backend
+cp backend/.env.example backend/.env
 ```
 
-### `start`
+先编辑 `backend/.env`，为 `APP_KEYS`、`API_TOKEN_SALT`、`ADMIN_JWT_SECRET`、`TRANSFER_TOKEN_SALT`、`JWT_SECRET` 等变量设置独立的随机值，不要提交真实环境文件。数据库按 `config/database.ts` 配置；本地可使用 SQLite。
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
+```bash
+npm run develop --prefix backend
 ```
 
-### `build`
+首次访问 `http://localhost:1337/admin` 创建本地管理员。前端 `.env.local` 设置：
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
-npm run build
-# or
-yarn build
+```dotenv
+VITE_API_URL=http://localhost:1337/api
 ```
 
-## ⚙️ Deployment
+### 本地内容预览
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+如需在空的本地 SQLite 数据库中调试文章页面，先停止 Strapi，再从仓库根目录运行：
 
+```bash
+node backend/scripts/seed-local-content.mjs
 ```
-yarn strapi deploy
+
+脚本仅接受默认的 `backend/.tmp/data.db`，同步当前 3 篇随笔和 5 个教程。写入前自动在 `.tmp/before-content-sync-时间戳.db` 备份已有数据库。随笔按 slug 更新并保留 documentId，已移出内容目录的旧随笔会取消发布并保留为草稿；教程按 `content/tutorials/catalog.json` 和分章 Markdown 更新已有正文、学习顺序和章数，同样保留 documentId，不删除清单之外的教程。它只给随笔、教程和工具开放公开读取，不开放评论写入。随后重新启动后端并打开首页。此库和 `.env` 都被 Git 忽略，不会同步到 GitHub。
+
+只同步随笔时执行 `pnpm essays:sync`（同样先停止 Strapi）。详情 API 的精确筛选格式为 `filters[slug][$eq]`；省略 `$` 会导致筛选失效。
+
+只同步教程时执行 `pnpm tutorials:sync`，同样先停止 Strapi；它不修改随笔和工具，只补齐教程读取权限。可先运行 `pnpm tutorials:check` 校验稿件，此命令不启动 Strapi、不访问数据库。章节数从清单中实际列出的文件计算，目前为 3、1、1、1、1；首页按 `order` 升序显示。后续编辑与来源说明见 [教程维护指南](../content/tutorials/README.md)。后台手工改过的教程会被仓库稿件覆盖，需保留的改动请先写回源文件。
+
+## 内容与目录
+
+- `src/api/essay/`：随笔。
+- `src/api/tutorial/`：教程。
+- `src/api/tool/`：工具卡片。
+- `src/api/comment/`：评论。
+- `config/`：数据库、服务、安全和 CORS 配置。
+- `scripts/seed.js`：可选示例数据写入脚本。
+- `types/generated/`：Strapi 生成类型，随 schema 更新。
+
+需要展示 CMS 内容时，为 Public 角色配置相应内容的 `find` / `findOne` 读取权限，并发布内容。评论的公开读取、审核及邮箱隐私仍需单独完成，详见 [本地调试计划](../docs/LOCAL_DEBUG_PLAN.md)；不要把“打开所有公共写权限”作为修复方法。
+
+种子脚本使用 `STRAPI_TOKEN` / `STRAPI_URL` 环境变量，仅在目标数据库明确且可写时手动运行 `pnpm backend:seed`。它不是幂等导入器，重复执行会尝试重复创建；当前不导入 `content/` 全文，也不会自动建立真实工具链接。
+
+## 部署
+
+```bash
+npm run build --prefix backend
+npm run start --prefix backend
 ```
 
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+部署前须按实际前端域名调整 `config/middlewares.ts` 中的 CORS，目前仅允许 `http://localhost:5173`。数据库、上传文件持久化和托管说明见 [部署导航](../docs/deployment/README.md)。旧搭建过程保存在 [历史后端文档](../docs/archive/backend/README.md)，当前 schema 以 `src/api/` 为准。

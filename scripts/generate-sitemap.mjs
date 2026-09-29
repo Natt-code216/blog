@@ -32,6 +32,7 @@ async function fetchAll(endpoint) {
 
   const urls = [
     { loc: `${SITE}/`, lastmod: new Date().toISOString() },
+    { loc: `${SITE}/collection`, lastmod: new Date().toISOString() },
     ...essays.map((e) => ({
       loc: `${SITE}/essays/${e.slug}`,
       lastmod: e.updatedAt || new Date().toISOString(),

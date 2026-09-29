@@ -1,0 +1,13 @@
+.nav { padding: 20px 0 16px 20px; border-left: 1px solid var(--article-border); }
+.kicker { margin: 0 0 8px; color: var(--text-muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: .13em; }
+.title { margin: 0 0 18px; color: var(--text-primary); font-family: var(--font-serif); font-size: 20px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li + li { margin-top: 5px; }
+.link { position: relative; display: flex; align-items: baseline; gap: 10px; padding: 10px 0; color: var(--text-secondary); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; transition: color .2s ease; }
+.link::before { content: ''; position: absolute; width: 2px; top: 8px; bottom: 8px; left: -21px; background: transparent; }
+.link:hover, .active { color: var(--article-accent); }
+.active::before { background: var(--article-accent); }
+.number { flex: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 10px; }
+.topLink { display: inline-block; margin-top: 18px; padding-block: 8px; color: var(--text-muted); font-size: 12px; }
+.topLink:hover { color: var(--article-accent); }
+@media (prefers-reduced-motion: reduce) { .link { transition: none; } }

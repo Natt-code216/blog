@@ -1,0 +1,37 @@
+.navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--nav-height);
+  z-index: 100;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--nav-background);
+  backdrop-filter: blur(16px);
+  transition: background .25s ease;
+}
+.scrolled { background: var(--nav-scrolled); }
+.inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.logo { font-size: 23px; letter-spacing: .035em; white-space: nowrap; }
+.logo span { color: var(--text-secondary); font-style: italic; }
+.navbar ul { display: flex; align-items: center; gap: 35px; list-style: none; margin: 0; padding: 0; }
+.navLink { display: block; position: relative; padding: 12px 0; color: var(--text-secondary); font-size: 12px; letter-spacing: .08em; transition: color .2s ease; }
+.navLink:hover, .navLink.active { color: var(--text-primary); }
+.active::after { content: ''; position: absolute; left: 50%; bottom: 3px; width: 3px; height: 3px; background: var(--accent); border-radius: 50%; }
+@media (max-width: 700px) {
+  .logo { font-size: 19px; }
+  .navbar ul { gap: 18px; }
+  .navLink { font-size: 11px; letter-spacing: 0; }
+}
+@media (max-width: 390px) {
+  .inner { gap: 12px; }
+  .navbar ul { gap: 13px; }
+}
+@media (max-width: 350px) {
+  .logo { font-size: 17px; }
+  .navbar ul { gap: 10px; }
+}
+@media (max-width: 560px) {
+  .inner { display: grid; grid-template-columns: 1fr; gap: 0; align-content: center; padding: 8px 0 4px; }
+  .logo { justify-self: start; font-size: 18px; line-height: 1.5; }
+  .navbar ul { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+  .navLink { min-height: 44px; padding: 12px 0; text-align: center; font-size: 12px; }
+}

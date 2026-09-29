@@ -1,0 +1,2 @@
+.editor-grid textarea { min-height: 380px; font-family: var(--font-mono); }
+@media (max-width: 700px) { .editor-grid textarea { min-height: 250px; } }

@@ -1,0 +1,100 @@
+.section { padding: 80px 0 83px; }
+.projectGrid { display: grid; grid-template-columns: 1.22fr 1fr; gap: 18px; }
+.project { border: 1px solid var(--border-light); border-radius: 13px; overflow: hidden; position: relative; min-width: 0; transition: border-color .25s ease; }
+.project > a { display: block; height: 100%; color: var(--text-primary); text-decoration: none; }
+.project > a:focus-visible { outline: 2px solid var(--accent); outline-offset: -5px; border-radius: 13px; }
+.toolbox { grid-row: span 2; background: var(--tool-surface); border-color: var(--tool-border); }
+.toolbox:hover { border-color: var(--tool-accent); }
+.projectTop { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--text-secondary); padding: 25px 26px; font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace); }
+.cardTag { font-size: 9px; letter-spacing: .08em; border: 1px solid var(--tool-border); border-radius: 4px; padding: 6px 8px; }
+.projectNumber { color: var(--text-muted); font-size: 10px; letter-spacing: .09em; }
+.toolCanvas { position: relative; height: 211px; display: grid; place-items: center; margin: 0 23px; border-radius: 7px; background-image: radial-gradient(color-mix(in srgb, var(--tool-border) 65%, transparent) .8px, transparent .8px); background-size: 15px 15px; }
+.toolCanvas::after { content: 'SMALL TOOLS. BIG HELP.'; color: var(--text-muted); font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace); position: absolute; bottom: 2px; font-size: 8px; letter-spacing: .18em; }
+.toolTile { display: grid; place-items: center; position: absolute; width: 98px; height: 108px; border-radius: 14px; border: 1px solid var(--tool-border); background: color-mix(in srgb, var(--tool-surface) 88%, var(--tool-accent)); box-shadow: 0 13px 28px #080c081a; color: var(--tool-accent); transition: transform .3s ease; }
+.toolTile > span { font-size: 36px; letter-spacing: -.08em; margin-top: 10px; }
+.toolTile small { align-self: start; font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace); font-size: 9px; }
+.tileOne { transform: translate(-103px, 6px) rotate(-14deg); }
+.tileTwo { z-index: 2; transform: translate(0, -12px) rotate(6deg); background: #c6ff62; color: #182217; border-color: #c6ff62; }
+.tileThree { transform: translate(99px, 8px) rotate(18deg); }
+.toolbox:hover .tileOne { transform: translate(-109px, 0) rotate(-18deg); }
+.toolbox:hover .tileTwo { transform: translate(0, -20px) rotate(1deg); }
+.toolbox:hover .tileThree { transform: translate(105px, 2px) rotate(22deg); }
+.projectCopy { padding: 24px 28px 28px; }
+.projectCopy h3 { font-size: 26px; font-weight: 550; margin: 0 0 10px; letter-spacing: -.035em; line-height: 1.5; }
+.projectCopy p { font-size: 12px; color: var(--text-secondary); line-height: 1.8; margin: 0; }
+.cardBottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 24px; color: var(--text-muted); font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace); font-size: 9px; letter-spacing: .04em; }
+.arrowDisc { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--tool-border); border-radius: 50%; color: var(--tool-accent); font-size: 18px; }
+.smallProject > a { display: flex; justify-content: space-between; align-items: center; padding: 27px 27px 27px 29px; gap: 16px; }
+.smallProject .projectCopy { padding: 0; min-width: 0; }
+.smallProject .cardKicker { font-size: 9px; margin-bottom: 18px; color: var(--tutorial-accent); font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace); letter-spacing: .08em; }
+.smallProject h3 { font-size: 21px; line-height: 1.5; margin-bottom: 8px; }
+.smallProject p { max-width: 220px; font-size: 11px; }
+.jsonProject { background: var(--tutorial-surface); }
+.jsonProject:hover { border-color: var(--tutorial-accent); }
+.stackVisual { flex: 0 0 115px; height: 140px; position: relative; transform: rotate(-9deg); }
+.stackVisual div { position: absolute; display: grid; place-items: center; width: 106px; height: 60px; border-radius: 9px; border: 1px solid var(--tutorial-border); background: color-mix(in srgb, var(--tutorial-surface) 88%, var(--tutorial-accent)); transform: skewY(-14deg); color: var(--tutorial-accent); font-size: 12px; font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace); box-shadow: 8px 12px 0 #0002; }
+.stackVisual div:nth-child(1) { top: 76px; left: 0; }
+.stackVisual div:nth-child(2) { top: 43px; left: 7px; background: color-mix(in srgb, var(--tutorial-surface) 75%, var(--tutorial-accent)); }
+.stackVisual div:nth-child(3) { top: 8px; left: 14px; background: #c7b9fa; border-color: #dacfff; color: #282034; }
+.markdownProject { background: var(--essay-surface); }
+.markdownProject:hover { border-color: var(--essay-accent); }
+.markdownProject .cardKicker { color: var(--essay-accent); }
+.noteVisual { flex: 0 0 113px; width: 113px; height: 130px; border: 1px solid var(--essay-border); border-radius: 7px; background: color-mix(in srgb, var(--essay-surface) 89%, var(--essay-accent)); transform: rotate(10deg); padding: 18px 14px; }
+.noteVisual::before { content: '✳'; color: var(--essay-accent); font-size: 31px; line-height: 1; }
+.noteVisual i { display: block; height: 1px; background: var(--essay-accent); opacity: .7; margin-top: 13px; width: 100%; }
+.noteVisual i:last-child { width: 60%; }
+.shortcuts { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; padding-top: 25px; color: var(--text-secondary); font-size: 11px; }
+.shortcuts > span { color: var(--text-muted); }
+.shortcuts a { color: inherit; text-decoration: none; }
+.shortcuts a:hover { color: var(--tool-accent); }
+.recommendations { margin-top: 36px; }
+.recommendations > h3 { font-size: 13px; font-weight: 400; color: var(--text-secondary); margin-bottom: 14px; }
+.recommendationGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.recommendation { padding: 20px; border: 1px solid var(--border-light); border-radius: 10px; background: var(--bg-card); text-decoration: none; color: var(--text-primary); }
+.recommendation:hover { border-color: var(--tool-border); }
+.recommendation h4 { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+.recommendation p { font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
+.notice { margin: 22px 0 0; font-size: 11px; color: var(--text-muted); }
+.notice button { background: none; border: 0; color: var(--text-secondary); font: inherit; padding: 6px 10px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 900px) and (min-width: 701px) {
+  .smallProject > a { padding: 24px 20px; gap: 12px; }
+  .stackVisual, .noteVisual { flex-basis: 82px; transform: scale(.78) rotate(8deg); transform-origin: center; }
+  .stackVisual div { width: 82px; height: 50px; font-size: 10px; }
+  .stackVisual div:nth-child(2) { left: 4px; }
+  .stackVisual div:nth-child(3) { left: 8px; }
+  .smallProject h3 { font-size: 19px; }
+}
+
+@media (max-width: 700px) {
+  .section { padding: 48px 0 50px; }
+  .projectGrid { grid-template-columns: 1fr; gap: 14px; }
+  .toolbox { grid-row: auto; }
+  .toolCanvas { height: 193px; }
+  .projectTop { padding: 24px; }
+  .projectCopy { padding: 23px 24px; }
+  .smallProject .projectCopy { padding: 0; }
+  .smallProject > a { min-height: 211px; padding: 24px; }
+  .smallProject h3 { font-size: 22px; }
+  .smallProject .cardKicker { margin-bottom: 15px; }
+  .stackVisual, .noteVisual { flex-basis: 96px; }
+  .tileOne, .toolbox:hover .tileOne { transform: translate(-92px, 6px) rotate(-14deg); }
+  .tileThree, .toolbox:hover .tileThree { transform: translate(87px, 8px) rotate(18deg); }
+  .toolTile { width: 88px; height: 103px; }
+  .shortcuts { line-height: 1.8; gap: 14px; }
+}
+
+@media (max-width: 360px) {
+  .smallProject > a { padding: 20px; gap: 9px; }
+  .smallProject h3 { font-size: 20px; }
+  .stackVisual, .noteVisual { flex-basis: 76px; transform: scale(.8) rotate(8deg); transform-origin: center; }
+  .projectTop { padding: 24px 18px; }
+  .projectNumber { font-size: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project, .toolTile { transition: none; }
+  .toolbox:hover .tileOne { transform: translate(-103px, 6px) rotate(-14deg); }
+  .toolbox:hover .tileTwo { transform: translate(0, -12px) rotate(6deg); }
+  .toolbox:hover .tileThree { transform: translate(99px, 8px) rotate(18deg); }
+}

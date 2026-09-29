@@ -1,0 +1,11 @@
+.qr-grid textarea { min-height: 128px; }
+.opts-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.opts-row input[type="color"] { width: 100%; height: 44px; padding: 4px; cursor: pointer; }
+.qr-grid .actions { margin-top: 24px; }
+.qr-preview { min-width: 0; align-self: center; }
+/* The generated image is a paper artifact: it keeps its chosen colors in either UI theme. */
+.qr-box { display: grid; place-items: center; background: var(--bg-base); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; min-height: 300px; }
+.qr-box canvas { max-width: 100%; height: auto !important; }
+.qr-box p { color: var(--text-secondary); text-align: center; }
+.qr-preview .hint { margin-top: 14px; }
+@media (max-width: 700px) { .qr-box { min-height: 260px; } }

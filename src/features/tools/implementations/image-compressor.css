@@ -1,0 +1,14 @@
+.compression-list { display: grid; gap: 14px; list-style: none; padding: 0; }
+.compression-item { display: flex; align-items: center; gap: 18px; min-width: 0; padding: 20px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px; }
+.compression-item img { width: 72px; height: 72px; flex-shrink: 0; object-fit: contain; border-radius: 8px; background: var(--bg-surface); }
+.compression-info { flex: 1; min-width: 0; }
+.compression-name { color: var(--text-primary); font-size: 14px; overflow-wrap: anywhere; }
+.compression-meta { margin-top: 6px; font-size: 13px; color: var(--text-secondary); overflow-wrap: anywhere; }
+.compression-meta.error { color: var(--status-error); }
+.compression-meta.success { color: var(--status-success); }
+.compression-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.compression-actions .btn { padding: 9px 13px; min-height: 42px; }
+#q { min-height: 44px; }
+#qv { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) { .compression-item { flex-wrap: wrap; padding: 16px; gap: 12px; } .compression-actions { flex-basis: 100%; justify-content: flex-end; } }
+@media (max-width: 360px) { .compression-item img { width: 48px; height: 48px; } }

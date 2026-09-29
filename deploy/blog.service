@@ -1,0 +1,20 @@
+[Unit]
+Description=OfferReady Blog Strapi
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=blog
+Group=blog
+WorkingDirectory=/opt/blog/current/backend
+EnvironmentFile=/opt/blog/shared/backend.env
+Environment=PATH=/opt/blog-node/bin:/usr/local/bin:/usr/bin:/bin
+Environment=NODE_OPTIONS=--max-old-space-size=384
+ExecStart=/opt/blog-node/bin/node node_modules/@strapi/strapi/bin/strapi.js start
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+SyslogIdentifier=blog
+
+[Install]
+WantedBy=multi-user.target

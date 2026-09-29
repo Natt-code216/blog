@@ -2,7 +2,7 @@
 
 ## 前置准备
 
-与 [Railway 文档](./backend-railway.md) 相同的三大前提：
+与 [Railway 文档](backend-railway.md) 相同的三大前提：
 
 1. 数据库切到 Postgres（Render 提供托管 Postgres）。
 2. 重新生成 `APP_KEYS` / `API_TOKEN_SALT` / `ADMIN_JWT_SECRET` / `JWT_SECRET` / `TRANSFER_TOKEN_SALT` / `ENCRYPTION_KEY`。

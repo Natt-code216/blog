@@ -31,9 +31,9 @@ Netlify 会自动识别。UI 中的 Build command / Publish directory 留空即�
 Netlify 默认使用 npm。需要让其识别 pnpm：
 
 - 方法 A（推荐）：`netlify.toml` 已通过 `PNPM_VERSION` 环境变量声明。
-- 方法 B：在 **Site settings → Build & deploy → Environment** 添加 `PNPM_VERSION = 8`。
+- 方法 B：在 **Site settings → Build & deploy → Environment** 添加 `PNPM_VERSION = 10.34.6`。
 
-如果构建报 `pnpm: command not found`，确认 Node 版本为 20（`NODE_VERSION = 20`，已在 `netlify.toml` 中声明），Netlify 自带 corepack 会激活 pnpm。
+如果构建报 `pnpm: command not found`，确认 Node 版本为 24（`NODE_VERSION = 24`，已在 `netlify.toml` 中声明），Netlify 自带 corepack 会激活 pnpm。
 
 ### 4. 环境变量
 
@@ -41,7 +41,7 @@ Netlify 默认使用 npm。需要让其识别 pnpm：
 
 | Key | Value |
 | --- | --- |
-| `VITE_API_URL` | `https://your-strapi.example.com` |
+| `VITE_API_URL` | `https://your-strapi.example.com/api` |
 
 修改后点击 **Trigger deploy → Clear cache and deploy site**。
 

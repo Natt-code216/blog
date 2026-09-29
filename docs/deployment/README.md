@@ -15,12 +15,13 @@
 
 ## 文档索引
 
+- [自建服务器：www.blog.offerready.cn](server.md)
 - 前端部署
-  - [部署到 Vercel](./frontend-vercel.md)
-  - [部署到 Netlify](./frontend-netlify.md)
+  - [部署到 Vercel](frontend-vercel.md)
+  - [部署到 Netlify](frontend-netlify.md)
 - 后端部署
-  - [部署到 Railway](./backend-railway.md)
-  - [部署到 Render](./backend-render.md)
+  - [部署到 Railway](backend-railway.md)
+  - [部署到 Render](backend-render.md)
 
 ## 通用注意事项
 

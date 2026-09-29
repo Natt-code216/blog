@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface FetchState<T> {
   data: T[];
   loading: boolean;
   error: string | null;
+  refetch: () => void;
 }
 
 export function useApiFetch<T>(fetchFn: () => Promise<T[]>): FetchState<T> {
@@ -14,10 +15,15 @@ export function useApiFetch<T>(fetchFn: () => Promise<T[]>): FetchState<T> {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [attempt, setAttempt] = useState(0);
+  const refetch = useCallback(() => setAttempt(value => value + 1), []);
+
   useEffect(() => {
     let cancelled = false;
 
     const doFetch = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const result = await fetchRef.current();
         if (!cancelled) {
@@ -34,7 +40,7 @@ export function useApiFetch<T>(fetchFn: () => Promise<T[]>): FetchState<T> {
 
     doFetch();
     return () => { cancelled = true; };
-  }, []);
+  }, [attempt]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch };
 }

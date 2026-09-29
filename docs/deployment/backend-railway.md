@@ -149,7 +149,7 @@ export default ({ env }) => ({
 
 ### 7. 暴露公网域名
 
-**Settings → Networking → Generate Domain**，得到 `*.up.railway.app` 地址。这就是前端 `VITE_API_URL` 要填的值（不带 `/api` 后缀）。
+**Settings → Networking → Generate Domain**，得到 `*.up.railway.app` 地址。前端 `VITE_API_URL` 需要在这个域名后追加 `/api`，例如 `https://your-app.up.railway.app/api`。
 
 ### 8. 配置 CORS
 

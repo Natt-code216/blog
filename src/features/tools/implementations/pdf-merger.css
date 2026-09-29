@@ -1,0 +1,8 @@
+.pdf-file-list { list-style: none; padding: 0; display: grid; gap: 12px; margin-top: 24px; }
+.pdf-file-list:empty { display: none; }
+.pdf-file-item { display: flex; align-items: center; gap: 16px; min-width: 0; padding: 16px; background: var(--bg-base); border: 1px solid var(--border-light); border-radius: 10px; }
+.pdf-file-info { flex: 1; min-width: 0; }
+.pdf-file-name { display: block; font-size: 14px; overflow-wrap: anywhere; }
+.pdf-file-pages { color: var(--text-secondary); font-size: 13px; }
+.pdf-file-actions { display: flex; flex-shrink: 0; gap: 8px; }
+@media (max-width: 480px) { .pdf-file-item { flex-wrap: wrap; padding: 12px; gap: 12px; } .pdf-file-info { flex-basis: 100%; } .pdf-file-actions { margin-left: auto; } }

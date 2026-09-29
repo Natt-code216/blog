@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useApiFetch } from './useApiFetch';
 
@@ -60,4 +60,27 @@ describe('useApiFetch', () => {
     // After unmount, no throw; data remains the initial value
     expect(result.current.data).toEqual([]);
   });
+  it('retries a failed request and clears the previous error', async () => {
+    const fetchFn = vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce([42]);
+    const { result } = renderHook(() => useApiFetch<number>(fetchFn));
+    await waitFor(() => expect(result.current.error).toBe('offline'));
+    act(() => result.current.refetch());
+    await waitFor(() => expect(result.current.data).toEqual([42]));
+    expect(result.current.error).toBeNull();
+    expect(result.current.loading).toBe(false);
+    expect(fetchFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not let an older request overwrite a newer retry result', async () => {
+    let resolveOld!: (value: number[]) => void;
+    const fetchFn = vi.fn()
+      .mockImplementationOnce(() => new Promise<number[]>(resolve => { resolveOld = resolve; }))
+      .mockResolvedValueOnce([2]);
+    const { result } = renderHook(() => useApiFetch<number>(fetchFn));
+    act(() => result.current.refetch());
+    await waitFor(() => expect(result.current.data).toEqual([2]));
+    await act(async () => resolveOld([1]));
+    expect(result.current.data).toEqual([2]);
+  });
+
 });

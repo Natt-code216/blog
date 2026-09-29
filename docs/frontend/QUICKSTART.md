@@ -1,190 +1,56 @@
-# 🌟 前端快速开始
+# 前端快速开始
 
-本文档将帮助您快速了解和使用本项目的前端部分。
+在仓库根目录执行命令。推荐 Node.js 24，包管理器固定 `pnpm@10.34.6`；使用 nvm 时先执行 `nvm install`、`nvm use`，确认本地版本。
 
-## 🎯 快速启动
-
-### 1. 安装依赖
+## 安装与启动
 
 ```bash
-pnpm install
-```
-
-### 2. 启动开发服务器
-
-```bash
+pnpm install --frozen-lockfile
+# 首次配置时执行；已有 .env.local 时编辑原文件
+cp .env.example .env.local
 pnpm dev
 ```
 
-浏览器将自动打开 `http://localhost:5173`
+开发地址以终端为准，通常为 `http://localhost:5173`。一个服务提供首页、详情和全部工具：
 
-### 3. 访问项目
+- 主站：`/`
+- 工具目录：`/mini-tools/index.html`
+- 例如 JSON 工具：`/mini-tools/json-formatter.html`
 
-打开浏览器访问: `http://localhost:5173`
+工具源 HTML 引用 npm 模块，必须通过 Vite 开发或构建，不能双击 HTML 使用。工具不依赖 CMS，也不从 CDN 加载处理库。
 
----
+## 连接内容后台
 
-## 📂 前端项目结构
+`.env.local` 的公开 API 地址必须包含 `/api`：
 
-```
-src/
-├── main.tsx              # 应用入口
-├── App.tsx               # 根组件
-├── App.css               # 全局样式
-├── components/           # 组件目录
-│   ├── Navbar/           # 导航栏组件
-│   ├── Hero/             # 首页 Hero
-│   ├── Essays/           # 随笔板块
-│   ├── Tutorials/        # 教程板块
-│   ├── Tools/            # 工具集板块
-│   ├── Footer/           # 页脚组件
-│   └── ScrollReveal/     # 滚动动画包装组件
-├── hooks/                # React Hooks
-│   ├── useScrollSpy.ts           # 导航高亮逻辑
-│   └── useIntersectionObserver.ts # 滚动揭示动画
-├── services/             # API 服务
-│   └── api.ts            # API 请求封装
-├── types/                # TypeScript 类型定义
-└── utils/                # 工具函数
+```dotenv
+VITE_API_URL=http://localhost:1337/api
 ```
 
----
-
-## 🛠️ 开发指南
-
-### 修改内容数据
-
-所有内容数据都在各个组件文件中定义：
-
-- **随笔**: `src/components/Essays/index.tsx`
-- **教程**: `src/components/Tutorials/index.tsx`
-- **工具**: `src/components/Tools/index.tsx`
-- **导航**: `src/components/Navbar/index.tsx`
-- **页脚**: `src/components/Footer/index.tsx`
-
-### 修改样式
-
-- **全局样式**: `src/App.css`
-- **组件样式**: 对应的 `.module.css` 文件
-- **颜色变量**: 在 `:root` 中定义的 CSS 变量
-
-### 修改导航高亮
-
-滚动高亮逻辑在 `src/hooks/useScrollSpy.ts` 中，可通过修改 `offset` 参数调整触发位置。
-
----
-
-## 🔌 后端集成
-
-前端通过 REST API 从 Strapi 后端获取内容数据。
-
-### API 服务
-
-API 服务位于 `src/services/api.ts`，封装了所有数据请求。
-
-### 数据获取
-
-- **随笔**: `GET /api/essays`
-- **教程**: `GET /api/tutorials`
-- **工具**: `GET /api/tools`
-
-### 示例代码
-
-```typescript
-import api from '../services/api';
-
-// 获取随笔数据
-const essays = await api.getEssays();
-
-// 获取教程数据
-const tutorials = await api.getTutorials();
-
-// 获取工具数据
-const tools = await api.getTools();
-```
-
-详细集成代码请参考: [后端集成指南](../backend/FRONTEND_INTEGRATION.md)
-
----
-
-## 🎨 样式定制
-
-### 字体
-
-- **标题**: Playfair Display (优雅衬线)
-- **正文**: Inter (现代无衬线)
-
-### 配色方案
-
-- **背景**: `#050505` (深色)
-- **文字**: `#fcfcfc` (浅色)
-- **边框**: `rgba(255, 255, 255, 0.08)`
-
-### 布局
-
-- **最大宽度**: 1200px
-- **固定导航栏**: 80px
-- **响应式网格系统**
-
----
-
-## 📦 项目命令
-
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev` | 启动开发服务器 |
-| `pnpm build` | 构建生产版本 |
-| `pnpm preview` | 预览生产构建 |
-
----
-
-## 🌐 部署
-
-### 构建生产版本
+首次设置后端：
 
 ```bash
-pnpm build
+npm ci --prefix backend
+cp backend/.env.example backend/.env
+# 按 backend/README.md 生成并填写密钥
+pnpm backend:dev
 ```
 
-构建产物将输出到 `dist/` 目录
+已有后台配置时保留原密钥。进入 `http://localhost:1337/admin` 配置内容和读取权限，详见 [后端说明](../../backend/README.md)。前端只需要公开地址，不应写入管理令牌或后端密钥。
 
-### 部署到静态托管
+旧数据库尚未接回；启动空后台不会恢复历史文章。`content/` 里的 Markdown 是稿件，不会自动显示在首页。未连接后台时，文章区显示可重试的连接失败；API 成功返回空列表时才显示空内容。
 
-可部署到以下平台：
+## 验证与发布产物
 
-- **Vercel** (推荐)
-- **Netlify**
-- **GitHub Pages**
-- **Cloudflare Pages**
+```bash
+pnpm typecheck
+pnpm test:run
+pnpm build
+pnpm preview
+```
 
----
+`vite.config.ts` 收集根目录 `mini-tools/` 的 HTML，统一输出主站、工具页和依赖到 `dist/`。验证时访问预览服务的首页、工具目录、单工具及深层文章路径；切换主题后跨页面导航，检查手机尺寸。发布完整 `dist/`，不要只复制工具 HTML。
 
-## 📝 类型定义
+`pnpm check:ports` 用于手动诊断；`pnpm sitemap` 是需要 CMS 的独立步骤，不会随构建执行。生产环境变量与路由托管见 [部署说明](../deployment/README.md)。
 
-项目使用 TypeScript，所有类型定义在 `src/types/index.ts`：
-
-- `Essay`: 随笔数据类型
-- `Tutorial`: 教程数据类型
-- `Tool`: 工具数据类型
-- `NavItem`: 导航项类型
-
----
-
-## 🔧 配置文件
-
-- **TypeScript 配置**: `tsconfig.json`
-- **Vite 配置**: `vite.config.ts`
-- **Package 配置**: `package.json`
-
----
-
-## 📚 更多文档
-
-- [项目总览](../../README.md)
-- [后端快速开始](../backend/快速开始指南.md)
-- [后端完整搭建](../backend/01-完整搭建指南.md)
-- [组件说明](./COMPONENTS.md) (待完善)
-
----
-
-**© 2026 前端开发文档**
+下一步：[目录架构](../architecture/README.md) · [组件与页面](COMPONENTS.md) · [样式与主题](STYLING.md) · [工具开发](../tools/README.md)。

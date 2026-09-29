@@ -1,226 +1,46 @@
-# 📦 组件详细说明
+# 组件与页面
 
-本文档将详细说明项目中的各个组件。
+`src/main.tsx` 挂载 React 并组合 Helmet、主题与 Router。`src/app/App.tsx` 负责导航、页脚、搜索、主题切换和路由。
 
-## 目录
+## 页面入口
 
-- [Navbar - 导航栏](#navbar---导航栏)
-- [Hero - 首页](#hero---首页)
-- [Essays - 随笔](#essays---随笔)
-- [Tutorials - 教程](#tutorials---教程)
-- [Tools - 工具集](#tools---工具集)
-- [Footer - 页脚](#footer---页脚)
-- [ScrollReveal - 滚动动画](#scrollreveal---滚动动画)
+| 路径 | 入口 | 数据来源 |
+| --- | --- | --- |
+| `/` | `pages/HomePage.tsx` | 首页介绍、CMS 列表、本地工具目录 |
+| `/essays/:slug` | `pages/EssayDetail.tsx` | 随笔 API；评论按 documentId 关联 |
+| `/tutorials/:slug` | `pages/TutorialDetail.tsx` | 教程 API |
+| 未匹配的主站路径 | `pages/NotFoundPage.tsx` | 明确 404，不回退成首页 |
+| `/mini-tools/index.html` | `mini-tools/index.html` | `services/toolCatalog.ts` |
+| `/mini-tools/<tool>.html` | 相应 HTML | 浏览器本地处理 |
 
----
+工具属于 Vite 多页面入口，不属于 React Router。工具用普通 `<a>` 跳转，随笔与教程用 `<Link>`；不要把 `.html` 链接交给 Router。
 
-## Navbar - 导航栏
+## 模块归属
 
-**位置**: `src/components/Navbar/`
+以下路径相对于 `src/`：
 
-**功能**: 顶部固定导航栏，支持滚动高亮和响应式
+| 模块 | 职责 |
+| --- | --- |
+| `components/layout/Navbar/`、`Footer/` | 主站导航、锚点和页脚 |
+| `components/layout/ArticleLayout/` | 阅读列、标题、元信息，以及加载/失败/404 状态 |
+| `components/ui/MarkdownContent/` | 正文排版，表格与代码块局部滚动 |
+| `utils/renderMarkdown.ts` | Markdown 解析与 HTML 消毒，阅读页和 Markdown 工具共用 |
+| `pages/useArticle.ts` | 详情请求、重试、切换文章时忽略过期响应 |
+| `features/home/Hero/` | 首页身份标题、绿色星球和暂停动效 |
+| `features/essays/Essays/`、`tutorials/Tutorials/` | 列表与加载/失败/空状态 |
+| `features/tools/Tools/` | 首页三色卡片、真实工具入口、可选 CMS 推荐 |
+| `features/tools/workbench/` | 工具公用导航/主题按钮、表单/上传区、目录 |
+| `features/tools/implementations/` | 工具业务处理和局部样式 |
+| `features/comments/Comments/` | 评论表单、请求错误/重试/提交反馈，自己的 CSS Module |
+| `features/search/SearchBar/` | Ctrl/Cmd + K 搜索、焦点管理、CMS 失败降级 |
+| `app/theme.ts`、`app/providers/ThemeContext.tsx` | 共享主题状态与 React 订阅 |
 
-**Props**: 无
+首页列表使用 `hooks/useApiFetch.ts`；接口和 API 类型集中在 `services/api.ts`，必要的数据转换放 `utils/transformData.ts`。详情区分连接失败和内容不存在，返回链接始终回到对应列表。
 
-**状态**:
-- 使用 `useScrollSpy` hook 跟踪滚动位置
-- 根据滚动高度调整透明度
+评论 API 将后端 `authorName` 映射为界面的 `author`，提交时使用后端字段。加载失败不会被伪装成空列表，提交失败保留用户草稿。邮箱隐私与审核规则仍需后台验收；不要因界面可操作就宣称生产评论流程已完成。
 
-**样式**:
-- 固定定位，高度 80px
-- 背景: 透明 → 半透明渐变
-- 支持深色主题
+搜索始终包含 `services/toolCatalog.ts` 的 11 个工具，CMS 数据按需加载；某类请求失败不隐藏其他来源。本地工具地址不依赖后台推荐列表。
 
----
+## 新增或修改功能
 
-## Hero - 首页
-
-**位置**: `src/components/Hero/`
-
-**功能**: 首页展示区域，包含个人简介和导航入口
-
-**Props**: 无
-
-**内容**:
-- 个人头像
-- 姓名和简介
-- 社交链接
-
-**样式**:
-- 全屏高度
-- 垂直居中
-- 响应式布局
-
----
-
-## Essays - 随笔
-
-**位置**: `src/components/Essays/`
-
-**功能**: 展示随笔文章卡片网格
-
-**Props**:
-- `data: Essay[]` - 随笔数据数组
-
-**数据结构**:
-```typescript
-interface Essay {
-  id: number;
-  title: string;
-  excerpt: string;
-  date: string;
-  tags: string[];
-  readTime: string;
-  // ... 其他字段
-}
-```
-
-**布局**:
-- 3列网格 (桌面端)
-- 响应式调整列数
-- 卡片悬停效果
-
----
-
-## Tutorials - 教程
-
-**位置**: `src/components/Tutorials/`
-
-**功能**: 展示教程列表
-
-**Props**:
-- `data: Tutorial[]` - 教程数据数组
-
-**数据结构**:
-```typescript
-interface Tutorial {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  difficulty: string;
-  duration: string;
-  // ... 其他字段
-}
-```
-
-**布局**:
-- 列表视图
-- 分类筛选 (待实现)
-- 难度标记
-
----
-
-## Tools - 工具集
-
-**位置**: `src/components/Tools/`
-
-**功能**: 展示实用工具卡片网格
-
-**Props**:
-- `data: Tool[]` - 工具数据数组
-
-**数据结构**:
-```typescript
-interface Tool {
-  id: number;
-  name: string;
-  description: string;
-  category: string;
-  link: string;
-  // ... 其他字段
-}
-```
-
-**布局**:
-- 玻璃态卡片
-- 2-3列网格
-- 点击跳转外部链接
-
----
-
-## Footer - 页脚
-
-**位置**: `src/components/Footer/`
-
-**功能**: 页脚信息展示
-
-**Props**: 无
-
-**内容**:
-- 版权信息
-- 社交链接
-- 友情链接 (可选)
-
-**样式**:
-- 固定底部
-- 浅色文字
-- 响应式布局
-
----
-
-## ScrollReveal - 滚动动画
-
-**位置**: `src/components/ScrollReveal/`
-
-**功能**: 包装组件，提供滚动揭示动画效果
-
-**Props**:
-- `children: ReactNode` - 子组件
-- `delay?: number` - 延迟时间 (ms)
-
-**动画效果**:
-- 从下到上淡入
-- 使用 `useIntersectionObserver` hook
-- 支持自定义延迟
-
-**使用示例**:
-```tsx
-<ScrollReveal delay={100}>
-  <Essays data={essays} />
-</ScrollReveal>
-```
-
----
-
-## Hooks
-
-### useScrollSpy
-
-**位置**: `src/hooks/useScrollSpy.ts`
-
-**功能**: 监听滚动位置，控制导航高亮
-
-**返回值**:
-```typescript
-{
-  activeSection: string; // 当前激活的导航项
-}
-```
-
-### useIntersectionObserver
-
-**位置**: `src/hooks/useIntersectionObserver.ts`
-
-**功能**: 实现滚动揭示动画
-
-**参数**:
-```typescript
-(
-  threshold?: number,  // 触发阈值
-  rootMargin?: string  // 根边距
-) => [ref, isIntersecting]
-```
-
----
-
-## 待完善
-
-- [ ] 组件 Props 类型文档
-- [ ] 组件使用示例代码
-- [ ] 组件样式说明
-- [ ] 组件交互逻辑说明
-
----
-
-**© 2026 组件文档**
+先确定业务归属再选入口。新增工具需添加 HTML 入口、实现模块和目录项，见 [工具开发](../tools/README.md)。新增 API 放 `services/`；通用 UI 不应依赖具体路由页面。组件样式和测试与源码放在一起，重点覆盖请求状态、输入边界和真实渲染行为。

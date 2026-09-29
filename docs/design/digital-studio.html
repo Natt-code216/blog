@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0e11" />
+    <meta name="description" content="暗色数字工作室视觉概念：开发手记、技术探索与实用小工具。" />
+    <title>Natt / 数字工作室 · 视觉概念</title>
+    <style>
+      :root { color-scheme: dark; --bg: #0b0e11; --surface: #12171b; --ink: #eeeee6; --muted: #a0a8a7; --line: #293033; --lime: #c6ff62; --violet: #c7b9fa; }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; -webkit-font-smoothing: antialiased; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; }
+      button, a { touch-action: manipulation; }
+      button { cursor: pointer; }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--lime); outline-offset: 6px; }
+      ::selection { background: var(--lime); color: var(--bg); }
+      .wrap { width: min(1280px, calc(100% - 112px)); margin-inline: auto; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 11px; letter-spacing: .09em; }
+      .skip { position: absolute; z-index: 10; left: 16px; top: -80px; padding: 14px; background: var(--lime); color: var(--bg); }
+      .skip:focus { top: 16px; }
+      .site-header { height: 106px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+      .brand { display: flex; gap: 11px; align-items: center; font-size: 28px; font-weight: 750; letter-spacing: -.065em; }
+      .brand-symbol { height: 30px; width: 30px; display: grid; place-items: center; background: var(--lime); color: var(--bg); font-size: 34px; font-weight: 500; border-radius: 7px; line-height: 1; padding-top: 3px; }
+      .navigation { display: flex; gap: 35px; align-items: center; margin-left: 62px; }
+      .navigation a { font-size: 13px; color: var(--muted); transition: color .2s; }
+      .navigation a:hover { color: var(--lime); }
+      .github-link { display: flex; align-items: center; gap: 19px; border: 1px solid #3b4244; border-radius: 30px; padding: 11px 17px; font-size: 12px; }
+      .github-link:hover { border-color: var(--lime); color: var(--lime); }
+      .hero { display: grid; grid-template-columns: 1.09fr 1fr; position: relative; gap: 16px; padding-top: 83px; padding-bottom: 67px; }
+      .eyebrow { display: flex; align-items: center; gap: 11px; color: var(--muted); }
+      .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 16px #c6ff6244; }
+      .hero h1 { margin: 30px 0 25px -5px; font-weight: 700; font-size: clamp(46px, 5.55vw, 80px); line-height: 1.22; letter-spacing: -.065em; }
+      .hero h1 span { color: var(--lime); }
+      .hero-description { color: var(--muted); font-size: 14px; line-height: 1.95; margin: 0; letter-spacing: .02em; }
+      .hero-actions { display: flex; gap: 24px; align-items: center; margin-top: 34px; }
+      .button-primary { border: 1px solid var(--lime); display: inline-flex; align-items: center; justify-content: space-between; gap: 30px; background: var(--lime); color: var(--bg); padding: 15px 21px; border-radius: 7px; font-size: 13px; font-weight: 650; transition: background .2s, transform .2s; }
+      .button-primary:hover { background: #d9ff9c; transform: translateY(-2px); }
+      .text-link { display: inline-flex; align-items: center; gap: 14px; font-size: 12px; }
+      .text-link:hover { color: var(--lime); }
+      .hero-footnote { display: flex; gap: 20px; margin-top: 42px; color: #7e898b; font-size: 10px; }
+      .hero-footnote span + span::before { content: "/"; margin-right: 20px; color: #485154; }
+      .art { position: relative; align-self: center; margin-top: -5px; height: 420px; background-image: linear-gradient(#ffffff04 1px, transparent 1px), linear-gradient(90deg, #ffffff04 1px, transparent 1px); background-size: 38px 38px; }
+      .art::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 20%, var(--bg) 74%); pointer-events: none; }
+      .art-label { position: absolute; top: 17px; left: 40px; z-index: 1; color: #889390; font-size: 9px; }
+      .art-label::before { content: "+"; display: inline-block; margin-right: 10px; color: var(--lime); }
+      .orbital { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 30px #b9ff4012); }
+      .orbital-motion { transform-origin: 250px 220px; animation: float 9s ease-in-out infinite; }
+      .orbit-dot { transform-origin: 250px 220px; animation: orbit 22s linear infinite; }
+      .art-controls { position: absolute; bottom: 13px; left: 40px; right: 6px; display: flex; align-items: center; justify-content: space-between; }
+      .art-coordinate { color: #7f8d88; font-size: 9px; }
+      .motion-toggle { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); color: #bcc6bc; background: #101619; padding: 9px 12px; border-radius: 20px; font-size: 10px; }
+      .motion-toggle:hover { border-color: #8d9c80; }
+      .motion-light { width: 5px; height: 5px; border-radius: 50%; background: var(--lime); }
+      .is-paused .orbital-motion, .is-paused .orbit-dot { animation-play-state: paused; }
+      .is-paused .motion-light { background: var(--muted); }
+      .hero-sticker { position: absolute; right: 0; top: 245px; color: #112015; background: var(--lime); border: 5px solid var(--bg); padding: 12px 18px; border-radius: 10px; transform: rotate(-8deg); font-size: 11px; font-weight: 700; box-shadow: 0 10px 25px #0005; }
+      .hero-sticker span { display: block; font-size: 8px; font-weight: 500; margin-bottom: 4px; letter-spacing: .08em; }
+      .manifesto { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 26px 0; border-block: 1px solid var(--line); color: #c2c8c1; font-size: clamp(13px, 1.65vw, 22px); font-weight: 650; letter-spacing: -.015em; }
+      .manifesto .asterisk { font-size: 28px; color: var(--lime); font-weight: 400; line-height: .75; }
+      .section { padding-top: 73px; }
+      .section-heading { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 27px; gap: 25px; }
+      .section-kicker { color: #909d95; margin: 0 0 10px; font-size: 10px; }
+      h2 { font-size: 31px; font-weight: 600; letter-spacing: -.045em; line-height: 1.3; margin: 0; }
+      h2 .quiet { color: #747f7f; font-weight: 400; }
+      .filters { display: flex; gap: 5px; background: #121719; border: 1px solid var(--line); border-radius: 28px; padding: 4px; }
+      .filter { border: 0; background: transparent; color: var(--muted); padding: 9px 15px; font-size: 11px; border-radius: 23px; transition: background .2s, color .2s; }
+      .filter[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+      .filter:hover[aria-pressed="false"] { color: var(--ink); background: #253031; }
+      .project-grid { display: grid; grid-template-columns: 1.22fr 1fr; gap: 18px; }
+      .project { border: 1px solid var(--line); border-radius: 13px; overflow: hidden; position: relative; background: var(--surface); min-width: 0; }
+      .project[hidden] { display: none; }
+      .project > a { display: block; height: 100%; }
+      .project > a:focus-visible { outline-offset: -5px; border-radius: 13px; }
+      .project:hover { border-color: #627052; }
+      .tool-project { grid-row: span 2; display: flex; flex-direction: column; background: #151e18; }
+      .project-top { display: flex; justify-content: space-between; align-items: center; color: #b3c0a9; padding: 25px 26px; }
+      .card-tag { font-size: 9px; border: 1px solid #687452; border-radius: 4px; padding: 6px 8px; }
+      .project-number { color: #7d8d73; font-size: 10px; }
+      .tool-canvas { position: relative; height: 211px; display: grid; place-items: center; margin: 0 23px; border-radius: 7px; background-image: radial-gradient(#72895455 .8px, transparent .8px); background-size: 15px 15px; }
+      .tool-canvas::after { content: "SMALL TOOLS. BIG HELP."; color: #819376; font-family: "SFMono-Regular", Consolas, monospace; position: absolute; bottom: 2px; font-size: 8px; letter-spacing: .18em; }
+      .tool-tile { display: grid; place-items: center; position: absolute; width: 98px; height: 108px; border-radius: 14px; border: 1px solid #60704e; background: #2b3927; box-shadow: 0 13px 28px #080c0860; color: var(--lime); transition: transform .3s; }
+      .tool-tile .glyph { font-size: 36px; letter-spacing: -.08em; margin-top: 10px; }
+      .tool-tile small { align-self: start; font-family: "SFMono-Regular", Consolas, monospace; font-size: 9px; }
+      .tile-1 { transform: translate(-103px, 6px) rotate(-14deg); }
+      .tile-2 { z-index: 2; transform: translate(0, -12px) rotate(6deg); background: var(--lime); color: #182217; border-color: var(--lime); }
+      .tile-3 { transform: translate(99px, 8px) rotate(18deg); }
+      .tool-project:hover .tile-1 { transform: translate(-109px, 0) rotate(-18deg); }
+      .tool-project:hover .tile-2 { transform: translate(0, -20px) rotate(1deg); }
+      .tool-project:hover .tile-3 { transform: translate(105px, 2px) rotate(22deg); }
+      .project-copy { padding: 24px 28px 28px; }
+      .project-copy h3 { font-size: 26px; font-weight: 550; margin: 0 0 10px; letter-spacing: -.035em; }
+      .project-copy p { font-size: 12px; color: #b0baa8; line-height: 1.8; margin: 0; }
+      .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; color: #9ba992; font-size: 9px; }
+      .arrow-disc { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #5a6c4c; border-radius: 50%; color: var(--lime); font-size: 18px; }
+      .small-project > a { display: flex; justify-content: space-between; align-items: center; padding: 27px 27px 27px 29px; gap: 16px; }
+      .small-project .project-copy { padding: 0; }
+      .small-project .section-kicker { font-size: 9px; margin-bottom: 18px; color: #a89cbf; }
+      .small-project h3 { font-size: 21px; line-height: 1.5; margin-bottom: 8px; }
+      .small-project p { color: var(--muted); max-width: 220px; font-size: 11px; }
+      .small-project .card-bottom { margin-top: 24px; color: #8c9497; }
+      .architecture { background: #181721; }
+      .architecture:hover { border-color: #79708f; }
+      .stack-visual { flex: 0 0 115px; height: 140px; position: relative; transform: rotate(-9deg); }
+      .stack-visual div { position: absolute; display: grid; place-items: center; width: 106px; height: 60px; border-radius: 9px; border: 1px solid #6c608a; background: #252031; transform: skewY(-14deg); color: var(--violet); font-size: 12px; font-family: "SFMono-Regular", Consolas, monospace; box-shadow: 8px 12px 0 #0002; }
+      .stack-visual div:nth-child(1) { top: 76px; left: 0; color: #a199b4; }
+      .stack-visual div:nth-child(2) { top: 43px; left: 7px; background: #393048; }
+      .stack-visual div:nth-child(3) { top: 8px; left: 14px; background: #c7b9fa; border-color: #dacfff; color: #282034; }
+      .journal-project { background: #171c20; }
+      .journal-project .section-kicker { color: #9bafbb; }
+      .note-visual { flex: 0 0 113px; width: 113px; height: 130px; border: 1px solid #53626d; border-radius: 7px; background: #23313a; transform: rotate(10deg); padding: 18px 14px; position: relative; }
+      .note-visual::before { content: "✳"; color: #c7dce9; font-size: 31px; line-height: 1; }
+      .note-visual i { display: block; height: 1px; background: #91a3af; margin-top: 13px; width: 100%; }
+      .note-visual i:last-child { width: 62%; }
+      .project-grid.is-filtered { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .project-grid.is-filtered .tool-project { grid-row: auto; }
+      .project-grid.is-filtered .small-project { min-height: 254px; }
+      .journal-section { padding-bottom: 74px; }
+      .journal-list { border-top: 1px solid var(--line); }
+      .journal-entry { border-bottom: 1px solid var(--line); }
+      .journal-entry summary { list-style: none; display: grid; grid-template-columns: 60px 1fr 170px 28px; gap: 20px; align-items: center; padding: 25px 4px; cursor: pointer; }
+      .journal-entry summary::-webkit-details-marker { display: none; }
+      .journal-entry summary:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
+      .journal-entry summary:hover .entry-title { color: var(--lime); }
+      .entry-index { color: #7e8a87; font-size: 10px; }
+      .entry-title { font-size: 17px; font-weight: 450; transition: color .2s; }
+      .entry-meta { color: #94a09a; font-size: 9px; text-align: right; }
+      .entry-plus { font-size: 21px; color: #a4aea4; text-align: right; transition: transform .2s; }
+      details[open] .entry-plus { transform: rotate(45deg); color: var(--lime); }
+      .entry-body { margin: 0 198px 26px 84px; font-size: 13px; color: var(--muted); line-height: 1.9; max-width: 700px; }
+      .entry-body p { margin: 0 0 9px; }
+      .entry-body a { color: var(--lime); text-decoration: underline; text-underline-offset: 4px; }
+      .footer-banner { display: flex; align-items: center; justify-content: space-between; padding: 38px 0; border-top: 1px solid var(--line); gap: 30px; }
+      .footer-motto { font-size: clamp(27px, 3.3vw, 47px); font-weight: 650; letter-spacing: -.055em; line-height: 1.2; }
+      .footer-motto span { color: var(--lime); }
+      .footer-caption { color: #8c9992; font-size: 11px; margin: 12px 0 0; }
+      .back-top { display: flex; align-items: center; gap: 18px; color: #c2cdc0; }
+      .back-top .arrow-disc { width: 45px; height: 45px; font-size: 22px; }
+      .footer-meta { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); padding: 19px 0 28px; font-size: 9px; color: #869187; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+      @keyframes float { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-9px) rotate(3deg); } }
+      @keyframes orbit { to { transform: rotate(360deg); } }
+      @media (min-width: 1600px) { .hero h1 { font-size: 85px; } .art { height: 445px; } }
+      @media (max-width: 1000px) {
+        .wrap { width: calc(100% - 64px); } .hero { padding-top: 60px; gap: 0; } .hero h1 { font-size: 56px; } .art { height: 370px; } .art-label, .art-controls { left: 16px; } .hero-sticker { top: 241px; padding: 9px 12px; } .hero-description { font-size: 12px; } .small-project > a { padding: 24px; } .stack-visual, .note-visual { transform: scale(.8) rotate(-8deg); margin-right: -13px; flex-basis: 95px; } .note-visual { transform: scale(.8) rotate(9deg); } .small-project h3 { font-size: 19px; } .small-project p { font-size: 10px; }
+      }
+      @media (max-width: 760px) {
+        .wrap { width: calc(100% - 40px); } .site-header { height: 81px; } .brand { font-size: 26px; } .brand-symbol { width: 26px; height: 26px; font-size: 30px; } .navigation { margin-left: 0; gap: 22px; } .navigation a { font-size: 12px; } .github-link { display: none; } .hero { grid-template-columns: 1fr; padding-top: 45px; padding-bottom: 25px; } .hero h1 { font-size: clamp(49px, 10.6vw, 74px); letter-spacing: -.055em; margin-top: 25px; } .hero-description { font-size: 13px; } .hero-actions { margin-top: 26px; gap: 22px; } .hero-footnote { margin-top: 30px; font-size: 9px; } .art { height: 345px; width: min(430px, 100%); margin: 20px auto 0; } .hero-sticker { top: 210px; right: 0; } .art-controls { bottom: 6px; left: 4px; right: 0; } .art-label { top: 15px; left: 4px; font-size: 8px; } .manifesto { padding: 22px 0; gap: 8px; font-size: clamp(10px, 2.8vw, 17px); } .manifesto .asterisk { font-size: 21px; } .section { padding-top: 48px; } .section-heading { flex-wrap: wrap; gap: 22px; margin-bottom: 21px; } h2 { font-size: 28px; } .section-kicker { font-size: 9px; } .filters { padding: 3px; } .filter { padding: 8px 15px; } .project-grid, .project-grid.is-filtered { grid-template-columns: 1fr; gap: 15px; } .tool-project { grid-row: auto; } .project-top { padding: 22px 24px; } .tool-canvas { height: 191px; } .project-copy { padding: 22px 24px; } .project-copy h3 { font-size: 25px; } .small-project > a { min-height: 212px; padding: 24px; } .small-project h3 { font-size: 21px; } .small-project p { font-size: 11px; } .stack-visual, .note-visual { flex-basis: 105px; margin-right: 0; transform: scale(.9) rotate(-8deg); } .note-visual { transform: scale(.9) rotate(9deg); } .journal-entry summary { grid-template-columns: 25px 1fr 18px; gap: 12px; padding: 24px 0; } .entry-title { font-size: 15px; line-height: 1.6; } .entry-meta { display: none; } .entry-body { margin: 0 12px 24px 37px; font-size: 12px; } .journal-section { padding-bottom: 45px; } .footer-banner { padding: 30px 0; } .back-top .mono { display: none; } .back-top .arrow-disc { width: 37px; height: 37px; } .footer-caption { font-size: 10px; } .footer-meta { flex-direction: column; gap: 10px; line-height: 1.8; font-size: 8px; }
+      }
+      @media (max-width: 370px) { .wrap { width: calc(100% - 32px); } .hero h1 { font-size: 47px; } .navigation { gap: 17px; } .hero-actions { gap: 16px; } .text-link { font-size: 11px; } .tile-1 { transform: translate(-86px, 6px) rotate(-14deg); } .tile-3 { transform: translate(86px, 8px) rotate(18deg); } .tool-tile { width: 86px; height: 97px; } }
+      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到主要内容</a>
+    <div class="wrap" id="top">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Natt 数字工作室首页"><span class="brand-symbol" aria-hidden="true">✳</span>natt.</a>
+        <nav class="navigation" aria-label="主导航"><a href="#explore">探索</a><a href="#journal">开发手记</a><a href="/mini-tools/index.html">工具箱 ↗</a></nav>
+        <a class="github-link" href="https://github.com/Natt-code216/blog" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span><span class="sr-only">（在新标签页打开）</span></a>
+      </header>
+      <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow mono">A LITTLE CORNER OF THE INTERNET</div>
+            <h1 id="hero-title">认真折腾。<br /><span>保持好奇。</span></h1>
+            <p class="hero-description">把代码写成作品，把想法留在这里。<br />关于开发、日常，以及那些值得动手的小事情。</p>
+            <div class="hero-actions"><a class="button-primary" href="#explore">逛逛工作室 <span aria-hidden="true">↗</span></a><a class="text-link" href="/mini-tools/index.html">打开工具箱 <span aria-hidden="true">→</span></a></div>
+            <div class="hero-footnote mono"><span>CODE & CURIOSITY</span><span>ALWAYS IN PROGRESS</span></div>
+          </div>
+          <div class="art" aria-label="发光的抽象轨道雕塑">
+            <div class="art-label mono">EXPERIMENT 001 / ORBITAL THINKING</div>
+            <svg class="orbital" viewBox="0 0 500 440" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="wire" x1="100" y1="70" x2="373" y2="350" gradientUnits="userSpaceOnUse"><stop stop-color="#ddffa0"/><stop offset=".5" stop-color="#b5ed54"/><stop offset="1" stop-color="#527926"/></linearGradient>
+                <radialGradient id="orb-fill"><stop stop-color="#243522" stop-opacity=".16"/><stop offset=".68" stop-color="#b4ff59" stop-opacity=".03"/><stop offset="1" stop-color="#c6ff62" stop-opacity=".08"/></radialGradient>
+                <radialGradient id="halo"><stop stop-color="#9dbb45" stop-opacity=".12"/><stop offset="1" stop-color="#9dbb45" stop-opacity="0"/></radialGradient>
+              </defs>
+              <circle cx="250" cy="228" r="191" fill="url(#halo)" />
+              <ellipse cx="250" cy="352" rx="148" ry="15" fill="#020503" opacity=".65"/>
+              <g class="orbital-motion">
+                <g transform="translate(250 218) rotate(-27)">
+                  <ellipse rx="151" ry="151" fill="url(#orb-fill)" stroke="url(#wire)" stroke-width="1.1"/>
+                  <g stroke="url(#wire)" stroke-width=".8" opacity=".9">
+                    <ellipse rx="143" ry="151"/><ellipse rx="121" ry="151"/><ellipse rx="88" ry="151"/><ellipse rx="46" ry="151"/><path d="M0-151V151"/>
+                    <ellipse rx="151" ry="127"/><ellipse rx="151" ry="90"/><ellipse rx="151" ry="46"/>
+                    <path d="M-151 0H151"/>
+                    <ellipse cy="-130" rx="76" ry="20"/><ellipse cy="-106" rx="107" ry="28"/><ellipse cy="-72" rx="132" ry="35"/><ellipse cy="-36" rx="146" ry="40"/>
+                    <ellipse cy="36" rx="146" ry="40"/><ellipse cy="72" rx="132" ry="35"/><ellipse cy="106" rx="107" ry="28"/><ellipse cy="130" rx="76" ry="20"/>
+                  </g>
+                  <ellipse rx="209" ry="65" transform="rotate(-8)" stroke="#c6ff62" stroke-width="1.4"/>
+                  <ellipse rx="218" ry="70" transform="rotate(-8)" stroke="#c6ff62" stroke-opacity=".18" stroke-width=".6"/>
+                  <circle cx="-188" cy="53" r="6" fill="#d7ff8a"/><circle cx="-188" cy="53" r="12" fill="#c6ff62" fill-opacity=".08"/>
+                </g>
+              </g>
+              <g class="orbit-dot"><circle cx="430" cy="220" r="3" fill="#e1ffa9"/><path d="M420 220h20M430 210v20" stroke="#c6ff62" stroke-width=".7" opacity=".5"/></g>
+              <path d="M59 305h25m-12-12v24M396 79h15m-7-7v14" stroke="#8b9d7a" stroke-width=".8" opacity=".7"/>
+              <circle cx="114" cy="80" r="2" fill="#c6ff62" opacity=".5"/>
+            </svg>
+            <div class="hero-sticker mono"><span>GOOD THINGS START WITH</span>“要不试试看？”</div>
+            <div class="art-controls"><span class="art-coordinate mono">[ IDEAS IN MOTION ]</span><button class="motion-toggle" type="button" aria-pressed="true" aria-label="环境动效，点击暂停"><span class="motion-light" aria-hidden="true"></span><span class="motion-text">暂停动效 Ⅱ</span></button></div>
+          </div>
+        </section>
+        <div class="manifesto" aria-label="Build. Break. Learn. Repeat."><span>BUILD SOMETHING.</span><span class="asterisk" aria-hidden="true">✳</span><span>BREAK SOMETHING.</span><span class="asterisk" aria-hidden="true">✳</span><span>LEARN SOMETHING.</span><span class="asterisk" aria-hidden="true">✳</span></div>
+        <section class="section" id="explore" aria-labelledby="explore-title">
+          <div class="section-heading"><div><p class="section-kicker mono">01 / THE WORKBENCH</p><h2 id="explore-title">灵感落地的地方<span class="quiet">。</span></h2></div><div class="filters" aria-label="按内容分类筛选"><button class="filter" type="button" data-filter="all" aria-pressed="true">全部</button><button class="filter" type="button" data-filter="tools" aria-pressed="false">小工具</button><button class="filter" type="button" data-filter="journal" aria-pressed="false">开发手记</button></div></div>
+          <p class="sr-only" role="status" id="filter-status">显示全部 3 个内容卡片</p>
+          <div class="project-grid">
+            <article class="project tool-project" data-category="tools"><a href="/mini-tools/index.html" aria-label="打开工具箱，11 个实用小工具"><div class="project-top"><span class="card-tag mono">THE EVERYDAY KIT</span><span class="project-number mono">001 — TOOLS</span></div><div class="tool-canvas" aria-hidden="true"><div class="tool-tile tile-1"><span class="glyph">{ }</span><small>JSON</small></div><div class="tool-tile tile-2"><span class="glyph">↗</span><small>MAKE IT EASY</small></div><div class="tool-tile tile-3"><span class="glyph">M↓</span><small>MARKDOWN</small></div></div><div class="project-copy"><h3>小工具，大用处。</h3><p>JSON 格式化、图片压缩、PDF 处理……<br />11 个实用小工具，把琐事交给代码。</p><div class="card-bottom"><span class="mono">11 TOOLS / ONE TOOLBOX</span><span class="arrow-disc" aria-hidden="true">↗</span></div></div></a></article>
+            <article class="project small-project architecture" data-category="journal"><a href="#architecture-note"><div class="project-copy"><p class="section-kicker mono">002 — BUILD LOG</p><h3>从一个想法，<br />到一个网站。</h3><p>React × Strapi，拆开看看博客如何运转。</p><div class="card-bottom mono">REACT / STRAPI <span aria-hidden="true">↗</span></div></div><div class="stack-visual" aria-hidden="true"><div>CONTENT</div><div>STRAPI</div><div>&lt;React /&gt;</div></div></a></article>
+            <article class="project small-project journal-project" data-category="journal"><a href="#journal"><div class="project-copy"><p class="section-kicker mono">003 — FIELD NOTES</p><h3>记录比答案有趣。</h3><p>开发中的小发现，和还在生长的想法。</p><div class="card-bottom mono">THINK / WRITE / REPEAT <span aria-hidden="true">↗</span></div></div><div class="note-visual" aria-hidden="true"><i></i><i></i><i></i></div></a></article>
+          </div>
+        </section>
+        <section class="section journal-section" id="journal" aria-labelledby="journal-title"><div class="section-heading"><div><p class="section-kicker mono">02 / NOTES FROM THE PROCESS</p><h2 id="journal-title">边做，边记<span class="quiet">。</span></h2></div><span class="mono" style="color: var(--muted); font-size: 9px">THOUGHTS, NOT CONCLUSIONS.</span></div>
+          <div class="journal-list">
+            <details class="journal-entry" id="architecture-note"><summary><span class="entry-index mono">01</span><span class="entry-title">给个人网站搭一个好用的内容后台</span><span class="entry-meta mono">STRAPI / 架构笔记</span><span class="entry-plus" aria-hidden="true">+</span></summary><div class="entry-body"><p>内容交给 Strapi 管理，页面由 React 呈现。改造时让数据请求、内容转换与页面组件各司其职，让写文章和改样式都更轻松。</p><p>这是基于现有项目的内容方向示例，正式文章可继续沿用现有 CMS 内容。</p><a href="https://github.com/Natt-code216/blog" target="_blank" rel="noreferrer">在 GitHub 查看项目 ↗<span class="sr-only">（在新标签页打开）</span></a></div></details>
+            <details class="journal-entry"><summary><span class="entry-index mono">02</span><span class="entry-title">让日常工作少一点重复，多一点顺手</span><span class="entry-meta mono">MINI TOOLS / 工具实践</span><span class="entry-plus" aria-hidden="true">+</span></summary><div class="entry-body"><p>格式化一段 JSON、压缩图片、转换 Markdown，或处理一份 PDF。现有的 11 个工具，可以在新版网站里拥有一个更清楚、更容易找到的入口。</p><a href="/mini-tools/index.html">打开现有工具箱 →</a></div></details>
+            <details class="journal-entry"><summary><span class="entry-index mono">03</span><span class="entry-title">给代码一个更清晰的家</span><span class="entry-meta mono">REFACTOR / 开发手记</span><span class="entry-plus" aria-hidden="true">+</span></summary><div class="entry-body"><p>页面、业务模块、通用组件、服务和文档有清楚的边界，下一次改动就更容易找到入口。先梳理结构，再逐步更新视觉与交互。</p><p>本页展示视觉与交互方向；正式改造方案与目录说明见项目文档。</p></div></details>
+          </div>
+        </section>
+      </main>
+      <footer><div class="footer-banner"><div><div class="footer-motto">Stay curious. <span>Keep making.</span></div><p class="footer-caption">总有一个新想法，值得试试看。</p></div><a class="back-top" href="#top"><span class="mono">BACK TO TOP</span><span class="arrow-disc" aria-hidden="true">↑</span><span class="sr-only">回到顶部</span></a></div><div class="footer-meta"><span class="mono">NATT / A PERSONAL DIGITAL WORKSHOP</span><span>视觉概念稿 · 示例内容与署名待确认</span></div></footer>
+    </div>
+    <script>
+      const filterButtons = document.querySelectorAll('.filter');
+      const projectGrid = document.querySelector('.project-grid');
+      const projects = document.querySelectorAll('.project');
+      const filterStatus = document.querySelector('#filter-status');
+      filterButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const selected = button.dataset.filter;
+          let count = 0;
+          filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+          projects.forEach((project) => {
+            const visible = selected === 'all' || project.dataset.category === selected;
+            project.hidden = !visible;
+            if (visible) count += 1;
+          });
+          projectGrid.classList.toggle('is-filtered', selected !== 'all');
+          filterStatus.textContent = `显示${button.textContent} ${count} 个内容卡片`;
+        });
+      });
+      const motionButton = document.querySelector('.motion-toggle');
+      const art = document.querySelector('.art');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      function setMotion(playing) {
+        art.classList.toggle('is-paused', !playing);
+        motionButton.setAttribute('aria-pressed', String(playing));
+        motionButton.setAttribute('aria-label', playing ? '环境动效，点击暂停' : '环境动效，点击播放');
+        motionButton.querySelector('.motion-text').textContent = playing ? '暂停动效 Ⅱ' : '播放动效 ▷';
+      }
+      function syncMotionPreference() {
+        setMotion(!reducedMotion.matches);
+        motionButton.disabled = reducedMotion.matches;
+        if (reducedMotion.matches) {
+          motionButton.querySelector('.motion-text').textContent = '已减少动态效果';
+          motionButton.setAttribute('aria-label', '已遵循系统设置减少动态效果');
+        }
+      }
+      syncMotionPreference();
+      reducedMotion.addEventListener('change', syncMotionPreference);
+      motionButton.addEventListener('click', () => setMotion(motionButton.getAttribute('aria-pressed') !== 'true'));
+      document.querySelectorAll('a[href="#architecture-note"]').forEach((link) => {
+        link.addEventListener('click', () => { document.querySelector('#architecture-note').open = true; });
+      });
+    </script>
+  </body>
+</html>

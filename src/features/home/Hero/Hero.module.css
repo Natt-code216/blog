@@ -1,0 +1,329 @@
+.hero {
+  --planet-wire-start: #ddffa0;
+  --planet-wire-middle: #b5ed54;
+  --planet-wire-end: #527926;
+  --planet-label: #839474;
+  --planet-control: #a8b69c;
+  --planet-border: #3c4a35;
+  --planet-surface: #0c120d;
+  position: relative;
+  isolation: isolate;
+  text-align: center;
+  min-height: 790px;
+  min-height: max(790px, 100svh);
+  padding: 92px 0 46px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 25px 0 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 50% 24%, #b8ff6210, transparent 43%);
+  pointer-events: none;
+}
+
+.art {
+  position: relative;
+  width: 268px;
+  height: 202px;
+  margin: -16px auto 14px;
+}
+
+.orbital {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: var(--accent);
+  filter: drop-shadow(0 0 20px #c6ff6218);
+}
+
+.wireStart { stop-color: var(--planet-wire-start); }
+.wireMiddle { stop-color: var(--planet-wire-middle); }
+.wireEnd { stop-color: var(--planet-wire-end); }
+.planetShadow { fill: var(--bg-base); }
+
+.orbitalMotion {
+  transform-origin: 250px 220px;
+  animation: float 10s ease-in-out infinite;
+}
+
+.orbitDot {
+  transform-origin: 250px 220px;
+  animation: orbit 25s linear infinite;
+}
+
+.paused .orbitalMotion,
+.paused .orbitDot {
+  animation-play-state: paused;
+}
+
+.orbitCaption {
+  position: absolute;
+  top: 82px;
+  left: calc(100% + 12px);
+  width: 133px;
+  text-align: left;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .1em;
+  line-height: 1.9;
+  color: var(--planet-label);
+}
+
+.orbitCaption::before {
+  content: '';
+  position: absolute;
+  left: -33px;
+  top: 9px;
+  height: 1px;
+  width: 25px;
+  background: var(--planet-border);
+}
+
+.motionToggle {
+  position: absolute;
+  right: -11px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--planet-border);
+  border-radius: 30px;
+  padding: 7px 10px;
+  background: var(--planet-surface);
+  color: var(--planet-control);
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+  transition: border-color .25s, color .25s;
+}
+
+.motionToggle:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.motionToggle:disabled {
+  opacity: .7;
+  cursor: default;
+}
+
+.heroLabel {
+  margin: 6px 0 28px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .24em;
+  color: var(--text-secondary);
+}
+
+.heroTitle {
+  margin: 0 0 27px;
+  font-size: clamp(45px, 5.9vw, 76px);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.heroTitle a {
+  color: inherit;
+  text-decoration: none;
+  transition: color .25s;
+}
+
+.heroTitle a:nth-of-type(1):hover { color: var(--accent); }
+.heroTitle a:nth-of-type(2):hover { color: #b6cdd9; }
+.heroTitle a:nth-of-type(3):hover { color: #c7b9fa; }
+
+.heroTitle i {
+  font-family: Georgia, serif;
+  font-weight: 300;
+  color: var(--planet-label);
+  font-size: .8em;
+  margin: 0 .2em;
+}
+
+.heroDesc {
+  max-width: 670px;
+  margin: 0 auto 29px;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--text-secondary);
+}
+
+.heroAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 30px;
+  border: 1px solid var(--planet-border);
+  border-radius: 50px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 12px;
+  transition: background .25s, border-color .25s;
+}
+
+.heroAction:hover {
+  background: #c6ff6212;
+  border-color: var(--accent);
+}
+
+.heroAction span {
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.heroFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 56px;
+  color: var(--text-muted);
+  font-size: 9px;
+  letter-spacing: .12em;
+}
+
+.learningDot {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+.learningDot::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.scroll {
+  color: inherit;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: .06em;
+}
+
+.scroll span {
+  color: var(--accent);
+  margin-left: 10px;
+}
+
+.hero a:focus-visible,
+.motionToggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+:global(:root[data-theme='light']) .hero {
+  --planet-wire-start: #658c31;
+  --planet-wire-middle: #567923;
+  --planet-wire-end: #3e581e;
+  --planet-label: #586847;
+  --planet-control: #52633e;
+  --planet-border: #a8b995;
+  --planet-surface: #edf2e6;
+}
+
+:global(:root[data-theme='light']) .heroTitle a:nth-of-type(2):hover { color: #3e687b; }
+:global(:root[data-theme='light']) .heroTitle a:nth-of-type(3):hover { color: #7355a0; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-9px) rotate(3deg); }
+}
+
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 1000px) {
+  .heroTitle { font-size: 5.9vw; }
+}
+
+@media (max-width: 700px) {
+  .hero {
+    min-height: 750px;
+    min-height: max(710px, 94svh);
+    padding: 96px 0 33px;
+  }
+
+  .art {
+    width: 237px;
+    height: 191px;
+    margin: -20px auto 21px;
+  }
+
+  .orbitCaption {
+    top: 74px;
+    left: calc(100% - 4px);
+    width: 75px;
+    font-size: 7px;
+  }
+
+  .orbitCaption::before { display: none; }
+
+  .motionToggle {
+    right: -2px;
+    bottom: 0;
+  }
+
+  .heroLabel {
+    font-size: 9px;
+    letter-spacing: .21em;
+    margin-bottom: 23px;
+  }
+
+  .heroTitle {
+    font-size: clamp(26px, 6.9vw, 45px);
+    letter-spacing: -.07em;
+    margin-bottom: 26px;
+  }
+
+  .heroTitle i { margin: 0 .09em; }
+
+  .heroDesc {
+    font-size: 12px;
+    line-height: 2.05;
+    max-width: 345px;
+    padding: 0 5px;
+  }
+
+  .heroDesc br { display: none; }
+
+  .heroAction {
+    padding: 13px 25px;
+    font-size: 11px;
+  }
+
+  .heroFoot {
+    margin-top: 55px;
+    font-size: 8px;
+  }
+
+  .scroll { font-size: 9px; }
+}
+
+@media (max-width: 390px) {
+  .orbitCaption { display: none; }
+  .heroTitle { font-size: 6.85vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbitalMotion,
+  .orbitDot {
+    animation: none;
+  }
+
+  .hero a,
+  .motionToggle {
+    transition: none;
+  }
+}

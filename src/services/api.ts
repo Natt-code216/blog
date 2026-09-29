@@ -27,6 +27,7 @@ export interface ApiTutorial {
   level: string;
   status: string;
   chapters: number;
+  order?: number;
   icon: 'code' | 'layers' | 'zap';
   slug: string;
   published: boolean;
@@ -61,7 +62,7 @@ class ApiService {
   // 随笔列表
   async getEssays(): Promise<ApiEssay[]> {
     const response = await axios.get(`${API_URL}/essays`, {
-      params: { 'filters[published][eq]': true, 'sort[0]': 'date:desc' }
+      params: { 'filters[published][$eq]': true, 'sort[0]': 'date:desc' }
     });
     return response.data.data || [];
   }
@@ -69,16 +70,17 @@ class ApiService {
   // 单篇随笔（按 slug）
   async getEssayBySlug(slug: string): Promise<ApiEssay | null> {
     const response = await axios.get(`${API_URL}/essays`, {
-      params: { 'filters[slug][eq]': slug, 'pagination[limit]': 1 }
+      params: { 'filters[slug][$eq]': slug, 'filters[published][$eq]': true, 'pagination[limit]': 1 }
     });
-    const list = response.data.data || [];
-    return list[0] || null;
+    const list: ApiEssay[] = response.data.data || [];
+    // A missing or ignored filter must never make another article appear at this URL.
+    return list.find(essay => essay.slug === slug && essay.published) || null;
   }
 
   // 教程列表
   async getTutorials(): Promise<ApiTutorial[]> {
     const response = await axios.get(`${API_URL}/tutorials`, {
-      params: { 'filters[published][eq]': true, 'sort[0]': 'createdAt:desc' }
+      params: { 'filters[published][$eq]': true, 'sort[0]': 'order:asc', 'sort[1]': 'createdAt:desc' }
     });
     return response.data.data || [];
   }
@@ -86,10 +88,10 @@ class ApiService {
   // 单篇教程（按 slug）
   async getTutorialBySlug(slug: string): Promise<ApiTutorial | null> {
     const response = await axios.get(`${API_URL}/tutorials`, {
-      params: { 'filters[slug][eq]': slug, 'pagination[limit]': 1 }
+      params: { 'filters[slug][$eq]': slug, 'filters[published][$eq]': true, 'pagination[limit]': 1 }
     });
-    const list = response.data.data || [];
-    return list[0] || null;
+    const list: ApiTutorial[] = response.data.data || [];
+    return list.find(tutorial => tutorial.slug === slug && tutorial.published) || null;
   }
 
   // 工具列表
@@ -100,17 +102,14 @@ class ApiService {
 
   // 某篇随笔下的评论
   async getCommentsByEssay(essayDocumentId: string): Promise<ApiComment[]> {
-    try {
-      const response = await axios.get(`${API_URL}/comments`, {
-        params: {
-          'filters[essay][documentId][eq]': essayDocumentId,
-          'sort[0]': 'createdAt:desc',
-        },
-      });
-      return response.data.data || [];
-    } catch {
-      return [];
-    }
+    const response = await axios.get(`${API_URL}/comments`, {
+      params: {
+        'filters[essay][documentId][$eq]': essayDocumentId,
+        'sort[0]': 'createdAt:desc',
+      },
+    });
+    const comments: Array<ApiComment & { authorName?: string }> = response.data.data || [];
+    return comments.map(comment => ({ ...comment, author: comment.authorName || comment.author || '匿名访客' }));
   }
 
   // 提交评论
@@ -124,12 +123,13 @@ class ApiService {
       const response = await axios.post(`${API_URL}/comments`, {
         data: {
           content: data.content,
-          author: data.author,
+          authorName: data.author,
           email: data.email,
           essay: data.essayDocumentId,
         },
       });
-      return response.data.data || null;
+      const comment = response.data.data;
+      return comment ? { ...comment, author: comment.authorName || comment.author || data.author } : null;
     } catch (err) {
       throw err;
     }
