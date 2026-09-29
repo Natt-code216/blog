@@ -57,14 +57,14 @@ describe('tutorial chapter quick navigation', () => {
 
     const first = document.getElementById('chapter-1')!;
     const second = document.getElementById('chapter-2')!;
-    first.getBoundingClientRect = vi.fn(() => ({ top: 100 } as DOMRect));
+    first.getBoundingClientRect = vi.fn(() => ({ top: 0 } as DOMRect));
     second.getBoundingClientRect = vi.fn(() => ({ top: 300 } as DOMRect));
     act(() => { fireEvent.scroll(window); });
     expect(links[0]).toHaveAttribute('aria-current', 'location');
     expect(links[1]).not.toHaveAttribute('aria-current');
 
-    // In the browser an anchor lands below both scroll-padding and scroll-margin.
-    second.getBoundingClientRect = vi.fn(() => ({ top: 214 } as DOMRect));
+    // Once the second heading crosses the viewport top it is active in every layout.
+    second.getBoundingClientRect = vi.fn(() => ({ top: 0 } as DOMRect));
     act(() => { fireEvent.scroll(window); });
     expect(links[1]).toHaveAttribute('aria-current', 'location');
     expect(links[0]).not.toHaveAttribute('aria-current');
