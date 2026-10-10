@@ -7,3 +7,11 @@
 .links a:hover { color: var(--accent); }
 .copyright { margin: 0; padding-top: 14px; border-top: 1px solid var(--border-light); color: var(--text-muted); font-size: 12px; }
 @media (max-width: 700px) { .inner { align-items: flex-start; gap: 20px; } .links { justify-content: flex-end; max-width: 140px; gap: 12px 18px; } }
+:global(.cosmicApp) .footer { background: #080e0b; padding: 38px 0 45px; }
+:global(.cosmicApp) .inner { padding: 35px 0; }
+:global(.cosmicApp) .inner::before { content: 'STAY CURIOUS.'; display: block; font: 300 clamp(22px,3.4vw,44px)/1.2 Georgia, serif; letter-spacing: -.025em; color: #cfdbb6; }
+:global(.cosmicApp) .logo { display: none; }
+:global(.cosmicApp) .description { font-size: 12px; margin: 0; }
+:global(.cosmicApp) .links { font-size: 11px; }
+:global(.cosmicApp) .copyright { font: 9px/1.8 var(--font-mono); color: #8c9a82; }
+@media(max-width:700px) { :global(.cosmicApp) .inner { flex-wrap: wrap; } :global(.cosmicApp) .inner::before { flex: 0 0 100%; font-size: 35px; } }

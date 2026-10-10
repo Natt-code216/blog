@@ -1,114 +1,50 @@
+import { useState } from 'react';
 import { ScrollReveal } from '../../../components/ui/ScrollReveal';
+import { Sculpture } from '../../home/Exhibition/Sculpture';
 import { api } from '../../../services/api';
-import { localTools, toolboxHref } from '../../../services/toolCatalog';
+import { localTools, toolboxHref, type LocalTool } from '../../../services/toolCatalog';
 import { transformTools } from '../../../utils/transformData';
 import { useApiFetch } from '../../../hooks/useApiFetch';
 import styles from './Tools.module.css';
-import { Link } from 'react-router-dom';
-import { collectionHref } from '../../../services/collectionCatalog';
 
-const shortcuts = [
-  { id: 'image-compressor', label: '图片压缩' },
-  { id: 'pdf-merger', label: 'PDF 合并' },
-  { id: 'timestamp', label: '时间戳转换' },
-  { id: 'word-counter', label: '字数统计' },
+const categories: {id: LocalTool['category']; label: string; note: string}[] = [
+  {id: 'data', label: '代码与文字', note: '让想法，清晰一点。'},
+  {id: 'files', label: '图像与文件', note: '把繁琐，交给工具。'},
+  {id: 'daily', label: '日常小事', note: '留出时间，去做喜欢的事。'},
 ];
+const glyphs: Record<string,string> = {'json-formatter':'{ }','markdown-html':'M↓','image-compressor':'▧','pdf-merger':'⊕','pdf-splitter':'⊘','image-to-pdf':'▤','csv-json':'⇄','base64':'64','qrcode':'⌗','word-counter':'Aa','timestamp':'◷'};
 
 export function Tools() {
-  const { data: tools, loading, error, refetch } = useApiFetch(() =>
-    api.getTools().then(transformTools)
-  );
-  const recommendations = tools.filter((tool) =>
-    tool.link && tool.link !== '#' && !localTools.some((local) => local.href === tool.link)
-  );
-
-  return (
-    <section id="tools" className={styles.section} aria-labelledby="tools-title">
-      <div className="container">
-        <ScrollReveal>
-          <div className="section-header">
-            <div>
-              <div className="section-subtitle">03 / WORKSPACE</div>
-              <h2 id="tools-title" className="section-title serif">实用工具集</h2>
-            </div>
-            <p className="section-note"><span>CREATOR / 创造者</span>动手做一点，让日常轻一点。</p>
+  const [category, setCategory] = useState<LocalTool['category']>('data');
+  const [hovered, setHovered] = useState(0);
+  const { data: tools, loading, error, refetch } = useApiFetch(() => api.getTools().then(transformTools));
+  const selectedCategory = categories.find(item => item.id === category)!;
+  const visibleTools = localTools.filter(tool => tool.category === category);
+  const recommendations = tools.filter(tool => tool.link && tool.link !== '#' && !localTools.some(local => local.href === tool.link));
+  return <section id="tools" className={styles.section} aria-labelledby="tools-title">
+    <div className="container">
+      <ScrollReveal><div className="section-header"><div><p className="section-subtitle">03 / THE COSMIC ATELIER</p><h2 id="tools-title" className="section-title serif">实用工具集</h2></div><p className="section-note"><span>MAKE SOMETHING USEFUL</span>把灵感，变成一些有用的东西。</p></div></ScrollReveal>
+      <ScrollReveal><div className={styles.atelier}>
+        <div className={styles.directory}>
+          <div className={styles.directoryTop}><span>你的随身工作台</span><a href={toolboxHref} aria-label={`打开工具箱，${localTools.length} 个实用小工具`}>全部 {localTools.length} 个工具 <span aria-hidden="true">↗</span></a></div>
+          <div className={styles.categories} role="group" aria-label="工具分类">
+            {categories.map(item => <button type="button" key={item.id} aria-pressed={category === item.id} onClick={() => {setCategory(item.id);setHovered(0);}}>{item.label}<span>{String(localTools.filter(tool=>tool.category===item.id).length).padStart(2,'0')}</span></button>)}
           </div>
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <div className={styles.projectGrid}>
-            <article className={`${styles.project} ${styles.toolbox}`}>
-              <a href={toolboxHref} aria-label={`打开工具箱，${localTools.length} 个实用小工具`}>
-                <div className={styles.projectTop}>
-                  <span className={styles.cardTag}>THE EVERYDAY KIT</span>
-                  <span className={styles.projectNumber}>001 — TOOLS</span>
-                </div>
-                <div className={styles.toolCanvas} aria-hidden="true">
-                  <div className={`${styles.toolTile} ${styles.tileOne}`}><span>{'{ }'}</span><small>JSON</small></div>
-                  <div className={`${styles.toolTile} ${styles.tileTwo}`}><span>↗</span><small>MAKE IT EASY</small></div>
-                  <div className={`${styles.toolTile} ${styles.tileThree}`}><span>M↓</span><small>MARKDOWN</small></div>
-                </div>
-                <div className={styles.projectCopy}>
-                  <h3>小工具，大用处。</h3>
-                  <p>JSON 格式化、图片压缩、PDF 处理……<br />{localTools.length} 个实用小工具，把琐事交给代码。</p>
-                  <div className={styles.cardBottom}>
-                    <span>{localTools.length} TOOLS / ONE TOOLBOX</span>
-                    <span className={styles.arrowDisc} aria-hidden="true">↗</span>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <article className={`${styles.project} ${styles.smallProject} ${styles.jsonProject}`}>
-              <a href={localTools.find((tool) => tool.id === 'json-formatter')!.href} aria-label="打开 JSON 格式化工具">
-                <div className={styles.projectCopy}>
-                  <p className={styles.cardKicker}>002 — JSON FORMATTER</p>
-                  <h3>让数据，<br />井井有条。</h3>
-                  <p>格式化、压缩与校验，让 JSON 变得清楚。</p>
-                  <div className={styles.cardBottom}>FORMAT / VALIDATE <span aria-hidden="true">↗</span></div>
-                </div>
-                <div className={styles.stackVisual} aria-hidden="true"><div>VALIDATE</div><div>FORMAT</div><div>{'{ JSON }'}</div></div>
-              </a>
-            </article>
-
-            <article className={`${styles.project} ${styles.smallProject} ${styles.markdownProject}`}>
-              <a href={localTools.find((tool) => tool.id === 'markdown-html')!.href} aria-label="打开 Markdown 编辑与预览工具">
-                <div className={styles.projectCopy}>
-                  <p className={styles.cardKicker}>003 — MARKDOWN</p>
-                  <h3>把想法，写下来。</h3>
-                  <p>一边写，一边预览，让文字慢慢成形。</p>
-                  <div className={styles.cardBottom}>WRITE / PREVIEW / EXPORT <span aria-hidden="true">↗</span></div>
-                </div>
-                <div className={styles.noteVisual} aria-hidden="true"><i /><i /><i /></div>
-              </a>
-            </article>
+          <div className={styles.toolList} key={category} aria-label={selectedCategory.label} data-motion-entry>
+            {visibleTools.map((tool,index) => <a href={tool.href} key={tool.id} className={styles.tool} onPointerEnter={()=>setHovered(index)} onFocus={()=>setHovered(index)}>
+              <span className={styles.glyph} aria-hidden="true">{glyphs[tool.id]}</span><span className={styles.toolCopy}><strong>{tool.title}</strong><span>{tool.description}</span></span><span className={styles.arrow} aria-hidden="true">↗</span>
+            </a>)}
           </div>
-          <div className={styles.shortcuts}>
-            <span>也可以直接试试</span>
-            {shortcuts.map(({ id, label }) => (
-              <a key={id} href={localTools.find((tool) => tool.id === id)!.href}>{label} <span aria-hidden="true">↗</span></a>
-            ))}
-          </div>
-        </ScrollReveal>
-
-        {recommendations.length > 0 && (
-          <div className={styles.recommendations}>
-            <h3>更多工具推荐</h3>
-            <div className={styles.recommendationGrid}>
-              {recommendations.map((tool) => (
-                <a key={tool.id} href={tool.link} className={styles.recommendation}>
-                  <h4>{tool.title} <span aria-hidden="true">↗</span></h4>
-                  <p>{tool.description}</p>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-        <div className="section-related"><span>再去别处逛逛</span><Link to={collectionHref('sites')}>看看我的私藏网站 <span aria-hidden="true">↗</span></Link></div>
-        {error && !loading && (
-          <p className={styles.notice}>更多工具推荐暂时无法加载，以上工具仍可使用。<button type="button" onClick={refetch}>重试</button></p>
-        )}
-      </div>
-    </section>
-  );
+          <p className={styles.privacy}><span aria-hidden="true">◈</span> 在你的浏览器里处理，给日常留一点余地。</p>
+        </div>
+        <div className={styles.visual}>
+          <img className={styles.painting} src="/images/cosmic-sunflower.webp" width="1586" height="992" alt="" loading="lazy" decoding="async" />
+          <Sculpture variant="tools" activeIndex={categories.findIndex(item=>item.id===category) * 3 + hovered} />
+          <div className={styles.artistNote}><span>SUNFLOWER / A STUDY IN MOTION</span><h3 key={category} data-motion-entry>{selectedCategory.note}</h3><p>每一个小工具，都是让生活轻一点的尝试。</p></div>
+        </div>
+      </div></ScrollReveal>
+      {recommendations.length > 0 && <div className={styles.recommendations}><p>更多工具推荐</p>{recommendations.map(tool=><a href={tool.link} key={tool.id}>{tool.title}<span aria-hidden="true">↗</span></a>)}</div>}
+      {error && !loading && <p className={styles.notice}>更多工具推荐暂时无法加载，以上工具仍可使用。<button onClick={refetch}>重试</button></p>}
+    </div>
+  </section>;
 }

@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
+import { LivingArtwork } from '../components/ui/LivingArtwork';
 import { categoryLabel, collectedSites, readingCategories, readingLinks, sourceDomain, type CollectionView } from '../services/collectionCatalog';
 import styles from '../features/collection/Collection.module.css';
 
@@ -41,6 +42,13 @@ export function CollectionPage() {
         <div className={styles.headerNote} aria-hidden="true"><span>{String(readingLinks.length).padStart(2, '0')} ESSAYS</span><span>{String(collectedSites.length).padStart(2, '0')} WEBSITES</span><i>Stay curious.</i></div>
       </header>
 
+      <div className={styles.motionRibbon} data-art-surface aria-hidden="true">
+        <LivingArtwork key={view} src={view === 'reading' ? '/images/cosmic-waterlilies.webp' : '/images/cosmic-starry-field.webp'} variant={view === 'reading' ? 'water' : 'stars'} intensity={1.2} />
+        <div className={styles.ribbonShade} />
+        <span className={styles.ribbonTitle}>{view === 'reading' ? '让文字，如涟漪一样扩散。' : '循着星光，发现另一个世界。'}</span>
+        <span className={styles.ribbonCoordinate}>AN OPEN MIND / AN OPEN UNIVERSE</span>
+      </div>
+
       <div className={styles.tabs} role="group" aria-label="收藏类型">
         <button type="button" aria-pressed={view === 'reading'} aria-controls="collection-results" onClick={() => changeView('reading')}>值得一读 <span>{readingLinks.length}</span></button>
         <button type="button" aria-pressed={view === 'sites'} aria-controls="collection-results" onClick={() => changeView('sites')}>私藏网站 <span>{collectedSites.length}</span></button>
@@ -61,7 +69,7 @@ export function CollectionPage() {
       </div>
 
       <section id="collection-results" aria-labelledby="collection-results-title">
-        <div key={`${view}-${topic?.id ?? 'all'}`} className={`${styles.cardGrid} ${view === 'sites' ? styles.siteGrid : ''}`}>
+        <div key={`${view}-${topic?.id ?? 'all'}`} data-motion-entry className={`${styles.cardGrid} ${view === 'sites' ? styles.siteGrid : ''}`}>
           {view === 'reading' ? articles.map(article => (
             <a key={article.id} href={article.url} className={styles.readingCard} target="_blank" rel="noopener noreferrer">
               <div className={styles.cardTop}><span>{categoryLabel(article.category)}</span><span className={styles.cardNumber} aria-hidden="true">{String(readingLinks.indexOf(article) + 1).padStart(2, '0')}</span></div>

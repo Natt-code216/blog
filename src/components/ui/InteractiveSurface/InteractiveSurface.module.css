@@ -1,0 +1,27 @@
+.frame { perspective: 1600px; }
+
+.surface {
+  position: relative;
+  transform: rotateX(var(--surface-rotate-x, 0deg)) rotateY(var(--surface-rotate-y, 0deg));
+  transition: transform .6s cubic-bezier(.2, .75, .2, 1);
+}
+
+.surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(600px circle at var(--surface-light-x, 50%) var(--surface-light-y, 50%), #deffc20c, transparent 70%);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+.surface[data-active='true'] { transition-duration: .15s; }
+.surface[data-active='true']::after { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .surface { transform: none; transition: none; }
+  .surface::after { display: none; }
+}

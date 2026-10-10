@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { toolboxHref } from '../../../services/toolCatalog';
 import { collectionHref } from '../../../services/collectionCatalog';
 import { ThemeToggle } from '../../ui/ThemeToggle';
+import { useMotion } from '../../../app/providers/MotionContext';
 
 const navItems = [
   { id: 'home', label: '首页', href: '#home' },
@@ -18,6 +19,7 @@ const homeSectionIds = navItems.map(item => item.id);
 const noSectionIds: string[] = [];
 
 export function Navbar() {
+  const { motionEnabled, toggleMotion, reducedMotion } = useMotion();
   const location = useLocation();
   const isHome = location.pathname === '/';
   const activeId = useScrollSpy({
@@ -36,10 +38,10 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav aria-label="主导航" className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
+    <nav aria-label="主导航" className={`${styles.navbar} ${isHome && (!isScrolled || activeId === 'home') ? styles.overHero : ''} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={`container ${styles.inner}`}>
-        <Link to="/" className={`${styles.logo} serif`}>
-          我的<span>空间.</span>
+        <Link to="/" className={styles.logo}>
+          <span className={styles.logoOrbit} aria-hidden="true">✳</span>我的<span>空间.</span>
         </Link>
         <ul>
           {navItems.map((item) => (
@@ -71,7 +73,10 @@ export function Navbar() {
             </li>
           ))}
         </ul>
-        <div className={styles.appearance}><ThemeToggle /></div>
+        <div className={styles.appearance}>
+          <button type="button" className={styles.motionControl} onClick={toggleMotion} disabled={reducedMotion} aria-pressed={motionEnabled} aria-label={reducedMotion ? '已遵循系统设置减少动态效果' : motionEnabled ? '暂停全站动效' : '播放全站动效'} title={reducedMotion ? '已遵循系统设置减少动态效果' : motionEnabled ? '暂停全站动效' : '播放全站动效'}><span aria-hidden="true">{motionEnabled ? 'Ⅱ' : '▷'}</span><span className={styles.motionLabel}>{reducedMotion ? '静态漫游' : motionEnabled ? '动效开启' : '动效暂停'}</span></button>
+          {!isHome && <span className={styles.themeControl}><ThemeToggle /></span>}
+        </div>
       </div>
     </nav>
   );

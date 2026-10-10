@@ -1,0 +1,127 @@
+数字观测站 / Digital Observatory
+研究与设计记录 · 2026-10-03
+
+设计目标
+把个人博客升级成有真实空间感、统一艺术方向和明确阅读节奏的网站。
+延续「创造者 / 思考者 / 探索者」和小宇宙主题，用一个有记忆点的 3D
+主视觉建立品牌，再通过细腻交互串起随笔、教程、工具和分享。
+首屏使用深森林绿，正文回到暖白纸张；深色模式继续使用现有主题能力。
+
+研究来源（核查 GitHub 官方仓库、作者官网和原始教程）
+
+1. Three.js — MIT
+   https://github.com/mrdoob/three.js
+   https://threejs.org/
+   借鉴：真实灯光、材质、球体和轨道、鼠标响应的 3D 空间。
+   决策：单一首页场景可以直接使用 Three.js，避免为一个物体引入整套
+   3D 应用架构。通过动态导入让阅读页面不承担首屏 3D 的全部成本。
+
+2. React Three Fiber + Drei — MIT
+   https://github.com/pmndrs/react-three-fiber
+   https://github.com/pmndrs/drei
+   借鉴：Float 的漂浮节奏、Lightformer 的摄影棚照明、AdaptiveDpr。
+   兼容性：官方说明 Fiber v8 对应 React 18，v9 对应 React 19；本项目
+   目前为 React 18。作为参考，不需要为了动效升级全站 React。
+
+3. Motion — MIT
+   https://github.com/motiondivision/motion
+   借鉴：分组登场、弹簧感悬停、滚动关联动画的节奏。
+   决策：次级交互以原生 CSS、IntersectionObserver 和现有 ScrollReveal
+   实现；无需仅为轻量淡入和卡片位移增加动画依赖。
+
+4. Lenis — MIT
+   https://github.com/darkroomengineering/lenis
+   借鉴：滚动与 WebGL 同步的连续感。
+   决策：本轮保留原生滚动；只有新增跨屏镜头叙事时才值得引入统一
+   滚动时间线。当前官方版本默认遵循系统减少动态效果设置。
+
+5. 14islands / Progressively Enhanced WebGL Lens Refraction — MIT
+   https://github.com/14islands/codrops-scroll-rig-tutorial
+   https://tympanus.net/Tutorials/WebGLLensRefraction/
+   https://tympanus.net/codrops/2023/10/10/progressively-enhanced-webgl-lens-refraction/
+   借鉴：玻璃仪器质感、空间中的图片、HTML 与 3D 内容的渐进增强。
+   决策：保留普通 HTML 内容和导航，让视觉层可以独立退化；全页实时
+   折射的 GPU 成本对博客收益较低，因此不把折射铺满文章卡片。
+
+6. React Bits — MIT + Commons Clause（不是普通 MIT）
+   https://github.com/DavidHDev/react-bits
+   https://reactbits.dev/components/tilted-card
+   借鉴：指针驱动的轻微倾斜、跟随高光、清楚的交互反馈。
+   决策：自行实现简洁 InteractiveSurface，不复制该组件的源代码。
+
+7. Bruno Simon 作品站 / folio-2025 — MIT
+   https://bruno-simon.com/
+   https://github.com/brunosimon/folio-2025
+   借鉴：统一的 3D 世界观、明确的视觉主角、细腻的镜头和交互反馈。
+   决策：将空间感用于首页视觉，让文章与工具仍然能够直接打开。
+
+艺术方向与页面规划
+
+首屏：一个独特的轨道仪 / 数字天体作为视觉锚点，暗绿空间、暖白大字、
+细坐标、少量植物绿高光。真实模型和生成图共同形成前后景深度。
+
+随笔：暖纸白卡片、精细边线、足够留白、轻微上浮，重心留给文章标题。
+文字层级使用字号与留白区分，减少无意义的彩色块。
+
+教程：整齐连续的条目，清楚的序号、难度与状态；悬停时左侧细标记
+出现，右侧箭头产生微小方向反馈。
+
+工具：工具箱主卡与两张侧卡组成有轻重的版式。CSS perspective 与
+translate3d 让三张工具牌形成前后层次，悬停时微微展开。JSON 图层和
+Markdown 纸张延续同样的空间语言；使用灰绿和纸张色替换随机紫色。
+
+分享：深绿「好奇心花园」宽幅画面，左侧保留可读文案与两个独立入口，
+右侧展示生成的花园图片。链接继续使用 collectionHref，计数仍来自
+readingLinks 与 collectedSites，未改动目录数据和 API。
+
+生成图片的使用
+资产计划包括首页氛围图与 /images/observatory-garden.webp 花园画面。
+图像只负责艺术与材质，导航、中文标题、计数均由真实 HTML 渲染。
+分享图使用本地文件、明确 width/height、lazy loading 和 async decoding。
+图片被暗色渐变覆盖以维持文字可读性，图片未加载时仍有稳定的深绿背景。
+
+交互与性能约束
+InteractiveSurface 最大倾斜 1.6 度；通过 requestAnimationFrame 合并指针
+更新，写入 CSS 变量，不因指针移动触发 React 渲染。
+只有 fine pointer + hover + no-preference 才启用指针动效；系统偏好变化
+时即时复位，离开、取消和窗口失焦也会复位，卸载时清理所有监听。
+工具牌与其他卡片的移动只在精细指针且允许动效时启用。
+所有内容保留真实链接、键盘焦点、触摸入口以及正常的文档结构。
+移动端分享区改为上图下文，两个入口为宽触控行，不依赖悬停操作。
+
+范围
+本轮视觉升级不改变文章内容、目录数据、API、主题默认值或收藏页结构。
+以上复杂度与性能取舍为根据当前仓库结构作出的工程判断。
+
+实现版本
+新增依赖：three 0.186.1（开发类型 @types/three 0.186.0）。使用原生
+Three.js 与程序化 GLSL，未复制参考站点的源码、模型或视觉资产。
+场景包含地形等高线、柔和高光、大气边缘光、两条倾斜轨道和卫星拖尾。
+首页通过 React.lazy 导入场景；文章页不会挂载 WebGL 场景。
+
+两张生成素材来自内置 image_gen。接口没有模型选择参数，因此不声称
+具体模型名称。网页使用 WebP：星云约 60 KB、花园约 112 KB；原始 PNG
+与完整提示词均保留在仓库。具体路径见 observatory-image-prompts.txt。
+
+降级与使用
+星球支持暂停/播放，系统减少动态效果时展示静止帧；WebGL 初始化失败、
+上下文丢失、着色器失败或场景模块加载失败时保留静态星球。离开首屏和
+切换后台时停止连续绘制；卸载清理几何体、材质、观察器和事件监听。
+DPR 桌面上限 1.5，触屏上限 1.25。移动端维持原生页面滚动。
+
+验收记录 · 2026-10-03
+- TypeScript 检查通过。
+- Vitest：25 个测试文件、130 项测试通过，无测试警告。
+- 生产构建通过；产物校验确认 13 个页面入口、11 个工具链接及资源有效。
+- 3D 场景独立 chunk 约 530 KB / gzip 134 KB；触发 Vite 默认 500 KB
+  提示，已通过按需加载隔离，未用调高告警阈值隐藏体积。
+- 浏览器确认真实 WebGL Canvas 渲染、星球暂停/恢复、页面锚点、主题切换、
+  搜索 JSON、工具页和收藏网站入口；检查了桌面与 390px 手机布局。
+- 两张 WebP 成功加载；已检查页面无横向溢出，移动端暂停按钮避开搜索按钮。
+- 截图：docs/qa-screenshots/observatory/。
+- 本地 Strapi 内容服务运行中。初次预览使用 127.0.0.1:5173，因后台
+  CORS 仅允许 localhost:5173，页面呈现真实失败与重试状态；切换至
+  http://localhost:5173/ 后继续验证实际内容。没有修改后台权限或数据。
+- 正确 origin 的最终验收：3 篇真实随笔、5 个教程均已成功显示；
+  打开《桌上留一块空地》后确认正文页标题成功加载。补存真实内容区截图
+  journal-desktop.jpg。交付预览地址为 http://localhost:5173/。

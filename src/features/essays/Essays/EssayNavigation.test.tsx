@@ -12,6 +12,7 @@ vi.mock('axios');
 vi.mock('../../../components/ui/ScrollReveal', () => ({
   ScrollReveal: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
+vi.mock('../../../components/ui/LivingArtwork', () => ({ LivingArtwork: () => null }));
 vi.mock('../../comments/Comments', () => ({ Comments: () => null }));
 
 const articles: ApiEssay[] = [

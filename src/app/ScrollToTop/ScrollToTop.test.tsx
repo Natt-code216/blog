@@ -6,6 +6,7 @@ import { Essays } from '../../features/essays/Essays';
 import { Tutorials } from '../../features/tutorials/Tutorials';
 import { api } from '../../services/api';
 import { ScrollToTop } from './index';
+import { MotionProvider, useMotion } from '../providers/MotionContext';
 
 vi.mock('../../components/ui/ScrollReveal', () => ({ ScrollReveal: ({ children }: { children: ReactNode }) => <>{children}</> }));
 vi.mock('../../services/api', () => ({ api: { getEssays: vi.fn(), getTutorials: vi.fn() } }));
@@ -15,7 +16,7 @@ const scrollTo = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false })));
+  vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
   vi.stubGlobal('scrollTo', scrollTo);
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView });
 });
@@ -31,6 +32,19 @@ function renderAnchor(entry = '/#tools', pending = true) {
 
 async function finishLoading() {
   await act(async () => { document.getElementById('essays')!.setAttribute('aria-busy', 'false'); });
+}
+
+function MotionControl() {
+  const { toggleMotion } = useMotion();
+  return <button onClick={toggleMotion}>切换动效</button>;
+}
+
+function renderWithMotion(pending = false) {
+  return render(<MotionProvider><MemoryRouter initialEntries={['/#tools']}>
+    <ScrollToTop /><MotionControl />
+    <Link to="/#tutorials">跳到教程</Link><Link to="/#tools">跳到工具</Link>
+    <main><section id="essays" aria-busy={pending} /><section id="tutorials" /><section id="tools" /></main>
+  </MemoryRouter></MotionProvider>);
 }
 
 describe('hash navigation after asynchronous content loads', () => {
@@ -75,6 +89,37 @@ describe('hash navigation after asynchronous content loads', () => {
     await finishLoading();
     expect(scrollIntoView).toHaveBeenCalledTimes(2);
     expect(scrollIntoView.mock.calls.every(([options]) => options.behavior === 'instant')).toBe(true);
+  });
+
+  it('changes scroll behavior on the next navigation without scrolling when motion is toggled', () => {
+    renderWithMotion();
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'smooth' });
+
+    fireEvent.click(screen.getByRole('button', { name: '切换动效' }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollTo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('link', { name: '跳到教程' }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
+    expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'instant' });
+
+    fireEvent.click(screen.getByRole('button', { name: '切换动效' }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
+    expect(scrollTo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('link', { name: '跳到工具' }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(3);
+    expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'smooth' });
+  });
+
+  it('uses the current global pause for an already pending anchor correction', async () => {
+    renderWithMotion(true);
+    expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'smooth' });
+    fireEvent.click(screen.getByRole('button', { name: '切换动效' }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    await finishLoading();
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
+    expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'instant' });
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 
   it.each(['/', '/#missing', '/#%E0%A4%A'])('safely resets the viewport for %s', entry => {

@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { MotionProvider } from './providers/MotionContext';
 import { Helmet } from 'react-helmet-async';
 import '../styles/global.css';
 import { Navbar } from '../components/layout/Navbar';
@@ -12,10 +13,14 @@ import { ChapterDetail } from '../pages/ChapterDetail';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { ToolboxRedirect } from '../features/tools/ToolboxRedirect';
 import { CollectionPage } from '../pages/CollectionPage';
+import { AmbientOrbit } from '../components/ui/AmbientOrbit';
 
 function App() {
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
   return (
-    <div className="app">
+    <MotionProvider><div className={`app ${isHome ? 'cosmicApp' : 'ambient-page'}`}>
+      {!isHome && <AmbientOrbit />}
       <Helmet>
         <title>我的空间 · 创造、思考与探索</title>
         <meta name="description" content="一个关于创造、思考与探索的个人空间，分享技术心得、思想随笔与实用工具。" />
@@ -29,7 +34,7 @@ function App() {
       <Navbar />
 
       {/* 路由 */}
-      <main id="main" tabIndex={-1}>
+      <main id="main" tabIndex={-1} key={pathname} className="routeView">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/essays/:slug" element={<EssayDetail />} />
@@ -46,7 +51,7 @@ function App() {
 
       {/* 页脚 */}
       <Footer />
-    </div>
+    </div></MotionProvider>
   );
 }
 

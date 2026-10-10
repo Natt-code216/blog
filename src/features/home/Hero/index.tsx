@@ -1,127 +1,92 @@
-import { useId, useState } from 'react';
+import { Component, lazy, Suspense, useCallback, useState, type ReactNode } from 'react';
 import { useReducedMotion } from '../../../hooks/useReducedMotion';
+import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver';
 import { toolboxHref } from '../../../services/toolCatalog';
 import { collectionHref } from '../../../services/collectionCatalog';
 import styles from './Hero.module.css';
+import { useMotion } from '../../../app/providers/MotionContext';
 
-function OrbitalPlanet() {
-  const id = useId();
-  const reducedMotion = useReducedMotion();
-  const [paused, setPaused] = useState(false);
-  const playing = !paused && !reducedMotion;
-  const gradient = (name: string) => `url(#${id}-${name})`;
+const OrbitalScene = lazy(() => import('./OrbitalScene'));
 
-  return (
-    <div className={`${styles.art} ${playing ? '' : styles.paused}`}>
-      <svg className={styles.orbital} viewBox="0 0 500 440" fill="none" aria-hidden="true">
-        <defs>
-          <linearGradient id={`${id}-wire`} x1="100" y1="70" x2="373" y2="350" gradientUnits="userSpaceOnUse">
-            <stop className={styles.wireStart} />
-            <stop offset=".5" className={styles.wireMiddle} />
-            <stop offset="1" className={styles.wireEnd} />
-          </linearGradient>
-          <radialGradient id={`${id}-fill`}>
-            <stop stopColor="currentColor" stopOpacity=".03" />
-            <stop offset=".68" stopColor="currentColor" stopOpacity=".03" />
-            <stop offset="1" stopColor="currentColor" stopOpacity=".08" />
-          </radialGradient>
-          <radialGradient id={`${id}-halo`}>
-            <stop stopColor="currentColor" stopOpacity=".12" />
-            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <circle cx="250" cy="228" r="191" fill={gradient('halo')} />
-        <ellipse className={styles.planetShadow} cx="250" cy="352" rx="148" ry="15" opacity=".65" />
-        <g className={styles.orbitalMotion}>
-          <g transform="translate(250 218) rotate(-27)">
-            <ellipse rx="151" ry="151" fill={gradient('fill')} stroke={gradient('wire')} strokeWidth="1.1" />
-            <g stroke={gradient('wire')} strokeWidth=".8" opacity=".9">
-              <ellipse rx="143" ry="151" />
-              <ellipse rx="121" ry="151" />
-              <ellipse rx="88" ry="151" />
-              <ellipse rx="46" ry="151" />
-              <path d="M0-151V151" />
-              <ellipse rx="151" ry="127" />
-              <ellipse rx="151" ry="90" />
-              <ellipse rx="151" ry="46" />
-              <path d="M-151 0H151" />
-              <ellipse cy="-130" rx="76" ry="20" />
-              <ellipse cy="-106" rx="107" ry="28" />
-              <ellipse cy="-72" rx="132" ry="35" />
-              <ellipse cy="-36" rx="146" ry="40" />
-              <ellipse cy="36" rx="146" ry="40" />
-              <ellipse cy="72" rx="132" ry="35" />
-              <ellipse cy="106" rx="107" ry="28" />
-              <ellipse cy="130" rx="76" ry="20" />
-            </g>
-            <ellipse rx="209" ry="65" transform="rotate(-8)" stroke="currentColor" strokeWidth="1.4" />
-            <ellipse rx="218" ry="70" transform="rotate(-8)" stroke="currentColor" strokeOpacity=".18" strokeWidth=".6" />
-            <circle cx="-188" cy="53" r="6" fill="currentColor" />
-            <circle cx="-188" cy="53" r="12" fill="currentColor" fillOpacity=".08" />
-          </g>
-        </g>
-        <g className={styles.orbitDot}>
-          <circle cx="430" cy="220" r="3" fill="currentColor" />
-          <path d="M420 220h20M430 210v20" stroke="currentColor" strokeWidth=".7" opacity=".5" />
-        </g>
-        <path d="M59 305h25m-12-12v24M396 79h15m-7-7v14" stroke="currentColor" strokeWidth=".8" opacity=".5" />
-        <circle cx="114" cy="80" r="2" fill="currentColor" opacity=".5" />
-      </svg>
-      <span className={styles.orbitCaption}>
-        A CURIOUS MIND.<br />一个好奇的小宇宙
-      </span>
-      <button
-        type="button"
-        className={styles.motionToggle}
-        aria-pressed={playing}
-        aria-label={reducedMotion ? '已遵循系统设置减少动态效果' : playing ? '暂停星球动效' : '播放星球动效'}
-        disabled={reducedMotion}
-        onClick={() => setPaused(value => !value)}
-      >
-        {reducedMotion ? '静态星球' : <><span aria-hidden="true">{playing ? 'Ⅱ' : '▷'}</span>{playing ? '暂停' : '播放'}</>}
-      </button>
-    </div>
-  );
+// Navigation remains usable if the GPU or the lazy-loaded 3D module is unavailable.
+class SceneBoundary extends Component<{ children: ReactNode; onUnavailable: () => void }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch() { this.props.onUnavailable(); }
+  render() { return this.state.failed ? null : this.props.children; }
 }
 
+const entries = [
+  { index: '01', label: '随笔', note: '一些想法，持续生长', english: 'JOURNAL', href: '#essays', arrow: '↘' },
+  { index: '02', label: '教程', note: '保持好奇，继续探索', english: 'EXPLORATIONS', href: '#tutorials', arrow: '↘' },
+  { index: '03', label: '工具集', note: '把灵感，变成小工具', english: 'THE EVERYDAY KIT', href: toolboxHref, arrow: '↗' },
+  { index: '04', label: '好的分享', note: '互联网里的意外发现', english: 'GOOD FINDS', href: collectionHref(), arrow: '↗' },
+];
+
 export function Hero() {
+  const [heroRef, heroVisible] = useIntersectionObserver<HTMLElement>({ triggerOnce: false, threshold: 0.01, rootMargin: '0px' });
+  const globalMotion = useMotion();
+  const reducedMotion = useReducedMotion();
+  const [paused, setPaused] = useState(false);
+  const [sceneState, setSceneState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
+  const playing = !paused && !reducedMotion && globalMotion.motionEnabled && sceneState !== 'unavailable';
+  const handleReady = useCallback(() => setSceneState('ready'), []);
+  const handleUnavailable = useCallback(() => setSceneState('unavailable'), []);
+
   return (
-    <section id="home" className={styles.hero} aria-labelledby="hero-title">
-      <div className="container">
-        <OrbitalPlanet />
-        <p className={styles.heroLabel}>Portfolio &amp; Journal</p>
-        <h1 className={`${styles.heroTitle} serif`} id="hero-title">
-          <a href="#tools">创造者</a> <i>/</i> <a href="#essays">思考者</a> <i>/</i> <a href="#tutorials">探索者</a>
-        </h1>
-        <p className={styles.heroDesc}>
-          我是一名热爱技术与创作的开发者，致力于探索技术与人文的交汇点。
-          <br />
-          在这里，我分享我的技术心得、思想随笔，以及精心打造的实用工具。
-          <br />
-          希望这份沉淀，能为你的旅程带来一丝灵感。
-        </p>
-        <nav className={styles.contentNav} aria-label="探索内容">
-          <a href="#essays" className={styles.essayEntry}>
-            <span className={styles.entryTitle}>随笔 <span aria-hidden="true">↓</span></span>
-            <span className={styles.entryNote}>日常里的思考</span>
-          </a>
-          <a href="#tutorials" className={styles.tutorialEntry}>
-            <span className={styles.entryTitle}>教程 <span aria-hidden="true">↓</span></span>
-            <span className={styles.entryNote}>一步步学会</span>
-          </a>
-          <a href={toolboxHref} className={styles.toolEntry}>
-            <span className={styles.entryTitle}>工具集 <span aria-hidden="true">↗</span></span>
-            <span className={styles.entryNote}>让琐事轻一点</span>
-          </a>
-          <a href={collectionHref()} className={styles.shareEntry}>
-            <span className={styles.entryTitle}>好的分享 <span aria-hidden="true">↗</span></span>
-            <span className={styles.entryNote}>好文章与好去处</span>
-          </a>
-        </nav>
-        <div className={styles.heroFoot}>
-          <span className={styles.learningDot}>STAY CURIOUS. KEEP LEARNING.</span>
-          <a className={styles.scroll} href="#essays">向下，发现更多 <span aria-hidden="true">↓</span></a>
+    <section ref={heroRef} id="home" className={`${styles.hero} ${!playing ? styles.paused : ''}`} data-atmosphere-playing={playing && heroVisible} aria-labelledby="hero-title">
+      <img className={styles.atmosphere} src="/images/observatory-atmosphere.webp" alt="" width="1672" height="941" loading="eager" decoding="async" />
+      <div className={styles.grid} aria-hidden="true" />
+      <div className={`container ${styles.heroInner}`}>
+        <div className={styles.topline} data-motion-entry>
+          <span><i /> A SMALL SPACE, AN OPEN MIND.</span>
+          <span className={styles.edition}>PERSONAL ORBIT — VOL. 01</span>
         </div>
+        <div className={styles.stage}>
+          <div className={styles.copy}>
+            <p className={styles.heroLabel} data-motion-entry><span>独立开发者的数字自留地</span> / PORTFOLIO &amp; JOURNAL</p>
+            <h1 className={styles.heroTitle} id="hero-title" data-motion-entry>
+              <a href="#tools" className={styles.creator}>创造者<span>.</span></a>
+              <span className={styles.otherRoles}><a href="#essays">思考者</a><i>/</i><a href="#tutorials">探索者</a></span>
+            </h1>
+            <p className={styles.heroDesc} data-motion-entry>在技术与人文之间，保持好奇。<br />记录思考，打磨工具，探索尚未抵达的地方。</p>
+            <a className={styles.exploreButton} href="#essays" data-motion-entry><span>进入我的小宇宙</span><span className={styles.buttonArrow} aria-hidden="true">↗</span></a>
+            <div className={styles.signature} data-motion-entry><span aria-hidden="true">✳</span><p>BUILD THINGS. THINK DEEPLY.<br /><span>在自己的轨道里，慢慢生长。</span></p></div>
+          </div>
+          <div className={styles.art}>
+            <div className={styles.artCorner} aria-hidden="true">+<span>OBJECT / 001</span></div>
+            <div className={`${styles.poster} ${sceneState === 'ready' ? styles.posterHidden : ''}`} aria-hidden="true">
+              <div className={styles.posterOrbit} /><div className={styles.posterPlanet} /><div className={styles.posterOrbitFront} />
+            </div>
+            <div className={styles.scene} aria-hidden="true">
+              <SceneBoundary onUnavailable={handleUnavailable}>
+                <Suspense fallback={null}><OrbitalScene playing={playing} onReady={handleReady} onUnavailable={handleUnavailable} /></Suspense>
+              </SceneBoundary>
+            </div>
+            <span className={styles.orbitCaption}>THE CURIOSITY CORE<br /><small>一颗永远好奇的星球</small></span>
+            <span className={styles.coordinates} aria-hidden="true">X 031.2°<br />Y 121.5°</span>
+            <div className={styles.artFoot}>
+              <span className={styles.interactionHint}>{sceneState === 'unavailable' || reducedMotion ? '静态星球 · 保持好奇' : globalMotion.paused ? '全局动效已暂停' : paused ? '已暂停 · 让思绪停留片刻' : '移动光标，改变观察的角度'}</span>
+              <button type="button" className={styles.motionToggle} aria-pressed={playing}
+                aria-label={reducedMotion ? '已遵循系统设置减少动态效果' : sceneState === 'unavailable' ? '当前展示静态星球' : playing ? '暂停星球动效' : '播放星球动效'}
+                disabled={reducedMotion || sceneState === 'unavailable' || globalMotion.paused} onClick={() => setPaused(value => !value)}>
+                {reducedMotion || sceneState === 'unavailable' ? '静态星球' : <><span aria-hidden="true">{playing ? 'Ⅱ' : '▷'}</span>{playing ? '暂停' : '播放'}</>}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className={styles.heroFoot}>
+          <span className={styles.learningDot}>ALWAYS A WORK IN PROGRESS</span>
+          <a href="#essays">向下，发现更多 <span aria-hidden="true">↓</span></a>
+        </div>
+        <nav className={styles.contentNav} aria-label="探索内容" data-motion-entry>
+          {entries.map(entry => (
+            <a href={entry.href} key={entry.index}>
+              <span className={styles.entryTop}><span>{entry.index} / {entry.english}</span><span className={styles.entryArrow} aria-hidden="true">{entry.arrow}</span></span>
+              <span className={styles.entryTitle}>{entry.label}</span><span className={styles.entryNote}>{entry.note}</span>
+            </a>
+          ))}
+        </nav>
       </div>
     </section>
   );

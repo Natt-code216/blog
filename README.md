@@ -1,6 +1,10 @@
 # Natt · 个人网站
 
-React + TypeScript + Vite 前端、Strapi 5 内容后台，以及 11 个浏览器工具。首页保留「创造者 / 思考者 / 探索者」与绿色星球，阅读页和工具页共用深浅配色及主题偏好。
+React + TypeScript + Vite 前端、Strapi 5 内容后台，以及 11 个浏览器工具。首页采用连续的「宇宙艺术展厅」：保留「创造者 / 思考者 / 探索者」与 Three.js 交互星球，连接油画随笔画廊、星环仪学习航线、向日葵工具工作台和睡莲星池。首页统一深绿与古金配色，阅读页和工具页保留深浅主题偏好。
+
+随笔目录、教程航线均可直接进入内容，悬停或键盘聚焦更新预览；工具按用途分类直达。画廊轮播需主动开启，手动浏览会停止轮播。油画使用实时着色器：星空局部旋涡、花瓣与花心分别自转、睡莲水波与反射流动；场景中的文字和入口保持稳定。
+
+星环仪各层轨道独立转动，向日葵雕塑自转并带有花瓣呼吸。收藏、阅读及独立工具页面带轻量旋转轨道背景。所有页面的导航栏均可暂停动态效果，选择跨页保存，并遵循系统减少动态效果设置。WebGL 在离屏或后台时暂停，油画和后两处雕塑接近视口才加载；油画限制为 30 fps 和 1.25 倍像素密度。
 
 文章仍从 Strapi 读取。仓库中的 `content/` 是稿件，不会自动发布；旧后台和数据库尚未接回。工具直接在浏览器处理文件和文本，无需运行 CMS。
 
@@ -69,6 +73,8 @@ pnpm backend:dev
 - [工具开发](docs/tools/README.md) · [改造记录与待办](docs/REFACTOR_PLAN.md)
 - [文档导航](docs/README.md) · [部署说明](docs/deployment/README.md)
 - [首页融合设计稿](docs/design/home-fusion.html)：已迁入正式首页，原稿仅作设计参考。
+- [数字观测站设计与开源参考](docs/design/observatory-plan.txt) · [AI 素材提示词](docs/design/observatory-image-prompts.txt)：本次视觉升级的方案、实现取舍与素材来源。
+- [宇宙艺术展厅交互参考](docs/design/cosmic-gallery-research.txt) · [油画素材提示词](docs/design/cosmic-gallery-image-prompts.txt)：空间画廊、渐入渐出与三幅原创宇宙油画的设计记录。
 
 `docs/archive/`、`archive/blog.html` 保留历史资料，开发方法以当前文档为准。许可证：[MIT](LICENSE)。
 

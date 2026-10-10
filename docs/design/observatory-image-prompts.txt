@@ -1,0 +1,43 @@
+OBSERVATORY GENERATED IMAGE ASSETS
+Date: 2026-10-03
+Mode: built-in image_gen tool, text-to-image generation, opaque background.
+Model: the built-in tool does not expose a model selector or identify its underlying model; no specific model claim is made.
+Original files were copied into public/images without alteration. WebP derivatives are same-size format conversion only, Pillow WebP quality=88 method=6.
+Visual QA: both generated originals were inspected in the returned tool image display. Both preserve usable dark left-side negative space and contain no typography or UI. Atmosphere has no solid planet and leaves room for the live 3D sculpture; garden contains pale jade/chrome rings and a luminous sage glass sphere, mineral islands, still water, and controlled black-green lighting.
+
+ASSET 1: OBSERVATORY ATMOSPHERE
+Source: /Users/bytedance/.codex/generated_images/01a0fdb3-7cf1-7371-acfe-e3a1e7613b22/exec-1f9cce7d-608f-4dab-bc7b-9f51107cd069.png
+Project original: public/images/observatory-atmosphere.png
+Web derivative: public/images/observatory-atmosphere.webp
+Dimensions: 1672 x 941
+PNG size: 1,552,191 bytes
+WebP size: 60,152 bytes
+Final prompt:
+Use case: stylized-concept
+Asset type: premium Chinese developer blog homepage background, "digital observatory" concept, wide landscape 16:9 composition.
+Primary request: Create an exceptionally refined cinematic abstract deep-space atmosphere, designed as a subtle website backdrop behind an actual interactive 3D orbital sculpture.
+Scene/backdrop: almost-black forest-green infinite space. The entire left 45 percent is very dark clean negative space for future web typography. On the right half, exquisite emerald volumetric mist and soft diffuse sage-green nebula glow toward right center, very sparse microscopic crystalline particles and tiny distant stars. A huge extremely dim orbital curve recedes in the far background.
+Style/medium: high-end editorial CGI with photographic volumetric light, tactile ethereal green material, sophisticated art direction, elegant restraint, not busy.
+Composition/framing: wide horizontal image, richest light and detail on right half, all edges fall gently into black; left remains nearly pure black-green; backdrop must leave room for another 3D object to be composited in the right foreground.
+Lighting/mood: mysterious, serene, premium, very soft and subtle green atmosphere with a tiny trace of pale chartreuse light.
+Color palette: black, black-green, deep emerald, diffuse sage; no saturated rainbow.
+Constraints: NO solid central planet, NO large foreground sphere, NO text, NO typography, NO logos, NO watermark, NO UI, NO framing border, NO spaceship, NO people, NO neon cyberpunk, NO sharp lens flare. The image is the atmospheric layer only.
+
+ASSET 2: OBSERVATORY GARDEN
+Source: /Users/bytedance/.codex/generated_images/01a0fdb3-7cf1-7371-acfe-e3a1e7613b22/exec-149dbfe4-e2fe-471f-a475-5b47a2ed3397.png
+Project original: public/images/observatory-garden.png
+Web derivative: public/images/observatory-garden.webp
+Dimensions: 1672 x 941
+PNG size: 1,784,305 bytes
+WebP size: 112,048 bytes
+Final prompt:
+Use case: stylized-concept
+Asset type: wide horizontal editorial collection banner for a premium Chinese developer blog with a digital observatory concept.
+Primary request: an exceptionally beautiful high-end 3D conceptual landscape: pale jade and polished chrome orbital rings, sculptural mineral rocks, and one luminous sage glass sphere hovering above dark still water with tiny grass islands.
+Scene/backdrop: Infinite black-green atmospheric studio environment, dark mirror-still water fading smoothly into black. Small carefully composed islands of charcoal mineral and delicate deep-green grass.
+Subject: A hovering luminous translucent sage-green glass sphere intersected and surrounded by a few elegant large tilted orbital rings made of pale jade and softly reflective brushed chrome. Sophisticated sculptural balance and believable exquisite material.
+Style/medium: photorealistic luxury editorial CGI art, quiet surreal garden, refined contemporary sculpture, museum quality art direction.
+Composition/framing: wide landscape approximately 16:9; the sculpture, mineral islands, and exquisite water reflections fill the RIGHT HALF of the frame. Generous very dark clean negative space on the LEFT HALF reserved for future banner typography. Maintain some breathing room above the sculpture, no cropped rings. Organic depth and asymmetrical composition.
+Lighting/mood: soft atmospheric studio light with a restrained pale chartreuse rim, luminous but calm, subtle mist, black edges, rich material details.
+Color palette: black forest green, pale jade, sage, desaturated chrome with restrained chartreuse glow.
+Constraints: NO text, NO letters, NO logos, NO watermark, NO UI, NO people, NO city, NO spaceship, NO neon cyberpunk, NO clutter, NO overly saturated colors. Create a finished artwork, not a webpage mockup.

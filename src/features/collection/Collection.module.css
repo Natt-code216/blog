@@ -103,3 +103,9 @@
   .siteCard { min-height: 258px; }
 }
 @media (prefers-reduced-motion: reduce) { .cardGrid { animation: none; } .gate, .leaf, .browserWindow, .readingCard, .arrow, .visit > span { transition: none; } }
+
+.motionRibbon { position: relative; height: clamp(185px, 20vw, 260px); overflow: hidden; isolation: isolate; margin: 10px 0 36px; background: #0a1410; }
+.ribbonShade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, #08110ddb, #08110d2e 65%), linear-gradient(0deg, #08110d88, transparent 70%); }
+.ribbonTitle { position: absolute; left: 35px; bottom: 60px; color: #e4e8d7; font: 400 clamp(20px,2.3vw,30px)/1.5 var(--font-serif); pointer-events: none; }
+.ribbonCoordinate { position: absolute; left: 35px; bottom: 31px; color: #bcccad; font: 8px/1.6 var(--font-mono); letter-spacing: .19em; pointer-events: none; }
+@media(max-width:700px) { .motionRibbon { margin-block: 0 28px; } .ribbonTitle { left: 22px; bottom: 51px; font-size: 21px; } .ribbonCoordinate { left: 22px; bottom: 27px; font-size: 7px; } }

@@ -3,10 +3,19 @@ import { getTheme, subscribeTheme, toggleTheme } from '../../../app/theme';
 import { toolboxHref } from '../../../services/toolCatalog';
 import { getToolboxReturnHref } from './navigation';
 import { collectionHref } from '../../../services/collectionCatalog';
+import { getMotionSnapshot, subscribeMotion, toggleMotion } from '../../../app/motion';
+import { ambientOrbitMarkup } from '../../../components/ui/AmbientOrbit/markup';
+import '../../../components/ui/AmbientOrbit/ambient-orbit.css';
 
 const isIndex = /\/mini-tools\/(?:index\.html)?$/.test(location.pathname);
 document.body.classList.add('workbench');
 if (isIndex) document.body.classList.add('toolbox-index');
+
+const ambient = document.createElement('div');
+ambient.className = 'ambient-orbit';
+ambient.setAttribute('aria-hidden', 'true');
+ambient.innerHTML = ambientOrbitMarkup;
+document.body.prepend(ambient);
 
 const header = document.createElement('header');
 header.className = 'site-header';
@@ -21,20 +30,37 @@ header.innerHTML = `
       <a href="${toolboxHref}" aria-current="${isIndex ? 'page' : 'location'}">工具集</a>
       <a href="${collectionHref()}">好的分享</a>
     </nav>
-    <button class="theme-switch" type="button"></button>
+    <div class="site-appearance">
+      <button class="motion-switch" type="button"></button>
+      <button class="theme-switch" type="button"></button>
+    </div>
   </div>`;
 document.body.prepend(header);
 
 const themeButton = header.querySelector<HTMLButtonElement>('.theme-switch')!;
 function renderTheme() {
   const isDark = getTheme() === 'dark';
-  themeButton.textContent = isDark ? '☀ 白天模式' : '☾ 夜间模式';
+  themeButton.innerHTML = `<span aria-hidden="true">${isDark ? '☀' : '☾'}</span><span class="theme-label">${isDark ? '白天模式' : '夜间模式'}</span>`;
   themeButton.setAttribute('aria-label', isDark ? '切换到浅色模式' : '切换到深色模式');
   themeButton.title = themeButton.getAttribute('aria-label')!;
 }
 themeButton.addEventListener('click', toggleTheme);
 subscribeTheme(renderTheme);
 renderTheme();
+
+const motionButton = header.querySelector<HTMLButtonElement>('.motion-switch')!;
+function renderMotion() {
+  const { motionEnabled, reducedMotion } = getMotionSnapshot();
+  const label = reducedMotion ? '已遵循系统设置减少动态效果' : motionEnabled ? '暂停全站动效' : '播放全站动效';
+  motionButton.disabled = reducedMotion;
+  motionButton.setAttribute('aria-label', label);
+  motionButton.setAttribute('aria-pressed', String(motionEnabled));
+  motionButton.title = label;
+  motionButton.innerHTML = `<span aria-hidden="true">${motionEnabled ? 'Ⅱ' : '▷'}</span><span class="motion-label">${reducedMotion ? '静态漫游' : motionEnabled ? '动效开启' : '动效暂停'}</span>`;
+}
+motionButton.addEventListener('click', toggleMotion);
+subscribeMotion(renderMotion);
+renderMotion();
 
 const main = document.querySelector<HTMLElement>('main');
 if (main) {

@@ -1,0 +1,68 @@
+COSMIC OIL PAINTING GALLERY ASSETS
+Date: 2026-10-03
+Mode: built-in image_gen text-to-image generation. Waterlilies also received a built-in image_gen edit to remove a faint generated signature-like artifact at bottom left.
+Model: built-in tool has no model selector and does not identify its underlying model. No specific model identity is claimed.
+Art direction: physical oil painting, deep midnight forest-green and petrol, pale sage/celadon, antique gold, visible canvas and impasto. Van Gogh-inspired expressive brushwork for starry field and sunflower; Monet-inspired broken brushwork for waterlilies. All are original generated compositions.
+PNG files are copied directly from selected image_gen outputs. WebP images are same-size 1586 x 992 format conversions using Pillow quality=88 method=6, no crop or edit.
+Visual inspection: each selected output inspected in the returned tool image. All have strong oil paint texture, a coherent dark green palette, and no visible typography or UI. Starry field includes a small painted observatory among dark terrain, reinforcing the observatory theme. Sunflower is a monumental floating solar flower, without vase/table. Waterlilies depicts a cosmic pond, starlight and orbital arc, and its bottom-left signature-like artifact was removed with the native image editing tool.
+
+ASSET 1: COSMIC STARRY FIELD
+Source: /Users/bytedance/.codex/generated_images/01a0fdb3-7cf1-7371-acfe-e3a1e7613b22/exec-e0437456-35d7-4b07-bafc-dede070e20c9.png
+Project original: public/images/cosmic-starry-field.png
+Web derivative: public/images/cosmic-starry-field.webp
+Dimensions: 1586 x 992
+PNG bytes: 3332100
+WebP bytes: 564264
+Final generation prompt:
+Use case: stylized-concept
+Asset type: landscape fine-art oil painting for a dark green cosmic gallery website, approximately 16:10 landscape.
+Primary request: A majestic expressive swirling starry field inspired by the physical brushwork and emotional intensity of Vincent van Gogh, fused with a mysterious deep-space observatory. It must unmistakeably look like a masterful real handmade oil painting on canvas, not CGI.
+Scene/backdrop: deep midnight forest-green and petrol-blue cosmic space. Rich directional impasto brushstrokes bend into enormous swirling nebulae and luminous antique-gold spirals, with tiny constellations embedded in the paint. One broad luminous planetary arc sweeps through the upper-right composition as painted starlight, without a photoreal planet.
+Style/medium: physical oil paint, thick sculptural impasto, tactile canvas grain, expressive individual brush marks, painterly palette-knife edges, museum-worthy compositional discipline, beautiful pigment mixing. Authored painting, not a photographic galaxy.
+Composition/framing: immersive wide landscape, major luminous nebular sweep above the middle, generous darker lower third with beautiful restrained dark brushwork for future HTML caption overlay. Complex painterly movement, large dark resting areas, avoid equal all-over noise.
+Color palette: dominant deep emerald, midnight forest, black-blue and petrol; luminous pale sage and celadon highlights; warm antique gold; restrained cobalt and teal accents.
+Lighting/mood: awe, artistic grandeur, mysterious and contemplative, aged luminous pigment rather than electric neon.
+Constraints: NO text, NO words, NO letters, NO logos, NO signatures, NO watermark, NO UI, NO border or frame; NO CGI or 3D render, NO digital glossy material, NO flat illustration, NO cartoon or cute style, NO literal landscape with town or cypress, NO spaceship. Full-bleed artwork only.
+
+ASSET 2: COSMIC SUNFLOWER
+Source: /Users/bytedance/.codex/generated_images/01a0fdb3-7cf1-7371-acfe-e3a1e7613b22/exec-e3d2cd87-ca23-44cd-b261-60c50b9050ce.png
+Project original: public/images/cosmic-sunflower.png
+Web derivative: public/images/cosmic-sunflower.webp
+Dimensions: 1586 x 992
+PNG bytes: 3384999
+WebP bytes: 589020
+Final generation prompt:
+Use case: stylized-concept
+Asset type: monumental original oil painting, landscape 16:10 fine-art gallery image for a dark green cosmic website.
+Primary request: ONE very large luminous antique-gold sunflower transformed into a cosmic solar system, inspired by the tactile expressive oil brushwork of Vincent van Gogh. An immersive abstract cosmic sunflower, NOT a vase still life.
+Subject: A gigantic majestic sunflower head floating in a dark emerald-black void, center-right dominant. Its densely textured dark center resembles a swirling dark stellar core; its antique-gold impasto petals unfurl in an expressive spiral, like orbital arcs and streams of painted light moving around the center. It is unmistakably a sunflower with many bold thick-painted petals, yet also feels like an immense celestial body. A handful of tiny distant stars and turquoise brushstroke currents animate the deep green space around it.
+Style/medium: masterful physical oil painting on heavy canvas; exceptionally tactile, thick sculptural impasto paint; individually legible confident brushstrokes; ridges of gold ochre, pale warm yellow, celadon and deep green pigment; visible canvas texture in quieter dark areas. Museum gallery refinement and real-paint materiality. Beautiful warm pigment glow created entirely by brush marks.
+Composition/framing: wide landscape 16:10, a single large flower dominates the center-right, left third contains dark emerald/petrol painterly negative space and graceful small star flecks, darker lower edge for a gallery caption overlay. Dynamic radial composition with large and small brushstrokes, no geometric perfect symmetry.
+Color palette: midnight forest-green, black emerald, antique gold and ochre, pale sage and celadon glints, very restrained cobalt and turquoise. Dramatic yet elegant.
+Constraints: NO vase, NO pot, NO table, NO multiple flowers, NO text, NO writing, NO signature, NO letters, NO logos, NO watermark, NO frame, NO UI, NO CGI, NO 3D render, NO glossy digital flower, NO flat illustration, NO cartoon, NO cute style, NO intense electric neon. Full-bleed handmade painting only.
+
+ASSET 3: COSMIC WATERLILIES
+Initial source: /Users/bytedance/.codex/generated_images/01a0fdb3-7cf1-7371-acfe-e3a1e7613b22/exec-2087c4e8-2cd0-4d48-8018-6074ffed64b7.png
+Selected cleaned source: /Users/bytedance/.codex/generated_images/01a0fdb3-7cf1-7371-acfe-e3a1e7613b22/exec-7858bcd8-af79-403f-a208-32a85e9b3f5a.png
+Project original: public/images/cosmic-waterlilies.png
+Web derivative: public/images/cosmic-waterlilies.webp
+Dimensions: 1586 x 992
+PNG bytes: 2645027
+WebP bytes: 319104
+Generation prompt:
+Use case: stylized-concept
+Asset type: landscape fine-art oil painting for an immersive dark green cosmic website gallery, approximately 16:10 landscape.
+Primary request: Dreamlike Claude Monet-inspired pale celadon waterlilies reflecting distant constellations on a deep forest-green cosmic pond. A masterful physical oil painting which combines the subtle luminous color and broken brushwork of Impressionist waterlilies with an immense cosmic night sky.
+Scene/backdrop: still dark green water fills much of the composition; delicate pale celadon and ivory waterlily blossoms float among diffuse emerald and petrol lily pads in the middle and foreground. Distant constellations appear as tiny painted gold lights in the sky and the water. Reflected starlight flows across the pond in broad lyrical painterly strokes. A single gentle luminous orbital arc curves above the dark distant horizon, like pale-sage painted cosmic light.
+Style/medium: unmistakably handmade museum-quality oil on canvas, tactile canvas grain, layered broken brushwork, beautifully mixed pigment, softly scumbled shadows and expressive thicker highlights, painterly light and atmosphere. No photographic surfaces or 3D rendering. Subtle impressionist abstraction with just enough detail to identify lilies.
+Composition/framing: immersive full-bleed wide landscape, low dark horizon in upper half and an expansive cosmic pond, clusters of pale lilies across center-right and foreground, large dark resting areas on left, graceful wide orbital arc above horizon. Reflections guide the eye. Soft depth without photographic bokeh.
+Color palette: deep midnight forest-green, black emerald, petrol, pale celadon, sage, soft ivory, restrained cobalt and teal accents, a few antique-gold starlight flecks. Harmonize with a dark green and antique-gold oil painting collection.
+Lighting/mood: poetic and mysterious, serene cosmic garden, delicate luminous impressionist light.
+Constraints: NO text, NO letters, NO signature, NO watermark, NO logos, NO UI, NO frame or border, NO CGI, NO 3D render, NO flat illustration, NO cute or cartoon style, NO bright pastel daylight, NO buildings, NO people, NO spaceship, NO large photoreal planet. Full-bleed physical painting only.
+Final cleanup edit prompt:
+Use case: precise-object-edit
+Asset type: final cleanup of an original oil painting website artwork.
+Primary request: Remove only the faint tiny signature-like lettering or marks in the extreme bottom-left corner of this painting, replacing them seamlessly with matching dark green oil-painted canvas texture and pond shadows.
+Input image: The attached cosmic waterlilies oil painting is the edit target.
+Invariants: Keep the ENTIRE painting otherwise unchanged: exactly the same composition, crop, aspect ratio, waterlilies, reflections, stars, orbital arc, trees, brush strokes, palette, canvas and oil texture, and lighting. No additions or restyling.
+Constraints: No text, letters, signature, logo or watermark anywhere. This is a tiny local cleanup only.

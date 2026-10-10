@@ -36,6 +36,10 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLDivElement>(
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
+    if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(handleIntersection, {
       threshold,
@@ -47,7 +51,7 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLDivElement>(
     return () => {
       observer.disconnect();
     };
-  }, [threshold, rootMargin, handleIntersection]);
+  }, [threshold, rootMargin, handleIntersection, prefersReducedMotion]);
 
   return [ref, isVisible];
 }

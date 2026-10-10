@@ -1,8 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useMotion } from '../providers/MotionContext';
 
 export function ScrollToTop() {
   const { pathname, hash } = useLocation();
+  const { motionEnabled } = useMotion();
+  const motionEnabledRef = useRef(motionEnabled);
+
+  // Preference changes affect the next navigation/correction, not our current position.
+  useEffect(() => { motionEnabledRef.current = motionEnabled; }, [motionEnabled]);
 
   useEffect(() => {
     if (hash) {
@@ -11,7 +17,8 @@ export function ScrollToTop() {
       const el = document.getElementById(target);
       if (el) {
         const scrollToTarget = () => el.scrollIntoView({
-          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' as ScrollBehavior : 'smooth',
+          behavior: !motionEnabledRef.current || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+            ? 'instant' as ScrollBehavior : 'smooth',
         });
         scrollToTarget();
 

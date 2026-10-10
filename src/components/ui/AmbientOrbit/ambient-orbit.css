@@ -1,0 +1,20 @@
+.ambient-page, body.workbench { isolation: isolate; }
+.ambient-orbit { --ambient-ink: #58744b; --ambient-line: .22; --ambient-star: .28; position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; contain: strict; color: var(--ambient-ink); }
+:root[data-theme='dark'] .ambient-orbit { --ambient-ink: #b4cc94; --ambient-line: .15; --ambient-star: .34; }
+.ambient-orbit-ring { position: absolute; width: min(66vw, 850px); height: auto; opacity: var(--ambient-line); stroke: currentColor; stroke-width: .65; transform-origin: center; animation: ambient-orbit-turn 110s linear infinite; }
+.ambient-orbit-primary { top: 8%; right: -28%; }
+.ambient-orbit-secondary { width: min(49vw, 670px); left: -29%; bottom: -9%; animation-duration: 150s; animation-direction: reverse; }
+.ambient-orbit-satellite { fill: currentColor; stroke: none; }
+.ambient-orbit-mist { position: absolute; inset: -8%; background: radial-gradient(ellipse at 94% 35%, #8ea4670e, transparent 44%), radial-gradient(ellipse at 2% 79%, #7f998b0c, transparent 39%); animation: ambient-orbit-drift 32s ease-in-out infinite alternate; }
+:root[data-theme='dark'] .ambient-orbit-mist { background: radial-gradient(ellipse at 94% 35%, #829a4320, transparent 44%), radial-gradient(ellipse at 2% 79%, #4e817b14, transparent 39%); }
+.ambient-orbit-stars { position: absolute; inset: -30px; opacity: var(--ambient-star); background: radial-gradient(circle at 5% 15%, currentColor 0 1px, transparent 1.4px), radial-gradient(circle at 91% 19%, currentColor 0 1.1px, transparent 1.6px), radial-gradient(circle at 96% 60%, currentColor 0 1px, transparent 1.4px), radial-gradient(circle at 8% 77%, currentColor 0 1.3px, transparent 1.8px), radial-gradient(circle at 82% 91%, currentColor 0 .8px, transparent 1.3px), radial-gradient(circle at 3% 48%, currentColor 0 .9px, transparent 1.4px); animation: ambient-orbit-drift 25s ease-in-out infinite alternate-reverse; }
+[data-motion='paused'] .ambient-orbit *, [data-motion-hidden='true'] .ambient-orbit * { animation-play-state: paused !important; }
+@keyframes ambient-orbit-turn { to { transform: rotate(360deg); } }
+@keyframes ambient-orbit-drift { from { transform: translate3d(-9px, -7px, 0); } to { transform: translate3d(12px, 16px, 0); } }
+@media (max-width: 700px) {
+  .ambient-orbit-ring { width: 100vw; right: -65%; top: 15%; }
+  .ambient-orbit-secondary { width: 95vw; left: -65%; bottom: 1%; top: auto; }
+  .ambient-orbit { --ambient-line: .16; }
+  :root[data-theme='dark'] .ambient-orbit { --ambient-line: .13; }
+}
+@media (prefers-reduced-motion: reduce) { .ambient-orbit * { animation-play-state: paused !important; } }
